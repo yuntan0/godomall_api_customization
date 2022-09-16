@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include godomall_api_customization *.css
+recursive-include godomall_api_customization *.csv
+recursive-include godomall_api_customization *.html
+recursive-include godomall_api_customization *.ico
+recursive-include godomall_api_customization *.js
+recursive-include godomall_api_customization *.json
+recursive-include godomall_api_customization *.md
+recursive-include godomall_api_customization *.png
+recursive-include godomall_api_customization *.py
+recursive-include godomall_api_customization *.svg
+recursive-include godomall_api_customization *.txt
+recursive-exclude godomall_api_customization *.pyc
