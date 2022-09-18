@@ -1,0 +1,186 @@
+{
+ "actions": [],
+ "autoname": "field:order_sub_no",
+ "creation": "2022-09-17 23:15:55.313650",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "order_sub_no",
+  "order_name",
+  "order_email",
+  "order_cell_phone",
+  "order_zipcode",
+  "order_zonecode",
+  "order_state",
+  "order_city",
+  "order_address",
+  "order_address_sub",
+  "receiver_name",
+  "receiver_cell_phone",
+  "receiver_use_safe_number_fl",
+  "receiver_safe_number",
+  "receiver_safe_number_dt",
+  "receiver_zipcode",
+  "receiver_zonecode",
+  "receiver_country",
+  "receiver_state",
+  "receiver_city",
+  "receiver_address",
+  "receiver_address_sub",
+  "delivery_visit",
+  "orderinfo_cd",
+  "gift_message"
+ ],
+ "fields": [
+  {
+   "fieldname": "order_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Name"
+  },
+  {
+   "fieldname": "order_email",
+   "fieldtype": "Data",
+   "label": "Order Email"
+  },
+  {
+   "fieldname": "order_cell_phone",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Cell Phone"
+  },
+  {
+   "fieldname": "order_zipcode",
+   "fieldtype": "Data",
+   "label": "Order Zipcode"
+  },
+  {
+   "fieldname": "order_zonecode",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Zonecode"
+  },
+  {
+   "fieldname": "order_state",
+   "fieldtype": "Data",
+   "label": "Order State"
+  },
+  {
+   "fieldname": "order_city",
+   "fieldtype": "Data",
+   "label": "Order City"
+  },
+  {
+   "fieldname": "order_address",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Address"
+  },
+  {
+   "fieldname": "order_address_sub",
+   "fieldtype": "Data",
+   "label": "Order Address Sub"
+  },
+  {
+   "fieldname": "receiver_name",
+   "fieldtype": "Data",
+   "label": "Receiver Name"
+  },
+  {
+   "fieldname": "receiver_cell_phone",
+   "fieldtype": "Data",
+   "label": "Receiver Cell Phone"
+  },
+  {
+   "fieldname": "receiver_use_safe_number_fl",
+   "fieldtype": "Data",
+   "label": "Receiver Use Safe Number Fl"
+  },
+  {
+   "fieldname": "receiver_safe_number",
+   "fieldtype": "Data",
+   "label": "Receiver Safe Number"
+  },
+  {
+   "fieldname": "receiver_safe_number_dt",
+   "fieldtype": "Data",
+   "label": "Receiver Safe Number Dt"
+  },
+  {
+   "fieldname": "receiver_zipcode",
+   "fieldtype": "Data",
+   "label": "Receiver Zipcode"
+  },
+  {
+   "fieldname": "receiver_zonecode",
+   "fieldtype": "Data",
+   "label": "Receiver Zonecode"
+  },
+  {
+   "fieldname": "receiver_country",
+   "fieldtype": "Data",
+   "label": "Receiver Country"
+  },
+  {
+   "fieldname": "receiver_state",
+   "fieldtype": "Data",
+   "label": "Receiver State"
+  },
+  {
+   "fieldname": "receiver_city",
+   "fieldtype": "Data",
+   "label": "Receiver City"
+  },
+  {
+   "fieldname": "receiver_address",
+   "fieldtype": "Data",
+   "label": "Receiver Address"
+  },
+  {
+   "fieldname": "receiver_address_sub",
+   "fieldtype": "Data",
+   "label": "Receiver Address Sub"
+  },
+  {
+   "fieldname": "delivery_visit",
+   "fieldtype": "Select",
+   "label": "Delivery Visit",
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "orderinfo_cd",
+   "fieldtype": "Data",
+   "label": "OrderInfo Cd"
+  },
+  {
+   "fieldname": "gift_message",
+   "fieldtype": "Data",
+   "label": "Gift Message"
+  },
+  {
+   "fieldname": "order_sub_no",
+   "fieldtype": "Data",
+   "label": "Order Sub No",
+   "reqd": 1,
+   "unique": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-09-18 23:19:38.338045",
+ "modified_by": "Administrator",
+ "module": "Godomall Api Customization",
+ "name": "Godomall Order Info Data",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

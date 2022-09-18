@@ -1,0 +1,162 @@
+{
+ "actions": [],
+ "autoname": "field:sno",
+ "creation": "2022-09-17 22:35:47.656469",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sno",
+  "scm_no",
+  "commission",
+  "scm_adjust_no",
+  "delivery_charge",
+  "delivery_poliicy_charge",
+  "delivery_area_charge",
+  "division_delivery_use_deposit",
+  "division_delivery_use_mileage",
+  "division_member_delivery_dc_price",
+  "division_delivery_charge",
+  "delivery_insurance_fee",
+  "delivery_fix_fl",
+  "delivery_weight_info",
+  "overseas_delivery_policy",
+  "delivery_collect_price",
+  "delivery_collect_fl",
+  "order_info_sno",
+  "delivery_whole_free_price",
+  "statistics_order_fl",
+  "scm_adjust_after_no"
+ ],
+ "fields": [
+  {
+   "fieldname": "sno",
+   "fieldtype": "Data",
+   "label": "SNO",
+   "unique": 1
+  },
+  {
+   "fieldname": "scm_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Scm No"
+  },
+  {
+   "fieldname": "commission",
+   "fieldtype": "Currency",
+   "label": "Commission"
+  },
+  {
+   "fieldname": "scm_adjust_no",
+   "fieldtype": "Data",
+   "label": "SCM Adjust No"
+  },
+  {
+   "fieldname": "delivery_charge",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Delivery Charge"
+  },
+  {
+   "fieldname": "delivery_poliicy_charge",
+   "fieldtype": "Currency",
+   "label": "Delivery Poliicy Charge"
+  },
+  {
+   "fieldname": "delivery_area_charge",
+   "fieldtype": "Currency",
+   "label": "Delivery Area Charge"
+  },
+  {
+   "fieldname": "division_delivery_use_deposit",
+   "fieldtype": "Currency",
+   "label": "Division Delivery Use Deposit"
+  },
+  {
+   "fieldname": "division_member_delivery_dc_price",
+   "fieldtype": "Currency",
+   "label": "Division Member Delivery Dc Price"
+  },
+  {
+   "fieldname": "delivery_insurance_fee",
+   "fieldtype": "Currency",
+   "label": "Delivery Insurance Fee"
+  },
+  {
+   "fieldname": "delivery_fix_fl",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Delivery Fix Fl",
+   "options": "Godomall Order Delivery Fix Flag"
+  },
+  {
+   "fieldname": "delivery_weight_info",
+   "fieldtype": "Data",
+   "label": "Delivery Weight Info"
+  },
+  {
+   "fieldname": "overseas_delivery_policy",
+   "fieldtype": "Data",
+   "label": "Overseas Delivery Policy"
+  },
+  {
+   "fieldname": "delivery_collect_price",
+   "fieldtype": "Currency",
+   "label": "Delivery Collect Price"
+  },
+  {
+   "fieldname": "delivery_collect_fl",
+   "fieldtype": "Select",
+   "label": "Delivery Collect Fl",
+   "length": 5,
+   "options": "\npre\nlater"
+  },
+  {
+   "fieldname": "order_info_sno",
+   "fieldtype": "Data",
+   "label": "Order Info SNO"
+  },
+  {
+   "fieldname": "delivery_whole_free_price",
+   "fieldtype": "Currency",
+   "label": "Delivery Whole Free Price"
+  },
+  {
+   "fieldname": "statistics_order_fl",
+   "fieldtype": "Data",
+   "label": "Statistics Order Fl",
+   "length": 2
+  },
+  {
+   "fieldname": "division_delivery_use_mileage",
+   "fieldtype": "Currency",
+   "label": "Division Delivery Use Mileage"
+  },
+  {
+   "fieldname": "scm_adjust_after_no",
+   "fieldtype": "Data",
+   "label": "SCM Adjust After No"
+  },
+  {
+   "fieldname": "division_delivery_charge",
+   "fieldtype": "Currency",
+   "label": "Division Delivery Charge"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-09-18 14:56:16.141031",
+ "modified_by": "Administrator",
+ "module": "Godomall Api Customization",
+ "name": "Godomall Order Delivery Data",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

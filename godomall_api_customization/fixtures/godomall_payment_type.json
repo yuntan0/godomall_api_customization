@@ -1,0 +1,42 @@
+[
+ {
+  "code": "gb",
+  "code_name": "\ubb34\ud1b5\uc7a5",
+  "docstatus": 0,
+  "doctype": "Godomall Payment Type",
+  "modified": "2022-09-16 21:40:18.030752",
+  "name": "gb"
+ },
+ {
+  "code": "pg",
+  "code_name": "PG\uacb0\uc81c",
+  "docstatus": 0,
+  "doctype": "Godomall Payment Type",
+  "modified": "2022-09-16 21:40:34.380753",
+  "name": "pg"
+ },
+ {
+  "code": "gm",
+  "code_name": "\ub9c8\uc77c\ub9ac\uc9c0",
+  "docstatus": 0,
+  "doctype": "Godomall Payment Type",
+  "modified": "2022-09-16 21:40:42.424098",
+  "name": "gm"
+ },
+ {
+  "code": "gd",
+  "code_name": "\uc608\uce58\uae08",
+  "docstatus": 0,
+  "doctype": "Godomall Payment Type",
+  "modified": "2022-09-16 21:40:55.661476",
+  "name": "gd"
+ },
+ {
+  "code": "payco",
+  "code_name": "\ud398\uc774\ucf54",
+  "docstatus": 0,
+  "doctype": "Godomall Payment Type",
+  "modified": "2022-09-16 21:41:04.516610",
+  "name": "payco"
+ }
+]

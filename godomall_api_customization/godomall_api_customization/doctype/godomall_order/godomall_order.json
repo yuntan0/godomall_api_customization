@@ -1,0 +1,351 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:order_no",
+ "creation": "2022-09-17 18:49:16.283176",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "order_no",
+  "mem_no",
+  "api_order_goods_no",
+  "order_status",
+  "order_ip",
+  "order_channel_fl",
+  "order_type_fl",
+  "order_email",
+  "order_goods_nm",
+  "column_break_11",
+  "order_goods_cnt",
+  "settle_price",
+  "tax_supply_price",
+  "tax_vat_price",
+  "tax_free_price",
+  "real_tax_supply_price",
+  "real_tax_vat_prcie",
+  "real_tax_free_price",
+  "order_goods_status_cnt",
+  "use_mileage",
+  "column_break_24",
+  "use_deposit",
+  "total_goods_price",
+  "total_delivery_charge",
+  "total_goods_dc_price",
+  "total_member_dc_price",
+  "total_member_overlap_price",
+  "total_coupon_goods_dc_price",
+  "total_coupon_order_dc_price",
+  "total_coupon_delivery_dc_price",
+  "total_mileage",
+  "column_break_36",
+  "total_goods_mileage",
+  "total_member_mileage",
+  "total_coupon_goods_mileage",
+  "total_coupon_order_mileage",
+  "first_sales_fl",
+  "settle_kind",
+  "multi_shipping_fl",
+  "payment_dt",
+  "mem_id",
+  "mem_group_nm",
+  "order_delivery_data_section",
+  "order_delivery_data",
+  "order_goods_data_section",
+  "order_goods_data",
+  "order_info_data_section",
+  "order_info_data"
+ ],
+ "fields": [
+  {
+   "fieldname": "order_no",
+   "fieldtype": "Data",
+   "label": "Order No",
+   "length": 50,
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "mem_no",
+   "fieldtype": "Data",
+   "label": "Mem No",
+   "length": 50
+  },
+  {
+   "fieldname": "api_order_goods_no",
+   "fieldtype": "Data",
+   "label": "Api Order Goods No",
+   "length": 50
+  },
+  {
+   "fieldname": "order_status",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Status",
+   "length": 2,
+   "options": "Godomall Order Status",
+   "search_index": 1
+  },
+  {
+   "fieldname": "order_ip",
+   "fieldtype": "Data",
+   "label": "Order Ip",
+   "length": 20
+  },
+  {
+   "fieldname": "order_channel_fl",
+   "fieldtype": "Data",
+   "label": "Order Channel Fl",
+   "length": 50
+  },
+  {
+   "fieldname": "order_type_fl",
+   "fieldtype": "Select",
+   "label": "Order Type Fl",
+   "length": 8,
+   "options": "\npc\nmobile\nwrite"
+  },
+  {
+   "fieldname": "order_email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Email",
+   "length": 100
+  },
+  {
+   "fieldname": "order_goods_nm",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Goods Nm",
+   "length": 250
+  },
+  {
+   "fieldname": "order_goods_cnt",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Goods Cnt"
+  },
+  {
+   "fieldname": "settle_price",
+   "fieldtype": "Currency",
+   "label": "Settle Price"
+  },
+  {
+   "fieldname": "tax_supply_price",
+   "fieldtype": "Currency",
+   "label": "Tax Supply Price"
+  },
+  {
+   "fieldname": "tax_vat_price",
+   "fieldtype": "Currency",
+   "label": "Tax VAT Price"
+  },
+  {
+   "fieldname": "tax_free_price",
+   "fieldtype": "Currency",
+   "label": "Tax Free Price"
+  },
+  {
+   "fieldname": "real_tax_supply_price",
+   "fieldtype": "Currency",
+   "label": "Real Tax Supply Price"
+  },
+  {
+   "fieldname": "real_tax_vat_prcie",
+   "fieldtype": "Currency",
+   "label": "Real Tax VAT Prcie"
+  },
+  {
+   "fieldname": "real_tax_free_price",
+   "fieldtype": "Currency",
+   "label": "Real Tax Free Price"
+  },
+  {
+   "fieldname": "use_mileage",
+   "fieldtype": "Currency",
+   "label": "Use Mileage"
+  },
+  {
+   "fieldname": "use_deposit",
+   "fieldtype": "Currency",
+   "label": "Use Deposit"
+  },
+  {
+   "fieldname": "total_goods_price",
+   "fieldtype": "Currency",
+   "label": "Total Goods Price"
+  },
+  {
+   "fieldname": "total_delivery_charge",
+   "fieldtype": "Currency",
+   "label": "Total Delivery Charge"
+  },
+  {
+   "fieldname": "total_goods_dc_price",
+   "fieldtype": "Currency",
+   "label": "Total Goods DC Price"
+  },
+  {
+   "fieldname": "total_member_dc_price",
+   "fieldtype": "Currency",
+   "label": "Total Member DC Price"
+  },
+  {
+   "fieldname": "total_member_overlap_price",
+   "fieldtype": "Currency",
+   "label": "Total Member Overlap Price"
+  },
+  {
+   "fieldname": "total_coupon_goods_dc_price",
+   "fieldtype": "Currency",
+   "label": "Total Coupon Goods DC Price"
+  },
+  {
+   "fieldname": "total_coupon_order_dc_price",
+   "fieldtype": "Currency",
+   "label": "Total Coupon Order DC Price"
+  },
+  {
+   "fieldname": "total_coupon_delivery_dc_price",
+   "fieldtype": "Currency",
+   "label": "Total Coupon Delivery DC Price"
+  },
+  {
+   "fieldname": "total_mileage",
+   "fieldtype": "Currency",
+   "label": "Total Mileage"
+  },
+  {
+   "fieldname": "total_goods_mileage",
+   "fieldtype": "Currency",
+   "label": "Total Goods Mileage"
+  },
+  {
+   "fieldname": "total_member_mileage",
+   "fieldtype": "Currency",
+   "label": "Total Member Mileage"
+  },
+  {
+   "fieldname": "total_coupon_goods_mileage",
+   "fieldtype": "Currency",
+   "label": "Total Coupon Goods Mileage"
+  },
+  {
+   "fieldname": "total_coupon_order_mileage",
+   "fieldtype": "Currency",
+   "label": "Total Coupon Order Mileage"
+  },
+  {
+   "fieldname": "first_sales_fl",
+   "fieldtype": "Data",
+   "label": "First Sales Fl"
+  },
+  {
+   "fieldname": "settle_kind",
+   "fieldtype": "Data",
+   "label": "Settle Kind"
+  },
+  {
+   "fieldname": "multi_shipping_fl",
+   "fieldtype": "Data",
+   "label": "Multi Shipping Fl",
+   "length": 1
+  },
+  {
+   "fieldname": "payment_dt",
+   "fieldtype": "Data",
+   "label": "Payment DT",
+   "length": 20
+  },
+  {
+   "fieldname": "mem_id",
+   "fieldtype": "Data",
+   "label": "Mem ID"
+  },
+  {
+   "fieldname": "mem_group_nm",
+   "fieldtype": "Data",
+   "label": "Mem Group Nm"
+  },
+  {
+   "fieldname": "order_delivery_data",
+   "fieldtype": "Table",
+   "label": "Order Delivery Data",
+   "options": "Godomall Order Delivery Data"
+  },
+  {
+   "fieldname": "order_info_data",
+   "fieldtype": "Table",
+   "label": "Order Info Data",
+   "options": "Godomall Order Info Data"
+  },
+  {
+   "fieldname": "order_goods_data",
+   "fieldtype": "Table",
+   "label": "Order Goods Data",
+   "options": "Godomall Order Goods Data"
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_24",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_36",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "order_delivery_data_section",
+   "fieldtype": "Section Break",
+   "label": "Order Delivery Data"
+  },
+  {
+   "fieldname": "order_goods_data_section",
+   "fieldtype": "Section Break",
+   "label": "Order Goods Data"
+  },
+  {
+   "fieldname": "order_info_data_section",
+   "fieldtype": "Section Break",
+   "label": "Order Info Data"
+  },
+  {
+   "fieldname": "order_goods_status_cnt",
+   "fieldtype": "Data",
+   "label": "Order Goods Status Cnt",
+   "length": 100
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-09-19 06:48:09.569228",
+ "modified_by": "Administrator",
+ "module": "Godomall Api Customization",
+ "name": "Godomall Order",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

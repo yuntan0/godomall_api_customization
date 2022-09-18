@@ -1,0 +1,42 @@
+[
+ {
+  "code": "fixed",
+  "code_name": "\uace0\uc815",
+  "docstatus": 0,
+  "doctype": "Godomall Order Delivery Fix Flag",
+  "modified": "2022-09-17 23:06:19.602390",
+  "name": "fixed"
+ },
+ {
+  "code": "free",
+  "code_name": "\ubb34\ub8cc",
+  "docstatus": 0,
+  "doctype": "Godomall Order Delivery Fix Flag",
+  "modified": "2022-09-17 23:06:33.819082",
+  "name": "free"
+ },
+ {
+  "code": "price",
+  "code_name": "\uac00\uaca9\ubcc4",
+  "docstatus": 0,
+  "doctype": "Godomall Order Delivery Fix Flag",
+  "modified": "2022-09-17 23:06:43.071268",
+  "name": "price"
+ },
+ {
+  "code": "weight",
+  "code_name": "\ubb34\uac8c\ubcc4",
+  "docstatus": 0,
+  "doctype": "Godomall Order Delivery Fix Flag",
+  "modified": "2022-09-17 23:06:51.736351",
+  "name": "weight"
+ },
+ {
+  "code": "count",
+  "code_name": "\uc218\ub7c9\ubcc4",
+  "docstatus": 0,
+  "doctype": "Godomall Order Delivery Fix Flag",
+  "modified": "2022-09-17 23:07:03.538102",
+  "name": "count"
+ }
+]

@@ -1,0 +1,750 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:goods_no",
+ "creation": "2022-09-16 22:56:20.706107",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "goods_no",
+  "goods_nm_fl",
+  "column_break_6",
+  "goods_nm",
+  "column_break_5",
+  "goods_nm_main",
+  "column_break_7",
+  "goods_nm_list",
+  "detail_section",
+  "goods_nm_detail",
+  "column_break_11",
+  "goods_nm_partner",
+  "goods_setting_section",
+  "purchase_goods_nm",
+  "goods_display_fl",
+  "goods_display_mobile_fl",
+  "goods_sell_fl",
+  "goods_sell_mobile_fl",
+  "scm_no",
+  "apply_fl",
+  "apply_type",
+  "apply_msg",
+  "apply_dt",
+  "commission",
+  "goods_cd",
+  "cate_cd",
+  "all_cate_cd",
+  "goods_search_word",
+  "goods_open_dt",
+  "goods_state",
+  "column_break_29",
+  "goods_color",
+  "brand_cd",
+  "maker_nm",
+  "origin_nm",
+  "goods_model_no",
+  "make_ymd",
+  "launch_ymd",
+  "effective_start_ymd",
+  "effective_end_ymd",
+  "goods_permission",
+  "goods_permission_group",
+  "only_adult_fl",
+  "image_storage",
+  "tax_free_fl",
+  "tax_percent",
+  "goods_weight",
+  "total_stock",
+  "stock_fl",
+  "sold_out_fl",
+  "sales_unit",
+  "min_order_cnt",
+  "max_order_cnt",
+  "sales_start_ymd",
+  "sales_end_ymd",
+  "column_break_44",
+  "restock_fl",
+  "mileage_fl",
+  "mileage_goods",
+  "mileage_goods_unit",
+  "goods_discount_fl",
+  "goods_discount",
+  "goods_discount_unit",
+  "pay_limit_fl",
+  "pay_limit",
+  "goods_price_string",
+  "goods_price",
+  "fixed_price",
+  "cost_price",
+  "option_fl",
+  "option_display_fl",
+  "option_name",
+  "option_text_fl",
+  "add_goods_fl",
+  "delivery_sno",
+  "relation_fl",
+  "relation_same_fl",
+  "relation_goods_no",
+  "column_break_76",
+  "relation_goods_date",
+  "goods_icon_start_ymd",
+  "goods_icon_end_ymd",
+  "goods_icon_cd_period",
+  "goods_icon_cd",
+  "img_detail_view_fl",
+  "external_video_fl",
+  "external_video_url",
+  "external_video_width",
+  "external_video_height",
+  "detail_info_delivery",
+  "detail_info_as",
+  "detail_info_refund",
+  "detail_info_exchange",
+  "memo",
+  "order_cnt",
+  "hit_cnt",
+  "review_cnt",
+  "excel_fl",
+  "reg_dt",
+  "mod_dt",
+  "culture_benefit_fl",
+  "event_description",
+  "seo_tag_fl",
+  "daum_fl",
+  "description_section",
+  "goods_description",
+  "goods_description_mobile",
+  "short_description"
+ ],
+ "fields": [
+  {
+   "fieldname": "goods_no",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Goods No",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "goods_nm_fl",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Goods Nm Fl",
+   "length": 1,
+   "options": "Godomall Goods Type",
+   "search_index": 1
+  },
+  {
+   "columns": 3,
+   "fieldname": "goods_nm",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Goods Nm",
+   "length": 250,
+   "search_index": 1
+  },
+  {
+   "fieldname": "goods_nm_main",
+   "fieldtype": "Data",
+   "label": "Goods Nm Main",
+   "length": 250
+  },
+  {
+   "fieldname": "goods_nm_list",
+   "fieldtype": "Data",
+   "label": "Goods Nm List",
+   "length": 250
+  },
+  {
+   "fieldname": "goods_nm_detail",
+   "fieldtype": "Text",
+   "label": "Goods Nm Detail",
+   "max_height": "100px"
+  },
+  {
+   "fieldname": "goods_nm_partner",
+   "fieldtype": "Text",
+   "label": "Goods Nm Partner",
+   "max_height": "100px"
+  },
+  {
+   "fieldname": "purchase_goods_nm",
+   "fieldtype": "Data",
+   "label": "Purchase Goods Nm"
+  },
+  {
+   "fieldname": "goods_display_fl",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Goods Display Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "goods_display_mobile_fl",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Goods Display Mobile Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "goods_sell_fl",
+   "fieldtype": "Select",
+   "label": "Goods Sell Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "goods_sell_mobile_fl",
+   "fieldtype": "Select",
+   "label": "Goods Sell Mobile Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "scm_no",
+   "fieldtype": "Data",
+   "label": "Scm No"
+  },
+  {
+   "fieldname": "apply_fl",
+   "fieldtype": "Select",
+   "label": "Apply Fl",
+   "length": 1,
+   "options": "\na\ny\nn"
+  },
+  {
+   "fieldname": "apply_type",
+   "fieldtype": "Data",
+   "label": "Apply Type"
+  },
+  {
+   "fieldname": "apply_msg",
+   "fieldtype": "Data",
+   "label": "Apply Msg"
+  },
+  {
+   "fieldname": "apply_dt",
+   "fieldtype": "Data",
+   "label": "Apply Dt"
+  },
+  {
+   "fieldname": "commission",
+   "fieldtype": "Data",
+   "label": "Commission"
+  },
+  {
+   "fieldname": "goods_cd",
+   "fieldtype": "Data",
+   "label": "Goods Cd",
+   "length": 30
+  },
+  {
+   "fieldname": "cate_cd",
+   "fieldtype": "Data",
+   "label": "Cate Cd"
+  },
+  {
+   "fieldname": "all_cate_cd",
+   "fieldtype": "Long Text",
+   "label": "All Cate Cd"
+  },
+  {
+   "fieldname": "goods_search_word",
+   "fieldtype": "Text",
+   "label": "Goods Search Word"
+  },
+  {
+   "fieldname": "goods_open_dt",
+   "fieldtype": "Data",
+   "label": "Goods Open Dt"
+  },
+  {
+   "fieldname": "goods_state",
+   "fieldtype": "Link",
+   "label": "Goods State",
+   "options": "Godomall Goods State"
+  },
+  {
+   "fieldname": "goods_color",
+   "fieldtype": "Data",
+   "label": "Goods Color"
+  },
+  {
+   "fieldname": "brand_cd",
+   "fieldtype": "Data",
+   "label": "Brand Cd"
+  },
+  {
+   "fieldname": "maker_nm",
+   "fieldtype": "Data",
+   "label": "Maker Nm",
+   "length": 30
+  },
+  {
+   "fieldname": "origin_nm",
+   "fieldtype": "Data",
+   "label": "Origin Nm",
+   "length": 30
+  },
+  {
+   "fieldname": "goods_model_no",
+   "fieldtype": "Data",
+   "label": "Goods Model No"
+  },
+  {
+   "fieldname": "make_ymd",
+   "fieldtype": "Data",
+   "label": "Make YMD"
+  },
+  {
+   "fieldname": "launch_ymd",
+   "fieldtype": "Data",
+   "label": "Launch YMD"
+  },
+  {
+   "fieldname": "effective_start_ymd",
+   "fieldtype": "Data",
+   "label": "Effective Start YMD"
+  },
+  {
+   "fieldname": "effective_end_ymd",
+   "fieldtype": "Data",
+   "label": "Effective End YMD"
+  },
+  {
+   "fieldname": "goods_permission",
+   "fieldtype": "Select",
+   "label": "Goods Permission",
+   "length": 10,
+   "options": "\nall\nmember\ngroup"
+  },
+  {
+   "fieldname": "goods_permission_group",
+   "fieldtype": "Data",
+   "label": "Goods Permission Group"
+  },
+  {
+   "fieldname": "only_adult_fl",
+   "fieldtype": "Select",
+   "label": "Only Adult Fl",
+   "length": 1,
+   "options": "y\nn"
+  },
+  {
+   "fieldname": "image_storage",
+   "fieldtype": "Data",
+   "label": "Image Storage"
+  },
+  {
+   "fieldname": "tax_free_fl",
+   "fieldtype": "Select",
+   "label": "Tax Free Fl",
+   "length": 1,
+   "options": "t\nf"
+  },
+  {
+   "fieldname": "tax_percent",
+   "fieldtype": "Data",
+   "label": "Tax Percent"
+  },
+  {
+   "fieldname": "goods_weight",
+   "fieldtype": "Data",
+   "label": "Goods Weight"
+  },
+  {
+   "fieldname": "total_stock",
+   "fieldtype": "Data",
+   "label": "Total Stock"
+  },
+  {
+   "fieldname": "stock_fl",
+   "fieldtype": "Select",
+   "label": "Stock Fl",
+   "length": 1,
+   "options": "n\ny"
+  },
+  {
+   "fieldname": "sold_out_fl",
+   "fieldtype": "Select",
+   "label": "Sold Out Fl",
+   "length": 1,
+   "options": "n\ny"
+  },
+  {
+   "fieldname": "sales_unit",
+   "fieldtype": "Data",
+   "label": "Sales Unit"
+  },
+  {
+   "fieldname": "min_order_cnt",
+   "fieldtype": "Data",
+   "label": "Min Order Cnt"
+  },
+  {
+   "fieldname": "max_order_cnt",
+   "fieldtype": "Data",
+   "label": "Max Order Cnt"
+  },
+  {
+   "fieldname": "sales_start_ymd",
+   "fieldtype": "Data",
+   "label": "Sales Start YMD"
+  },
+  {
+   "fieldname": "sales_end_ymd",
+   "fieldtype": "Data",
+   "label": "Sales End YMD"
+  },
+  {
+   "fieldname": "restock_fl",
+   "fieldtype": "Select",
+   "label": "Restock Fl",
+   "length": 1,
+   "options": "y\nn"
+  },
+  {
+   "fieldname": "mileage_fl",
+   "fieldtype": "Select",
+   "label": "Mileage Fl",
+   "length": 1,
+   "options": "c\ng"
+  },
+  {
+   "fieldname": "mileage_goods",
+   "fieldtype": "Data",
+   "label": "Mileage Goods"
+  },
+  {
+   "fieldname": "mileage_goods_unit",
+   "fieldtype": "Data",
+   "label": "Mileage Goods Unit",
+   "length": 50
+  },
+  {
+   "fieldname": "goods_discount_fl",
+   "fieldtype": "Select",
+   "label": "Goods Discount Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "goods_discount",
+   "fieldtype": "Data",
+   "label": "Goods Discount"
+  },
+  {
+   "fieldname": "goods_discount_unit",
+   "fieldtype": "Data",
+   "label": "Goods Discount Unit"
+  },
+  {
+   "fieldname": "pay_limit_fl",
+   "fieldtype": "Select",
+   "label": "Pay Limit Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "pay_limit",
+   "fieldtype": "Link",
+   "label": "Pay Limit",
+   "options": "Godomall Payment Type"
+  },
+  {
+   "fieldname": "goods_price_string",
+   "fieldtype": "Data",
+   "label": "Goods Price String"
+  },
+  {
+   "fieldname": "goods_price",
+   "fieldtype": "Data",
+   "label": "Goods Price"
+  },
+  {
+   "fieldname": "fixed_price",
+   "fieldtype": "Data",
+   "label": "Fixed Price"
+  },
+  {
+   "fieldname": "cost_price",
+   "fieldtype": "Data",
+   "label": "Cost Price"
+  },
+  {
+   "fieldname": "option_fl",
+   "fieldtype": "Select",
+   "label": "Option Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "option_display_fl",
+   "fieldtype": "Select",
+   "label": "Option Display Fl",
+   "length": 1,
+   "options": "s\nd"
+  },
+  {
+   "fieldname": "option_name",
+   "fieldtype": "Data",
+   "label": "Option Name"
+  },
+  {
+   "fieldname": "option_text_fl",
+   "fieldtype": "Select",
+   "label": "Option Text Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "add_goods_fl",
+   "fieldtype": "Select",
+   "label": "Add Goods Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "short_description",
+   "fieldtype": "HTML Editor",
+   "label": "Short Description"
+  },
+  {
+   "fieldname": "goods_description",
+   "fieldtype": "HTML Editor",
+   "label": "Goods Description"
+  },
+  {
+   "fieldname": "goods_description_mobile",
+   "fieldtype": "HTML Editor",
+   "label": "Goods Description Mobile"
+  },
+  {
+   "fieldname": "delivery_sno",
+   "fieldtype": "Data",
+   "label": "Delivery Sno"
+  },
+  {
+   "fieldname": "relation_fl",
+   "fieldtype": "Data",
+   "label": "Relation Fl"
+  },
+  {
+   "fieldname": "relation_same_fl",
+   "fieldtype": "Data",
+   "label": "Relation Same Fl"
+  },
+  {
+   "fieldname": "relation_goods_no",
+   "fieldtype": "Long Text",
+   "label": "Relation Goods No"
+  },
+  {
+   "fieldname": "relation_goods_date",
+   "fieldtype": "Data",
+   "label": "Relation Goods Date"
+  },
+  {
+   "fieldname": "goods_icon_start_ymd",
+   "fieldtype": "Data",
+   "label": "Goods Icon Start YMD"
+  },
+  {
+   "fieldname": "goods_icon_end_ymd",
+   "fieldtype": "Data",
+   "label": "Goods Icon End YMD"
+  },
+  {
+   "fieldname": "goods_icon_cd_period",
+   "fieldtype": "Data",
+   "label": "Goods Icon Cd Period"
+  },
+  {
+   "fieldname": "goods_icon_cd",
+   "fieldtype": "Data",
+   "label": "Goods Icon Cd"
+  },
+  {
+   "fieldname": "img_detail_view_fl",
+   "fieldtype": "Select",
+   "label": "Img Detail View Fl",
+   "length": 1,
+   "options": "y\nn"
+  },
+  {
+   "fieldname": "external_video_fl",
+   "fieldtype": "Select",
+   "label": "External Video Fl",
+   "length": 1,
+   "options": "y\nn"
+  },
+  {
+   "fieldname": "external_video_url",
+   "fieldtype": "Data",
+   "label": "External Video Url"
+  },
+  {
+   "fieldname": "external_video_width",
+   "fieldtype": "Data",
+   "label": "External Video Width"
+  },
+  {
+   "fieldname": "external_video_height",
+   "fieldtype": "Data",
+   "label": "External Video Height"
+  },
+  {
+   "fieldname": "detail_info_delivery",
+   "fieldtype": "Data",
+   "label": "Detail Info Delivery"
+  },
+  {
+   "fieldname": "detail_info_as",
+   "fieldtype": "Data",
+   "label": "Detail Info AS"
+  },
+  {
+   "fieldname": "detail_info_refund",
+   "fieldtype": "Data",
+   "label": "Detail Info Refund"
+  },
+  {
+   "fieldname": "detail_info_exchange",
+   "fieldtype": "Data",
+   "label": "Detail Info Exchange"
+  },
+  {
+   "fieldname": "memo",
+   "fieldtype": "Data",
+   "label": "memo"
+  },
+  {
+   "fieldname": "order_cnt",
+   "fieldtype": "Data",
+   "label": "order Cnt"
+  },
+  {
+   "fieldname": "hit_cnt",
+   "fieldtype": "Data",
+   "label": "Hit Cnt"
+  },
+  {
+   "fieldname": "review_cnt",
+   "fieldtype": "Data",
+   "label": "Review Cnt"
+  },
+  {
+   "fieldname": "excel_fl",
+   "fieldtype": "Data",
+   "label": "Excel Fl"
+  },
+  {
+   "fieldname": "reg_dt",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Reg Dt",
+   "search_index": 1
+  },
+  {
+   "fieldname": "mod_dt",
+   "fieldtype": "Datetime",
+   "label": "Mod Dt"
+  },
+  {
+   "fieldname": "culture_benefit_fl",
+   "fieldtype": "Data",
+   "label": "Culture Benefit Fl"
+  },
+  {
+   "fieldname": "event_description",
+   "fieldtype": "Data",
+   "label": "Event Description"
+  },
+  {
+   "fieldname": "seo_tag_fl",
+   "fieldtype": "Data",
+   "label": "Seo Tag Fl"
+  },
+  {
+   "fieldname": "daum_fl",
+   "fieldtype": "Data",
+   "label": "Daum Fl"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "detail_section",
+   "fieldtype": "Section Break",
+   "label": "Detail"
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "goods_setting_section",
+   "fieldtype": "Section Break",
+   "label": "Goods Setting"
+  },
+  {
+   "fieldname": "column_break_44",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_76",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "column_break_29",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-09-17 15:02:07.661514",
+ "modified_by": "Administrator",
+ "module": "Godomall Api Customization",
+ "name": "Godomall Goods master",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

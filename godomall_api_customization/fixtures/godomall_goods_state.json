@@ -1,0 +1,26 @@
+[
+ {
+  "code": "n",
+  "code_name": "\uc0c8\uc0c1\ud488",
+  "docstatus": 0,
+  "doctype": "Godomall Goods State",
+  "modified": "2022-09-16 21:34:32.255059",
+  "name": "n"
+ },
+ {
+  "code": "u",
+  "code_name": "\uc911\uace0\ud488",
+  "docstatus": 0,
+  "doctype": "Godomall Goods State",
+  "modified": "2022-09-16 21:34:43.807128",
+  "name": "u"
+ },
+ {
+  "code": "r",
+  "code_name": "\ubc18\ud488/\uc7ac\uace0\uc0c1\ud488",
+  "docstatus": 0,
+  "doctype": "Godomall Goods State",
+  "modified": "2022-09-16 21:34:59.368613",
+  "name": "r"
+ }
+]

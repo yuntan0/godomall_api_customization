@@ -185,3 +185,19 @@ app_license = "MIT"
 # auth_hooks = [
 #	"godomall_api_customization.auth.validate"
 # ]
+fixtures=[ "Godomall Order Goods Data",
+            "Godomall Order Delivery Fix Flag",
+            "Godomall Goods Type",
+            "Godomall Payment Type",
+            "Godomall Goods State"
+	#  {"dt": "Client Script", "filters": [
+    #     [
+    #         "name", "in", [
+    #             "Supplier Button",
+    #             "Customer Button",
+	# 			"Get Holiday API",
+	# 			"Address translate"
+    #         ]
+    #     ]
+    # ]}
+]

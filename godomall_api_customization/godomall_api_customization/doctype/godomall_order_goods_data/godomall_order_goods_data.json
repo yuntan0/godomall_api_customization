@@ -1,0 +1,650 @@
+{
+ "actions": [],
+ "autoname": "field:sno",
+ "creation": "2022-09-18 11:16:42.700292",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sno",
+  "order_no",
+  "mall_sno",
+  "api_order_goods_no",
+  "order_cd",
+  "order_group_cd",
+  "event_sno",
+  "order_status",
+  "order_delivery_sno",
+  "invoice_company_sno",
+  "invoice_no",
+  "scm_no",
+  "purchase_no",
+  "commission",
+  "scm_adjust_after_no",
+  "goods_type",
+  "time_sale_fl",
+  "parent_must_fl",
+  "parent_goods_no",
+  "goods_no",
+  "list_image_data",
+  "goods_cd",
+  "goods_model_no",
+  "goods_nm",
+  "goods_nm_standard",
+  "goods_cnt",
+  "goods_price",
+  "division_use_deposit",
+  "division_use_mileage",
+  "division_goods_delivery_use_deposit",
+  "division_goods_delivery_use_mileage",
+  "division_coupon_order_dc_price",
+  "division_coupon_order_mileage",
+  "add_goods_price",
+  "option_price",
+  "option_cost_price",
+  "option_text_price",
+  "fixed_price",
+  "cost_price",
+  "goods_dc_price",
+  "member_dc_price",
+  "member_overlap_dc_price",
+  "coupon_goods_dc_price",
+  "time_sale_price",
+  "brand_bank_sale_price",
+  "myapp_dc_price",
+  "goods_delivery_collect_price",
+  "goods_mileage",
+  "member_mileage",
+  "coupon_goods_mileage",
+  "goods_delivery_collect_fl",
+  "minus_deposit_fl",
+  "minus_restore_deposit_fl",
+  "minus_mileage_fl",
+  "minus_restore_mileage_fl",
+  "plus_mileage_fl",
+  "plus_restore_mileage_fl",
+  "minus_stock_fl",
+  "minus_restore_stock_fl",
+  "option_sno",
+  "option_info",
+  "option_text_info",
+  "cate_all_cd",
+  "hscode",
+  "cancel_dt",
+  "payment_dt",
+  "invoice_dt",
+  "delivery_dt",
+  "delivery_complete_dt",
+  "finish_dt",
+  "mileage_give_dt",
+  "checkout_data",
+  "statistics_order_fl",
+  "statistics_goods_fl",
+  "delivery_method_fl",
+  "enuri",
+  "goods_discount_info",
+  "goods_mileage_add_info",
+  "inflow",
+  "link_main_theme",
+  "visit_address",
+  "dpx_delivery_type",
+  "dawn_info_type",
+  "dawn_info_memo",
+  "dawn_info_alram",
+  "request_bag_fl",
+  "goods_volume",
+  "coupon_mileage_fl",
+  "delivery_bundle_fl",
+  "delivery_due_date",
+  "easypay_scm_receipt_fl"
+ ],
+ "fields": [
+  {
+   "fieldname": "sno",
+   "fieldtype": "Data",
+   "label": "SNO",
+   "length": 50,
+   "unique": 1
+  },
+  {
+   "fieldname": "order_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order No",
+   "length": 50
+  },
+  {
+   "fieldname": "mall_sno",
+   "fieldtype": "Data",
+   "label": "Mall SNO",
+   "length": 20
+  },
+  {
+   "fieldname": "api_order_goods_no",
+   "fieldtype": "Data",
+   "label": "Api Order Goods No",
+   "length": 50
+  },
+  {
+   "fieldname": "order_cd",
+   "fieldtype": "Data",
+   "label": "Order Cd",
+   "length": 50
+  },
+  {
+   "fieldname": "order_group_cd",
+   "fieldtype": "Data",
+   "label": "Order Group Cd",
+   "length": 50
+  },
+  {
+   "fieldname": "event_sno",
+   "fieldtype": "Data",
+   "label": "Event Sno",
+   "length": 50
+  },
+  {
+   "fieldname": "order_status",
+   "fieldtype": "Link",
+   "label": "Order Status",
+   "length": 2,
+   "options": "Godomall Order Status"
+  },
+  {
+   "fieldname": "order_delivery_sno",
+   "fieldtype": "Data",
+   "label": "Order Delivery SNO",
+   "length": 50
+  },
+  {
+   "fieldname": "invoice_company_sno",
+   "fieldtype": "Data",
+   "label": "Invoice Company SNO",
+   "length": 50
+  },
+  {
+   "fieldname": "invoice_no",
+   "fieldtype": "Data",
+   "label": "Invoice No",
+   "length": 50
+  },
+  {
+   "fieldname": "scm_no",
+   "fieldtype": "Data",
+   "label": "SCM No",
+   "length": 50
+  },
+  {
+   "fieldname": "purchase_no",
+   "fieldtype": "Data",
+   "label": "Purchase No",
+   "length": 50
+  },
+  {
+   "fieldname": "commission",
+   "fieldtype": "Currency",
+   "label": "Commission"
+  },
+  {
+   "fieldname": "scm_adjust_after_no",
+   "fieldtype": "Data",
+   "label": "SCM Adjust After No",
+   "length": 20
+  },
+  {
+   "fieldname": "goods_type",
+   "fieldtype": "Data",
+   "label": "Goods Type",
+   "length": 20
+  },
+  {
+   "fieldname": "time_sale_fl",
+   "fieldtype": "Select",
+   "label": "Time Sale Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "parent_must_fl",
+   "fieldtype": "Select",
+   "label": "Parent Must Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "parent_goods_no",
+   "fieldtype": "Data",
+   "label": "Parent Goods No",
+   "length": 50
+  },
+  {
+   "fieldname": "goods_no",
+   "fieldtype": "Data",
+   "label": "Goods No",
+   "length": 50
+  },
+  {
+   "fieldname": "list_image_data",
+   "fieldtype": "Data",
+   "label": "List Image Data",
+   "length": 250
+  },
+  {
+   "fieldname": "goods_cd",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Goods Cd",
+   "length": 50
+  },
+  {
+   "fieldname": "goods_model_no",
+   "fieldtype": "Data",
+   "label": "Goods Model No",
+   "length": 50
+  },
+  {
+   "fieldname": "goods_nm",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Goods Nm",
+   "length": 250
+  },
+  {
+   "fieldname": "goods_nm_standard",
+   "fieldtype": "Data",
+   "label": "Goods Nm Standard",
+   "length": 250
+  },
+  {
+   "fieldname": "goods_cnt",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Goods Cnt"
+  },
+  {
+   "fieldname": "goods_price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Goods Price"
+  },
+  {
+   "fieldname": "division_use_deposit",
+   "fieldtype": "Currency",
+   "label": "Division Use Deposit"
+  },
+  {
+   "fieldname": "division_use_mileage",
+   "fieldtype": "Currency",
+   "label": "Division Use Mileage"
+  },
+  {
+   "fieldname": "division_goods_delivery_use_deposit",
+   "fieldtype": "Currency",
+   "label": "Division Goods Delivery Use Deposit"
+  },
+  {
+   "fieldname": "division_goods_delivery_use_mileage",
+   "fieldtype": "Currency",
+   "label": "Division Goods Delivery Use Mileage"
+  },
+  {
+   "fieldname": "division_coupon_order_dc_price",
+   "fieldtype": "Currency",
+   "label": "Division Coupon Order Dc Price"
+  },
+  {
+   "fieldname": "division_coupon_order_mileage",
+   "fieldtype": "Currency",
+   "label": "Division Coupon Order Mileage"
+  },
+  {
+   "fieldname": "add_goods_price",
+   "fieldtype": "Currency",
+   "label": "Add Goods Price"
+  },
+  {
+   "fieldname": "option_price",
+   "fieldtype": "Currency",
+   "label": "Option Price"
+  },
+  {
+   "fieldname": "option_cost_price",
+   "fieldtype": "Currency",
+   "label": "Option Cost Price"
+  },
+  {
+   "fieldname": "option_text_price",
+   "fieldtype": "Currency",
+   "label": "Option Text Price"
+  },
+  {
+   "fieldname": "fixed_price",
+   "fieldtype": "Currency",
+   "label": "Fixed Price"
+  },
+  {
+   "fieldname": "cost_price",
+   "fieldtype": "Currency",
+   "label": "Cost Price"
+  },
+  {
+   "fieldname": "goods_dc_price",
+   "fieldtype": "Currency",
+   "label": "Goods Dc Price"
+  },
+  {
+   "fieldname": "member_dc_price",
+   "fieldtype": "Currency",
+   "label": "Member Dc Price"
+  },
+  {
+   "fieldname": "member_overlap_dc_price",
+   "fieldtype": "Currency",
+   "label": "Member Overlap Dc Price"
+  },
+  {
+   "fieldname": "coupon_goods_dc_price",
+   "fieldtype": "Currency",
+   "label": "Coupon Goods Dc Price"
+  },
+  {
+   "fieldname": "time_sale_price",
+   "fieldtype": "Currency",
+   "label": "Time Sale Price"
+  },
+  {
+   "fieldname": "brand_bank_sale_price",
+   "fieldtype": "Currency",
+   "label": "Brand Bank Sale Price"
+  },
+  {
+   "fieldname": "myapp_dc_price",
+   "fieldtype": "Currency",
+   "label": "Myapp Dc Price"
+  },
+  {
+   "fieldname": "goods_delivery_collect_price",
+   "fieldtype": "Currency",
+   "label": "Goods Delivery Collect Price"
+  },
+  {
+   "fieldname": "goods_mileage",
+   "fieldtype": "Float",
+   "label": "Goods Mileage"
+  },
+  {
+   "fieldname": "member_mileage",
+   "fieldtype": "Float",
+   "label": "Member Mileage"
+  },
+  {
+   "fieldname": "coupon_goods_mileage",
+   "fieldtype": "Float",
+   "label": "Coupon Goods Mileage"
+  },
+  {
+   "fieldname": "goods_delivery_collect_fl",
+   "fieldtype": "Select",
+   "label": "Goods Delivery Collect Fl",
+   "length": 10,
+   "options": "\npre\nlater"
+  },
+  {
+   "fieldname": "minus_deposit_fl",
+   "fieldtype": "Select",
+   "label": "Minus Deposit Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "minus_restore_deposit_fl",
+   "fieldtype": "Select",
+   "label": "Minus Restore Deposit Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "minus_mileage_fl",
+   "fieldtype": "Select",
+   "label": "Minus Mileage Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "minus_restore_mileage_fl",
+   "fieldtype": "Select",
+   "label": "Minus Restore Mileage Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "plus_mileage_fl",
+   "fieldtype": "Select",
+   "label": "Plus Mileage Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "plus_restore_mileage_fl",
+   "fieldtype": "Select",
+   "label": "Plus Restore Mileage Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "minus_stock_fl",
+   "fieldtype": "Select",
+   "label": "Minus Stock Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "minus_restore_stock_fl",
+   "fieldtype": "Select",
+   "label": "Minus Restore Stock Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "option_sno",
+   "fieldtype": "Data",
+   "label": "Option SNO",
+   "length": 50
+  },
+  {
+   "fieldname": "option_info",
+   "fieldtype": "Data",
+   "label": "Option Info",
+   "length": 50
+  },
+  {
+   "fieldname": "option_text_info",
+   "fieldtype": "Data",
+   "label": "Option Text Info",
+   "length": 250
+  },
+  {
+   "fieldname": "cate_all_cd",
+   "fieldtype": "Text",
+   "label": "Cate All Cd",
+   "length": 250
+  },
+  {
+   "fieldname": "hscode",
+   "fieldtype": "Data",
+   "label": "Hscode"
+  },
+  {
+   "fieldname": "cancel_dt",
+   "fieldtype": "Datetime",
+   "label": "Cancel Dt"
+  },
+  {
+   "fieldname": "payment_dt",
+   "fieldtype": "Datetime",
+   "label": "Payment Dt"
+  },
+  {
+   "fieldname": "invoice_dt",
+   "fieldtype": "Datetime",
+   "label": "Invoice Dt"
+  },
+  {
+   "fieldname": "delivery_dt",
+   "fieldtype": "Datetime",
+   "label": "Delivery Dt"
+  },
+  {
+   "fieldname": "delivery_complete_dt",
+   "fieldtype": "Datetime",
+   "label": "Delivery Complete Dt"
+  },
+  {
+   "fieldname": "finish_dt",
+   "fieldtype": "Datetime",
+   "label": "Finish Dt"
+  },
+  {
+   "fieldname": "mileage_give_dt",
+   "fieldtype": "Data",
+   "label": "Mileage Give Dt"
+  },
+  {
+   "fieldname": "checkout_data",
+   "fieldtype": "Data",
+   "label": "Checkout Data"
+  },
+  {
+   "fieldname": "statistics_order_fl",
+   "fieldtype": "Select",
+   "label": "Statistics Order Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "statistics_goods_fl",
+   "fieldtype": "Select",
+   "label": "Statistics Goods Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "delivery_method_fl",
+   "fieldtype": "Data",
+   "label": "Delivery Method Fl",
+   "length": 20
+  },
+  {
+   "fieldname": "enuri",
+   "fieldtype": "Data",
+   "label": "Enuri"
+  },
+  {
+   "fieldname": "goods_discount_info",
+   "fieldtype": "Data",
+   "label": "Goods Discount Info"
+  },
+  {
+   "fieldname": "goods_mileage_add_info",
+   "fieldtype": "Data",
+   "label": "Goods Mileage Add Info",
+   "length": 250
+  },
+  {
+   "fieldname": "inflow",
+   "fieldtype": "Data",
+   "label": "Inflow"
+  },
+  {
+   "fieldname": "link_main_theme",
+   "fieldtype": "Data",
+   "label": "Link Main Theme"
+  },
+  {
+   "fieldname": "visit_address",
+   "fieldtype": "Data",
+   "label": "Visit Address",
+   "length": 250
+  },
+  {
+   "fieldname": "dpx_delivery_type",
+   "fieldtype": "Data",
+   "label": "Dpx Delivery Type",
+   "length": 20
+  },
+  {
+   "fieldname": "dawn_info_type",
+   "fieldtype": "Data",
+   "label": "Dawn Info Type",
+   "length": 50
+  },
+  {
+   "fieldname": "dawn_info_memo",
+   "fieldtype": "Data",
+   "label": "Dawn Info Memo",
+   "length": 50
+  },
+  {
+   "fieldname": "dawn_info_alram",
+   "fieldtype": "Data",
+   "label": "Dawn Info Alram",
+   "length": 50
+  },
+  {
+   "fieldname": "request_bag_fl",
+   "fieldtype": "Select",
+   "label": "Request Bag Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "goods_volume",
+   "fieldtype": "Data",
+   "label": "Goods Volume"
+  },
+  {
+   "fieldname": "coupon_mileage_fl",
+   "fieldtype": "Select",
+   "label": "Coupon Mileage Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "delivery_bundle_fl",
+   "fieldtype": "Select",
+   "label": "Delivery Bundle Fl",
+   "length": 1,
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "delivery_due_date",
+   "fieldtype": "Data",
+   "label": "Delivery Due Date",
+   "length": 250
+  },
+  {
+   "fieldname": "easypay_scm_receipt_fl",
+   "fieldtype": "Data",
+   "label": "Easypay Scm Receipt Fl"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-09-19 06:49:17.395334",
+ "modified_by": "Administrator",
+ "module": "Godomall Api Customization",
+ "name": "Godomall Order Goods Data",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

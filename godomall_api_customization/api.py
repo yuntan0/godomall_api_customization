@@ -1,0 +1,808 @@
+from __future__ import unicode_literals
+from urllib.request import urlopen
+import frappe
+import requests
+import subprocess
+import json
+import os
+from bs4 import BeautifulSoup
+# from pyproj import Proj,transform
+from datetime import datetime ,timedelta
+import time
+
+#  bench execute godomall_api_customization.api.get_godomall_goods --kwargs "{'page_no':'1'}"
+def get_godomall_goods_batch():
+    print('start')
+    idx =0
+    max_page_cnt = 0
+    while idx <= max_page_cnt:
+        idx=idx+1
+        max_page_cnt = get_godomall_goods(page_no=str(idx),search_date_type="regDt")
+        print('start:'+str(idx)+"  Page:"+str(max_page_cnt))
+    print('end')
+
+    idx =0
+    max_page_cnt = 0
+    while idx <= max_page_cnt:
+        idx=idx+1
+        max_page_cnt = get_godomall_goods(page_no=str(idx),search_date_type="modDt")
+        print('start:'+str(idx)+"  Page:"+str(max_page_cnt))
+    print('end')
+
+    
+    
+    # common_doc.common_doc.doctype.currency_exchange_rate.api.get_exchange_rate_all(exchange_date=today.strftime('%Y-%m-%d'))
+
+
+@frappe.whitelist()
+def get_godomall_goods(**kwargs):
+    page_no = kwargs.get('page_no')
+    start_date = kwargs.get('start_date')
+    end_date = kwargs.get('end_date')
+    search_date_type =  kwargs.get('search_date_type')
+    if not search_date_type:
+        search_date_type = "regDt"
+    else:
+        search_date_type = "modDt"
+    today = datetime.today()
+    yesterday = datetime.today() - timedelta(1)
+    if not start_date:
+        start_date = yesterday.strftime('%Y-%m-%d')
+    if not end_date:
+        end_date = today.strftime('%Y-%m-%d')
+
+    
+    secrets_file = os.path.join(os.getcwd(), 'secrets.json')
+    with open(secrets_file) as f:
+        secrets = json.load(f)
+    # print(secrets["godomall_partner_key"])
+    # print(secrets["godomall_user_key"])
+    # print(secrets["godomall_api_url"])
+    url = []
+    url.append(secrets["godomall_api_url"])
+    url.append("/goods/Goods_Search.php")
+    url.append("?partner_key=")
+    url.append(secrets["godomall_partner_key"])
+    url.append("&key=")
+    url.append(secrets["godomall_user_key"])
+
+    url.append("&searchDateType=")
+    url.append(search_date_type)
+    url.append("&startDate=")
+    url.append(start_date)
+    url.append("&endDate=")
+    url.append(end_date)
+    url.append('&size=10')
+    url.append("&page=")
+    url.append(page_no)
+
+    print("".join(url))
+
+    # xmlObj = urlopen("".join(url))
+    # bsObj = BeautifulSoup(xmlObj,"html.parser")
+    # jsonObj = json.loads(str(bsObj))
+
+    resp = requests.get("".join(url))
+    if (resp.status_code == 200):
+        # print(resp)
+        xml_goods = resp.content
+        soup = BeautifulSoup(xml_goods,"xml")
+        max_page_cnt = 0
+
+        try:
+            code  = soup.find_all(name="code")
+            max_page  = soup.find_all(name="max_page")
+            print(code[0].text.strip())
+            if code[0].text.strip() == "000":
+                max_page_cnt = int(max_page[0].text.strip())
+                # print(soup.find_all("return"))
+                print(max_page_cnt)
+                goods_list = soup.find_all("goods_data")
+                for goods in goods_list:
+                    if frappe.db.exists('Godomall Goods master',goods.find("goodsNo").text.strip()):
+                        goods_doc = frappe.get_doc('Godomall Goods master',goods.find("goodsNo").text.strip())
+                        goods_doc.goods_nm_fl=goods.find('goodsNmFl').text.strip()
+                        goods_doc.goods_nm=goods.find('goodsNm').text.strip()
+                        if goods.find('goodsNmMain'):
+                            goods_doc.goods_nm_main=goods.find('goodsNmMain').text.strip()
+                        goods_doc.goods_nm_list=goods.find('goodsNmList').text.strip()
+                        goods_doc.goods_nm_detail=goods.find('goodsNmDetail').text.strip()
+                        goods_doc.goods_nm_partner=goods.find('goodsNmPartner').text.strip()
+                        goods_doc.purchase_goods_nm=goods.find('purchaseGoodsNm').text.strip()
+                        goods_doc.goods_display_fl=goods.find('goodsDisplayFl').text.strip()
+                        goods_doc.goods_display_mobile_fl=goods.find('goodsDisplayMobileFl').text.strip()
+                        goods_doc.goods_sell_fl=goods.find('goodsSellFl').text.strip()
+                        goods_doc.goods_sell_mobile_fl=goods.find('goodsSellMobileFl').text.strip()
+                        goods_doc.scm_no=goods.find('scmNo').text.strip()
+                        goods_doc.apply_fl=goods.find('applyFl').text.strip()
+                        goods_doc.apply_type=goods.find('applyType').text.strip()
+                        goods_doc.apply_msg=goods.find('applyMsg').text.strip()
+                        goods_doc.apply_dt=goods.find('applyDt').text.strip()
+                        goods_doc.commission=goods.find('commission').text.strip()
+                        goods_doc.goods_cd=goods.find('goodsCd').text.strip()
+                        if goods.find('cateCd'):
+                            goods_doc.cate_cd=goods.find('cateCd').text.strip()
+                        if goods.find('allCateCd'):
+                            goods_doc.all_cate_cd=goods.find('allCateCd').text.strip()
+                        if goods.find('goodsSearchWord'):
+                            goods_doc.goods_search_word=goods.find('goodsSearchWord').text.strip()
+                        if goods.find('goodsOpenDt'):
+                            goods_doc.goods_open_dt=goods.find('goodsOpenDt').text.strip()
+                        if goods.find('goodsState'):
+                            goods_doc.goods_state=goods.find('goodsState').text.strip()
+                        if goods.find('goodsColor'):
+                            goods_doc.goods_color=goods.find('goodsColor').text.strip()
+                        if goods.find('brandCd'):
+                            goods_doc.brand_cd=goods.find('brandCd').text.strip()
+                        if goods.find('makerNm'):
+                            goods_doc.maker_nm=goods.find('makerNm').text.strip()
+                        if goods.find('originNm'):
+                            goods_doc.origin_nm=goods.find('originNm').text.strip()
+                        if goods.find('goodsModelNo'):
+                            goods_doc.goods_model_no=goods.find('goodsModelNo').text.strip()
+                        if goods.find('makeYmd'):
+                            goods_doc.make_ymd=goods.find('makeYmd').text.strip()
+                        if goods.find('launchYmd'):
+                            goods_doc.launch_ymd=goods.find('launchYmd').text.strip()
+                        if goods.find('effectiveStartYmd'):
+                            goods_doc.effective_start_ymd=goods.find('effectiveStartYmd').text.strip()
+                        if goods.find('effectiveEndYmd'):
+                            goods_doc.effective_end_ymd=goods.find('effectiveEndYmd').text.strip()
+                        if goods.find('goodsPermission'):
+                            goods_doc.goods_permission=goods.find('goodsPermission').text.strip()
+                        if goods.find('goodsPermissionGroup'):
+                            goods_doc.goods_permission_group=goods.find('goodsPermissionGroup').text.strip()
+                        if goods.find('onlyAdultFl'):
+                            goods_doc.only_adult_fl=goods.find('onlyAdultFl').text.strip()
+                        if goods.find('imageStorage'):
+                            goods_doc.image_storage=goods.find('imageStorage').text.strip()
+                        if goods.find('taxFreeFl'):
+                            goods_doc.tax_free_fl=goods.find('taxFreeFl').text.strip()
+                        if goods.find('taxPercent'):
+                            goods_doc.tax_percent=goods.find('taxPercent').text.strip()
+                        if goods.find('totalStock'):
+                            goods_doc.goods_weight=goods.find('totalStock').text.strip()
+                        if goods.find('totalStock'):
+                            goods_doc.total_stock= goods.find('totalStock').text.strip()
+                        if goods.find('stockFl'):
+                            goods_doc.stock_fl=goods.find('stockFl').text.strip()
+                        if goods.find('soldOutFl'):
+                            goods_doc.sold_out_fl=goods.find('soldOutFl').text.strip()
+                        if goods.find('salesUnit'):
+                            goods_doc.sales_unit=goods.find('salesUnit').text.strip()
+                        if goods.find('minOrderCnt'):
+                            goods_doc.min_order_cnt=goods.find('minOrderCnt').text.strip()
+                        if goods.find('maxOrderCnt'):
+                            goods_doc.max_order_cnt=goods.find('maxOrderCnt').text.strip()
+                        if goods.find('salesStartYmd'):
+                            goods_doc.sales_start_ymd=goods.find('salesStartYmd').text.strip()
+                        if goods.find('salesEndYmd'):
+                            goods_doc.sales_end_ymd=goods.find('salesEndYmd').text.strip()
+                        if goods.find('restockFl'):
+                            goods_doc.restock_fl=goods.find('restockFl').text.strip()
+                        if goods.find('mileageFl'):
+                            goods_doc.mileage_fl=goods.find('mileageFl').text.strip()
+                        if goods.find('mileageGoods'):
+                            goods_doc.mileage_goods=goods.find('mileageGoods').text.strip()
+                        if goods.find('mileageGoodsUnit'):
+                            goods_doc.mileage_goods_unit=goods.find('mileageGoodsUnit').text.strip()
+                        if goods.find('goodsDiscountFl'):
+                            goods_doc.goods_discount_fl=goods.find('goodsDiscountFl').text.strip()
+                        if goods.find('goodsDiscount'):
+                            goods_doc.goods_discount=goods.find('goodsDiscount').text.strip()
+                        if goods.find('goodsDiscountUnit'):
+                            goods_doc.goods_discount_unit=goods.find('goodsDiscountUnit').text.strip()
+                        if goods.find('payLimitFl'):
+                            goods_doc.pay_limit_fl=goods.find('payLimitFl').text.strip()
+                        if goods.find('payLimit'):
+                            goods_doc.pay_limit=goods.find('payLimit').text.strip()
+                        if goods.find('goodsPriceString'):
+                            goods_doc.goods_price_string=goods.find('goodsPriceString').text.strip()
+                        if goods.find('goodsPrice'):
+                            goods_doc.goods_price=goods.find('goodsPrice').text.strip()
+                        if goods.find('fixedPrice'):
+                            goods_doc.fixed_price=goods.find('fixedPrice').text.strip()
+                        if goods.find('costPrice'):
+                            goods_doc.cost_price=goods.find('costPrice').text.strip()
+                        if goods.find('optionFl'):
+                            goods_doc.option_fl=goods.find('optionFl').text.strip()
+                        if goods.find('optionDisplayFl'):
+                            goods_doc.option_display_fl=goods.find('optionDisplayFl').text.strip()
+                        if goods.find('optionName'):
+                            goods_doc.option_name=goods.find('optionName').text.strip()
+                        if goods.find('optionTextFl'):
+                            goods_doc.option_text_fl=goods.find('optionTextFl').text.strip()
+                        if goods.find('addGoodsFl'):
+                            goods_doc.add_goods_fl=goods.find('addGoodsFl').text.strip()
+                        if goods.find('shortDescription'):
+                            goods_doc.short_description=goods.find('shortDescription').text.strip()
+                        if goods.find('goodsDescription'):
+                            goods_doc.goods_description=goods.find('goodsDescription').text.strip()
+                        if goods.find('goodsDescriptionMobile'):
+                            goods_doc.goods_description_mobile=goods.find('goodsDescriptionMobile').text.strip()
+                        if goods.find('deliverySno'):    
+                            goods_doc.delivery_sno=goods.find('deliverySno').text.strip()
+                        if goods.find('relationFl'): 
+                            goods_doc.relation_fl=goods.find('relationFl').text.strip()
+                        if goods.find('relationSameFl'): 
+                            goods_doc.relation_same_fl=goods.find('relationSameFl').text.strip()
+                        if goods.find('relationGoodsNo'): 
+                            goods_doc.relation_goods_no=goods.find('relationGoodsNo').text.strip()
+                        if goods.find('goodsIconStartYmd'): 
+                            goods_doc.goods_icon_start_ymd=goods.find('goodsIconStartYmd').text.strip()
+                        if goods.find('goodsIconEndYmd'): 
+                            goods_doc.goods_icon_end_ymd=goods.find('goodsIconEndYmd').text.strip()
+                        if goods.find('goodsIconCdPeriod'): 
+                            goods_doc.goods_icon_cd_period=goods.find('goodsIconCdPeriod').text.strip()
+                        if goods.find('goodsIconCd'): 
+                            goods_doc.goods_icon_cd=goods.find('goodsIconCd').text.strip()
+                        if goods.find('imgDetailViewFl'): 
+                            goods_doc.img_detail_view_fl=goods.find('imgDetailViewFl').text.strip()
+                        if goods.find('externalVideoFl'): 
+                            goods_doc.external_video_fl=goods.find('externalVideoFl').text.strip()
+                        if goods.find('externalVideoUrl'): 
+                            goods_doc.external_video_url=goods.find('externalVideoUrl').text.strip()
+                        if goods.find('externalVideoWidth'): 
+                            goods_doc.external_video_width=goods.find('externalVideoWidth').text.strip()
+                        if goods.find('externalVideoHeight'): 
+                            goods_doc.external_video_height=goods.find('externalVideoHeight').text.strip()
+                        if goods.find('detailInfoDelivery'): 
+                            goods_doc.detail_info_delivery=goods.find('detailInfoDelivery').text.strip()
+                        if goods.find('detailInfoAS'): 
+                            goods_doc.detail_info_as=goods.find('detailInfoAS').text.strip()
+                        if goods.find('detailInfoRefund'): 
+                            goods_doc.detail_info_refund=goods.find('detailInfoRefund').text.strip()
+                        if goods.find('detailInfoExchange'): 
+                            goods_doc.detail_info_exchange=goods.find('detailInfoExchange').text.strip()
+                        if goods.find('memo'): 
+                            goods_doc.memo=goods.find('memo').text.strip()
+                        if goods.find('orderCnt'): 
+                            goods_doc.order_cnt=goods.find('orderCnt').text.strip()
+                        if goods.find('hitCnt'): 
+                            goods_doc.hit_cnt=goods.find('hitCnt').text.strip()
+                        if goods.find('reviewCnt'): 
+                            goods_doc.review_cnt=goods.find('reviewCnt').text.strip()
+                        if goods.find('excelFl'): 
+                            goods_doc.excel_fl=goods.find('excelFl').text.strip()
+                        if goods.find('regDt'): 
+                            goods_doc.reg_dt=goods.find('regDt').text.strip()
+                        if goods.find('modDt'): 
+                            goods_doc.mod_dt=goods.find('modDt').text.strip()
+                        if goods.find('seoTagFl'): 
+                            goods_doc.seo_tag_fl=goods.find('seoTagFl').text.strip()
+                        goods_doc.save(
+                                        ignore_permissions=True, # ignore write permissions during insert
+                                        ignore_version=True # do not create a version record
+                                    )
+                        frappe.db.commit()
+
+                    else:
+
+                        goods_doc = frappe.new_doc('Godomall Goods master')
+
+                        goods_doc.goods_no=goods.find('goodsNo').text.strip()
+                        goods_doc.goods_nm_fl=goods.find('goodsNmFl').text.strip()
+                        goods_doc.goods_nm=goods.find('goodsNm').text.strip()
+                        if goods.find('goodsNmMain'):
+                            goods_doc.goods_nm_main=goods.find('goodsNmMain').text.strip()
+                        goods_doc.goods_nm_list=goods.find('goodsNmList').text.strip()
+                        goods_doc.goods_nm_detail=goods.find('goodsNmDetail').text.strip()
+                        goods_doc.goods_nm_partner=goods.find('goodsNmPartner').text.strip()
+                        goods_doc.purchase_goods_nm=goods.find('purchaseGoodsNm').text.strip()
+                        goods_doc.goods_display_fl=goods.find('goodsDisplayFl').text.strip()
+                        goods_doc.goods_display_mobile_fl=goods.find('goodsDisplayMobileFl').text.strip()
+                        goods_doc.goods_sell_fl=goods.find('goodsSellFl').text.strip()
+                        goods_doc.goods_sell_mobile_fl=goods.find('goodsSellMobileFl').text.strip()
+                        goods_doc.scm_no=goods.find('scmNo').text.strip()
+                        goods_doc.apply_fl=goods.find('applyFl').text.strip()
+                        goods_doc.apply_type=goods.find('applyType').text.strip()
+                        goods_doc.apply_msg=goods.find('applyMsg').text.strip()
+                        goods_doc.apply_dt=goods.find('applyDt').text.strip()
+                        goods_doc.commission=goods.find('commission').text.strip()
+                        goods_doc.goods_cd=goods.find('goodsCd').text.strip()
+                        if goods.find('cateCd'):
+                            goods_doc.cate_cd=goods.find('cateCd').text.strip()
+                        if goods.find('allCateCd'):
+                            goods_doc.all_cate_cd=goods.find('allCateCd').text.strip()
+                        if goods.find('goodsSearchWord'):
+                            goods_doc.goods_search_word=goods.find('goodsSearchWord').text.strip()
+                        if goods.find('goodsOpenDt'):
+                            goods_doc.goods_open_dt=goods.find('goodsOpenDt').text.strip()
+                        if goods.find('goodsState'):
+                            goods_doc.goods_state=goods.find('goodsState').text.strip()
+                        if goods.find('goodsColor'):
+                            goods_doc.goods_color=goods.find('goodsColor').text.strip()
+                        if goods.find('brandCd'):
+                            goods_doc.brand_cd=goods.find('brandCd').text.strip()
+                        if goods.find('makerNm'):
+                            goods_doc.maker_nm=goods.find('makerNm').text.strip()
+                        if goods.find('originNm'):
+                            goods_doc.origin_nm=goods.find('originNm').text.strip()
+                        if goods.find('goodsModelNo'):
+                            goods_doc.goods_model_no=goods.find('goodsModelNo').text.strip()
+                        if goods.find('makeYmd'):
+                            goods_doc.make_ymd=goods.find('makeYmd').text.strip()
+                        if goods.find('launchYmd'):
+                            goods_doc.launch_ymd=goods.find('launchYmd').text.strip()
+                        if goods.find('effectiveStartYmd'):
+                            goods_doc.effective_start_ymd=goods.find('effectiveStartYmd').text.strip()
+                        if goods.find('effectiveEndYmd'):
+                            goods_doc.effective_end_ymd=goods.find('effectiveEndYmd').text.strip()
+                        if goods.find('goodsPermission'):
+                            goods_doc.goods_permission=goods.find('goodsPermission').text.strip()
+                        if goods.find('goodsPermissionGroup'):
+                            goods_doc.goods_permission_group=goods.find('goodsPermissionGroup').text.strip()
+                        if goods.find('onlyAdultFl'):
+                            goods_doc.only_adult_fl=goods.find('onlyAdultFl').text.strip()
+                        if goods.find('imageStorage'):
+                            goods_doc.image_storage=goods.find('imageStorage').text.strip()
+                        if goods.find('taxFreeFl'):
+                            goods_doc.tax_free_fl=goods.find('taxFreeFl').text.strip()
+                        if goods.find('taxPercent'):
+                            goods_doc.tax_percent=goods.find('taxPercent').text.strip()
+                        if goods.find('totalStock'):
+                            goods_doc.goods_weight=goods.find('totalStock').text.strip()
+                        if goods.find('totalStock'):
+                            goods_doc.total_stock= goods.find('totalStock').text.strip()
+                        if goods.find('stockFl'):
+                            goods_doc.stock_fl=goods.find('stockFl').text.strip()
+                        if goods.find('soldOutFl'):
+                            goods_doc.sold_out_fl=goods.find('soldOutFl').text.strip()
+                        if goods.find('salesUnit'):
+                            goods_doc.sales_unit=goods.find('salesUnit').text.strip()
+                        if goods.find('minOrderCnt'):
+                            goods_doc.min_order_cnt=goods.find('minOrderCnt').text.strip()
+                        if goods.find('maxOrderCnt'):
+                            goods_doc.max_order_cnt=goods.find('maxOrderCnt').text.strip()
+                        if goods.find('salesStartYmd'):
+                            goods_doc.sales_start_ymd=goods.find('salesStartYmd').text.strip()
+                        if goods.find('salesEndYmd'):
+                            goods_doc.sales_end_ymd=goods.find('salesEndYmd').text.strip()
+                        if goods.find('restockFl'):
+                            goods_doc.restock_fl=goods.find('restockFl').text.strip()
+                        if goods.find('mileageFl'):
+                            goods_doc.mileage_fl=goods.find('mileageFl').text.strip()
+                        if goods.find('mileageGoods'):
+                            goods_doc.mileage_goods=goods.find('mileageGoods').text.strip()
+                        if goods.find('mileageGoodsUnit'):
+                            goods_doc.mileage_goods_unit=goods.find('mileageGoodsUnit').text.strip()
+                        if goods.find('goodsDiscountFl'):
+                            goods_doc.goods_discount_fl=goods.find('goodsDiscountFl').text.strip()
+                        if goods.find('goodsDiscount'):
+                            goods_doc.goods_discount=goods.find('goodsDiscount').text.strip()
+                        if goods.find('goodsDiscountUnit'):
+                            goods_doc.goods_discount_unit=goods.find('goodsDiscountUnit').text.strip()
+                        if goods.find('payLimitFl'):
+                            goods_doc.pay_limit_fl=goods.find('payLimitFl').text.strip()
+                        if goods.find('payLimit'):
+                            goods_doc.pay_limit=goods.find('payLimit').text.strip()
+                        if goods.find('goodsPriceString'):
+                            goods_doc.goods_price_string=goods.find('goodsPriceString').text.strip()
+                        if goods.find('goodsPrice'):
+                            goods_doc.goods_price=goods.find('goodsPrice').text.strip()
+                        if goods.find('fixedPrice'):
+                            goods_doc.fixed_price=goods.find('fixedPrice').text.strip()
+                        if goods.find('costPrice'):
+                            goods_doc.cost_price=goods.find('costPrice').text.strip()
+                        if goods.find('optionFl'):
+                            goods_doc.option_fl=goods.find('optionFl').text.strip()
+                        if goods.find('optionDisplayFl'):
+                            goods_doc.option_display_fl=goods.find('optionDisplayFl').text.strip()
+                        if goods.find('optionName'):
+                            goods_doc.option_name=goods.find('optionName').text.strip()
+                        if goods.find('optionTextFl'):
+                            goods_doc.option_text_fl=goods.find('optionTextFl').text.strip()
+                        if goods.find('addGoodsFl'):
+                            goods_doc.add_goods_fl=goods.find('addGoodsFl').text.strip()
+                        if goods.find('shortDescription'):
+                            goods_doc.short_description=goods.find('shortDescription').text.strip()
+                        if goods.find('goodsDescription'):
+                            goods_doc.goods_description=goods.find('goodsDescription').text.strip()
+                        if goods.find('goodsDescriptionMobile'):
+                            goods_doc.goods_description_mobile=goods.find('goodsDescriptionMobile').text.strip()
+                        if goods.find('deliverySno'):    
+                            goods_doc.delivery_sno=goods.find('deliverySno').text.strip()
+                        if goods.find('relationFl'): 
+                            goods_doc.relation_fl=goods.find('relationFl').text.strip()
+                        if goods.find('relationSameFl'): 
+                            goods_doc.relation_same_fl=goods.find('relationSameFl').text.strip()
+                        if goods.find('relationGoodsNo'): 
+                            goods_doc.relation_goods_no=goods.find('relationGoodsNo').text.strip()
+                        if goods.find('goodsIconStartYmd'): 
+                            goods_doc.goods_icon_start_ymd=goods.find('goodsIconStartYmd').text.strip()
+                        if goods.find('goodsIconEndYmd'): 
+                            goods_doc.goods_icon_end_ymd=goods.find('goodsIconEndYmd').text.strip()
+                        if goods.find('goodsIconCdPeriod'): 
+                            goods_doc.goods_icon_cd_period=goods.find('goodsIconCdPeriod').text.strip()
+                        if goods.find('goodsIconCd'): 
+                            goods_doc.goods_icon_cd=goods.find('goodsIconCd').text.strip()
+                        if goods.find('imgDetailViewFl'): 
+                            goods_doc.img_detail_view_fl=goods.find('imgDetailViewFl').text.strip()
+                        if goods.find('externalVideoFl'): 
+                            goods_doc.external_video_fl=goods.find('externalVideoFl').text.strip()
+                        if goods.find('externalVideoUrl'): 
+                            goods_doc.external_video_url=goods.find('externalVideoUrl').text.strip()
+                        if goods.find('externalVideoWidth'): 
+                            goods_doc.external_video_width=goods.find('externalVideoWidth').text.strip()
+                        if goods.find('externalVideoHeight'): 
+                            goods_doc.external_video_height=goods.find('externalVideoHeight').text.strip()
+                        if goods.find('detailInfoDelivery'): 
+                            goods_doc.detail_info_delivery=goods.find('detailInfoDelivery').text.strip()
+                        if goods.find('detailInfoAS'): 
+                            goods_doc.detail_info_as=goods.find('detailInfoAS').text.strip()
+                        if goods.find('detailInfoRefund'): 
+                            goods_doc.detail_info_refund=goods.find('detailInfoRefund').text.strip()
+                        if goods.find('detailInfoExchange'): 
+                            goods_doc.detail_info_exchange=goods.find('detailInfoExchange').text.strip()
+                        if goods.find('memo'): 
+                            goods_doc.memo=goods.find('memo').text.strip()
+                        if goods.find('orderCnt'): 
+                            goods_doc.order_cnt=goods.find('orderCnt').text.strip()
+                        if goods.find('hitCnt'): 
+                            goods_doc.hit_cnt=goods.find('hitCnt').text.strip()
+                        if goods.find('reviewCnt'): 
+                            goods_doc.review_cnt=goods.find('reviewCnt').text.strip()
+                        if goods.find('excelFl'): 
+                            goods_doc.excel_fl=goods.find('excelFl').text.strip()
+                        if goods.find('regDt'): 
+                            goods_doc.reg_dt=goods.find('regDt').text.strip()
+                        if goods.find('modDt'): 
+                            goods_doc.mod_dt=goods.find('modDt').text.strip()
+                        if goods.find('seoTagFl'): 
+                            goods_doc.seo_tag_fl=goods.find('seoTagFl').text.strip()
+
+                        goods_doc.insert(ignore_permissions=True, # ignore write permissions during insert
+                                        ignore_links=True
+                                        )
+                        frappe.db.commit()
+
+        except IndexError:
+            print("Xml parsing Error")
+        return max_page_cnt
+
+@frappe.whitelist()
+def get_godomall_order(**kwargs):
+    order_no	 = kwargs.get('orderNo')
+    start_date = kwargs.get('start_date')
+    end_date = kwargs.get('end_date')
+    date_type =  kwargs.get('date_type')
+    order_status = kwargs.get('orderStatus')
+    order_channel = kwargs.get('orderChannel')
+    search_type = kwargs.get('searchType')
+    today = datetime.today()
+    days_before = datetime.today() - timedelta(1)
+    secrets_file = os.path.join(os.getcwd(), 'secrets.json')
+    with open(secrets_file) as f:
+        secrets = json.load(f)
+    # print(secrets["godomall_partner_key"])
+    # print(secrets["godomall_user_key"])
+    # print(secrets["godomall_api_url"])
+    url = []
+    url.append(secrets["godomall_api_url"])
+    url.append("/order/Order_Search.php")
+    url.append("?partner_key=")
+    url.append(secrets["godomall_partner_key"])
+    url.append("&key=")
+    url.append(secrets["godomall_user_key"])
+    if not date_type:
+        date_type = "order"
+    else:
+        date_type = "modify"
+    if not start_date:
+        start_date = days_before.strftime('%Y-%m-%d')
+    if not end_date:
+        end_date = today.strftime('%Y-%m-%d')
+    url.append("&dateType=")
+    url.append(date_type)
+    url.append("&startDate=")
+    url.append(start_date)
+    url.append("&endDate=")
+    url.append(end_date)
+    
+    if order_status:
+        url.append('&orderStatus=')
+        url.append(order_status)
+    
+    if order_no:
+        url.append("&orderNo=")
+        url.append(order_no)
+
+    if order_channel:
+        url.append('&orderChannel=')
+        url.append(order_channel)
+
+    if search_type:
+        url.append('&searchType=')
+        url.append(search_type)
+    
+    resp = requests.get("".join(url))
+    if (resp.status_code == 200):
+        # print(resp)
+        xml_orders = resp.content
+        soup = BeautifulSoup(xml_orders,"xml")
+        
+        try:
+            code  = soup.find_all(name="code")
+            order_list = soup.find_all("order_data")
+            for order in order_list:
+                cur_order_no = order.find('orderNo').text.strip() 
+                if frappe.db.exists('Godomall Order',order.find("orderNo").text.strip()):
+                    pass
+                else:
+                    print(cur_order_no)
+                    order_doc = frappe.new_doc('Godomall Order')
+                    order_doc.order_no=order.find('orderNo').text.strip()    #주문번호
+                    if order.find('memNo'):
+                        order_doc.mem_no=order.find('memNo').text.strip()    #회원번호
+                    if order.find('apiOrderGoodsNo'):
+                        order_doc.api_order_goods_no=order.find('apiOrderGoodsNo').text.strip()    #외부채널품목고유번호
+                    if order.find('orderStatus'):
+                        order_doc.order_status=order.find('orderStatus').text.strip()    #주문상태 코드 코드표 참조
+                    if order.find('orderIp'):
+                        order_doc.order_ip=order.find('orderIp').text.strip()    #주문자IP
+                    if order.find('orderChannelFl'):
+                        order_doc.order_channel_fl=order.find('orderChannelFl').text.strip()    #주문채널
+                    if order.find('orderTypeFl'):
+                        order_doc.order_type_fl=order.find('orderTypeFl').text.strip()    #주문유형 코드표 참조
+                    if order.find('orderEmail'):
+                        order_doc.order_email=order.find('orderEmail').text.strip()    #이메일
+                    if order.find('orderGoodsNm'):
+                        order_doc.order_goods_nm=order.find('orderGoodsNm').text.strip()    #주문상품명
+                    if order.find('orderGoodsCnt'):
+                        order_doc.order_goods_cnt=order.find('orderGoodsCnt').text.strip()    #주문상품갯수
+                    if order.find('settlePrice'):
+                        order_doc.settle_price=order.find('settlePrice').text.strip()    #총 주문금액
+                    if order.find('taxSupplyPrice'):
+                        order_doc.tax_supply_price=order.find('taxSupplyPrice').text.strip()    #최초 총 과세금액
+                    if order.find('taxVatPrice'):
+                        order_doc.tax_vat_price=order.find('taxVatPrice').text.strip()    #최초 총 부가세 금액
+                    if order.find('taxFreePrice'):
+                        order_doc.tax_free_price=order.find('taxFreePrice').text.strip()    #최초 총 면세금액
+                    if order.find('realTaxSupplyPrice'):
+                        order_doc.real_tax_supply_price=order.find('realTaxSupplyPrice').text.strip()    #실제 총 과세금액(환불제외)
+                    if order.find('realTaxVatPrice'):
+                        order_doc.real_tax_vat_prcie=order.find('realTaxVatPrice').text.strip()    #실제 총 부가세(환불제외)
+                    if order.find('realTaxFreePrice'):
+                        order_doc.real_tax_free_price=order.find('realTaxFreePrice').text.strip()    #실제 총 면세금액(환불제외)
+                    if order.find('useMileage'):
+                        order_doc.use_mileage=order.find('useMileage').text.strip()    #주문시 사용한 마일리지
+                    if order.find('useDeposit'):
+                        order_doc.use_deposit=order.find('useDeposit').text.strip()    #주문시 사용한 예치금
+                    if order.find('totalGoodsPrice'):
+                        order_doc.total_goods_price=order.find('totalGoodsPrice').text.strip()    #총 상품 금액
+                    if order.find('totalDeliveryCharge'):
+                        order_doc.total_delivery_charge=order.find('totalDeliveryCharge').text.strip()    #총 배송비
+                    if order.find('totalGoodsDcPrice'):
+                        order_doc.total_goods_dc_price=order.find('totalGoodsDcPrice').text.strip()    #총 상품 할인 금액
+                    if order.find('totalMemberDcPrice'):
+                        order_doc.total_member_dc_price=order.find('totalMemberDcPrice').text.strip()    #총 회원 할인 금액
+                    if order.find('totalMemberOverlapDcPrice'):
+                        order_doc.total_member_overlap_price=order.find('totalMemberOverlapDcPrice').text.strip()    #총 그룹별 회원 중복할인 금액
+                    if order.find('totalCouponGoodsDcPrice'):
+                        order_doc.total_coupon_goods_dc_price=order.find('totalCouponGoodsDcPrice').text.strip()    #총 상품쿠폰 할인 금액
+                    if order.find('totalCouponOrderDcPrice'):
+                        order_doc.total_coupon_order_dc_price=order.find('totalCouponOrderDcPrice').text.strip()    #총 주문쿠폰 할인 금액
+                    if order.find('totalCouponDeliveryDcPrice'):
+                        order_doc.total_coupon_delivery_dc_price=order.find('totalCouponDeliveryDcPrice').text.strip()    #총 배송쿠폰 할인금액
+                    if order.find('totalMileage'):
+                        order_doc.total_mileage=order.find('totalMileage').text.strip()    #총 적립 마일리지
+                    if order.find('totalGoodsMileage'):
+                        order_doc.total_goods_mileage=order.find('totalGoodsMileage').text.strip()    #총 상품 상품적립 마일리지
+                    if order.find('totalMemberMileage'):
+                        order_doc.total_member_mileage=order.find('totalMemberMileage').text.strip()    #총 회원적립 마일리지
+                    if order.find('totalCouponGoodsMileage'):
+                        order_doc.total_coupon_goods_mileage=order.find('totalCouponGoodsMileage').text.strip()    #총 상품쿠폰 적립 마일리지
+                    if order.find('totalCouponOrderMileage'):
+                        order_doc.total_coupon_order_mileage=order.find('totalCouponOrderMileage').text.strip()    #총 주문쿠폰 적립 마일리지
+                    if order.find('firstSaleFl'):
+                        order_doc.first_sales_fl=order.find('firstSaleFl').text.strip()    #첫구매 여부 코드표 참조
+                    if order.find('settleKind'):
+                        order_doc.settle_kind=order.find('settleKind').text.strip()    #주문방법 코드표 참조
+                    if order.find('multiShippingFl'):
+                        order_doc.multi_shipping_fl=order.find('multiShippingFl').text.strip()    #복수배송지 사용여부 (y = 사용, n = 미사용)
+                    if order.find('paymentDt'):
+                        order_doc.payment_dt=order.find('paymentDt').text.strip()    #입금일자
+                    
+                    order_delivery_list = order.find_all('orderDeliveryData')
+                    for order_delivery in order_delivery_list:
+                        json_delivery={"sno":""}
+                        if order_delivery.find('sno'):
+                            json_delivery["sno"] =  order_delivery.find('sno').text.strip()
+                        if order_delivery.find('scmNo'):
+                            json_delivery["scm_no"] =  order_delivery.find('scmNo').text.strip()
+                        if order_delivery.find('commission'):
+                            json_delivery["commission"] =  float(order_delivery.find('commission').text.strip())
+                        if order_delivery.find('scmAdjustNo'):
+                            json_delivery["scm_adjust_no"] =  order_delivery.find('scmAdjustNo').text.strip()
+                        if order_delivery.find('scmAdjustAfterNo'):
+                            json_delivery["scm_adjust_after_no"] =  order_delivery.find('scmAdjustAfterNo').text.strip()
+                        if order_delivery.find('deliveryCharge'):
+                            json_delivery["delivery_charge"] =  float(order_delivery.find('deliveryCharge').text.strip())
+                        if order_delivery.find('deliveryPolicyCharge'):
+                            json_delivery["delivery_policy_charge"] =  float(order_delivery.find('deliveryPolicyCharge').text.strip())
+                        if order_delivery.find('deliveryAreaCharge'):
+                            json_delivery["delivery_area_charge"] =  float(order_delivery.find('deliveryAreaCharge').text.strip())
+                        if order_delivery.find('divisionDeliveryUseDeposit'):
+                            json_delivery["division_delivery_use_deposit"] =  float(order_delivery.find('divisionDeliveryUseDeposit').text.strip())
+                        if order_delivery.find('divisionDeliveryUseMileage'):
+                            json_delivery["division_delivery_use_mileage"] =  float(order_delivery.find('divisionDeliveryUseMileage').text.strip())
+                        if order_delivery.find('divisionDeliveryCharge'):
+                            json_delivery["division_delivery_charge"] =  float(order_delivery.find('divisionDeliveryCharge').text.strip())
+                        if order_delivery.find('divisionMemberDeliveryDcPrice'):
+                            json_delivery["division_member_melivery_dc_price"] =  float(order_delivery.find('divisionMemberDeliveryDcPrice').text.strip())
+                        if order_delivery.find('deliveryInsuranceFee'):
+                            json_delivery["delivery_insurance_fee"] =  float(order_delivery.find('deliveryInsuranceFee').text.strip())
+                        if order_delivery.find('deliveryFixFl'):
+                            json_delivery["delivery_fix_fl"] =  order_delivery.find('deliveryFixFl').text.strip()
+                        if order_delivery.find('deliveryWeightInfo'):
+                            json_delivery["delivery_weight_info"] =  order_delivery.find('deliveryWeightInfo').text.strip()
+                        if order_delivery.find('overseasDeliveryPolicy'):
+                            json_delivery["overseas_delivery_policy"] =  order_delivery.find('overseasDeliveryPolicy').text.strip()
+                        if order_delivery.find('deliveryCollectFl'):
+                            json_delivery["delivery_collect_fl"] =  order_delivery.find('deliveryCollectFl').text.strip()
+                        if order_delivery.find('deliveryCollectPrice'):
+                            json_delivery["delivery_collect_price"] =  float(order_delivery.find('deliveryCollectPrice').text.strip())
+                        if order_delivery.find('deliveryWholeFreePrice'):
+                            json_delivery["delivery_whole_free_price"] =  float(order_delivery.find('deliveryWholeFreePrice').text.strip())
+                        if order_delivery.find('statisticsOrderFl'):
+                            json_delivery["statistics_order_fl"] =  order_delivery.find('statisticsOrderFl').text.strip()
+                        # print(json.dumps(json_delivery))
+                        order_doc.append('order_delivery_data',
+                            json_delivery
+                        )
+                        # print(order_delivery.find('sno').text.strip() )
+                    
+                    order_info_data_list = order.find_all('orderInfoData')
+                    order_seq = order.select('orderInfoData')
+                    idx = 0
+                    # print(order_seq[0]['idx'])
+
+                    for order_info_data in order_info_data_list:
+                        
+                        # print(order_seq[idx]['idx'])
+                        
+                        json_order_info={"order_sub_no":""}
+                        json_order_info["order_sub_no"] =  cur_order_no +'-'+ order_seq[idx]['idx']
+                        idx = idx + 1
+                        if order_info_data.find('orderName'):	json_order_info['order_name'] = order_info_data.find('orderName').text.strip()
+                        if order_info_data.find('orderEmail'):	json_order_info['order_email'] = order_info_data.find('orderEmail').text.strip()
+                        if order_info_data.find('orderCellPhone'):	json_order_info['order_cell_phone'] = order_info_data.find('orderCellPhone').text.strip()
+                        if order_info_data.find('orderZipcode'):	json_order_info['order_zipcode'] = order_info_data.find('orderZipcode').text.strip()
+                        if order_info_data.find('orderZonecode'):	json_order_info['order_zonecode'] = order_info_data.find('orderZonecode').text.strip()
+                        if order_info_data.find('orderState'):	json_order_info['order_state'] = order_info_data.find('orderState').text.strip()
+                        if order_info_data.find('orderCity'):	json_order_info['order_city'] = order_info_data.find('orderCity').text.strip()
+                        if order_info_data.find('orderAddress'):	json_order_info['order_address'] = order_info_data.find('orderAddress').text.strip()
+                        if order_info_data.find('orderAddressSub'):	json_order_info['order_address_sub'] = order_info_data.find('orderAddressSub').text.strip()
+                        if order_info_data.find('receiverName'):	json_order_info['receiver_name'] = order_info_data.find('receiverName').text.strip()
+                        if order_info_data.find('receiverCellPhone'):	json_order_info['receiver_cell_phone'] = order_info_data.find('receiverCellPhone').text.strip()
+                        if order_info_data.find('receiverUseSafeNumberFl'):	json_order_info['receiver_use_safe_number_fl'] = order_info_data.find('receiverUseSafeNumberFl').text.strip()
+                        if order_info_data.find('receiverSafeNumber'):	json_order_info['receiver_safe_number'] = order_info_data.find('receiverSafeNumber').text.strip()
+                        if order_info_data.find('receiverSafeNumberDt'):	json_order_info['receiver_safe_number_dt'] = order_info_data.find('receiverSafeNumberDt').text.strip()
+                        if order_info_data.find('receiverZipcode'):	json_order_info['receiver_zipcode'] = order_info_data.find('receiverZipcode').text.strip()
+                        if order_info_data.find('receiverZonecode'):	json_order_info['receiver_zonecode'] = order_info_data.find('receiverZonecode').text.strip()
+                        if order_info_data.find('receiverCountry'):	json_order_info['receiver_country'] = order_info_data.find('receiverCountry').text.strip()
+                        if order_info_data.find('receiverState'):	json_order_info['receiver_state'] = order_info_data.find('receiverState').text.strip()
+                        if order_info_data.find('receiverCity'):	json_order_info['receiver_city'] = order_info_data.find('receiverCity').text.strip()
+                        if order_info_data.find('receiverAddress'):	json_order_info['receiver_address'] = order_info_data.find('receiverAddress').text.strip()
+                        if order_info_data.find('receiverAddressSub'):	json_order_info['receiver_address_sub'] = order_info_data.find('receiverAddressSub').text.strip()
+                        if order_info_data.find('deliveryVisit'):	json_order_info['delivery_visit'] = order_info_data.find('deliveryVisit').text.strip()
+                        if order_info_data.find('orderinfoCd'):	json_order_info['orderinfo_cd'] = order_info_data.find('orderinfoCd').text.strip()
+                        if order_info_data.find('gitMessage'):	json_order_info['gift_message'] = order_info_data.find('gitMessage').text.strip()
+                        # print(json.dumps(json_order_info))
+                        order_doc.append('order_info_data',
+                            json_order_info
+                        )
+
+                    
+                    order_goods_data_list = order.find_all('orderGoodsData')
+                    for order_goods_data in order_goods_data_list:
+                        # print(order_goods_data.find('sno').text.strip() )
+                        json_order_goods={"sno":""}
+                        if order_goods_data.find('sno'):	json_order_goods['sno'] = order_goods_data.find('sno').text.strip()
+                        if order_goods_data.find('orderNo'):	json_order_goods['order_no'] = order_goods_data.find('orderNo').text.strip()
+                        if order_goods_data.find('mailSno'):	json_order_goods['mall_sno'] = order_goods_data.find('mailSno').text.strip()
+                        if order_goods_data.find('apiOrderGoodsNo'):	json_order_goods['api_order_goods_no'] = order_goods_data.find('apiOrderGoodsNo').text.strip()
+                        if order_goods_data.find('orderCd'):	json_order_goods['order_cd'] = order_goods_data.find('orderCd').text.strip()
+                        if order_goods_data.find('orderGroupCd'):	json_order_goods['order_group_cd'] = order_goods_data.find('orderGroupCd').text.strip()
+                        if order_goods_data.find('eventCd'):	json_order_goods['event_sno'] = order_goods_data.find('eventCd').text.strip()
+                        if order_goods_data.find('orderStatus'):	json_order_goods['order_status'] = order_goods_data.find('orderStatus').text.strip()
+                        if order_goods_data.find('orderDeliverySno'):	json_order_goods['order_delivery_sno'] = order_goods_data.find('orderDeliverySno').text.strip()
+                        if order_goods_data.find('invoiceCompanySno'):	json_order_goods['invoice_company_sno'] = order_goods_data.find('invoiceCompanySno').text.strip()
+                        if order_goods_data.find('invoiceNo'):	json_order_goods['invoice_no'] = order_goods_data.find('invoiceNo').text.strip()
+                        if order_goods_data.find('scmNo'):	json_order_goods['scm_no'] = order_goods_data.find('scmNo').text.strip()
+                        if order_goods_data.find('purchaseNo'):	json_order_goods['purchase_no'] = order_goods_data.find('purchaseNo').text.strip()
+                        if order_goods_data.find('commission'):	json_order_goods['commission'] = float(order_goods_data.find('commission').text.strip())
+                        if order_goods_data.find('scmAdjustAfterNo'):	json_order_goods['scm_adjust_after_no'] = order_goods_data.find('scmAdjustAfterNo').text.strip()
+                        if order_goods_data.find('goodsType'):	json_order_goods['goods_type'] = order_goods_data.find('goodsType').text.strip()
+                        if order_goods_data.find('timeSaleFl'):	json_order_goods['time_sale_fl'] = order_goods_data.find('timeSaleFl').text.strip()
+                        if order_goods_data.find('parentMustFl'):	json_order_goods['parent_must_fl'] = order_goods_data.find('parentMustFl').text.strip()
+                        if order_goods_data.find('parentGoodsNo'):	json_order_goods['parent_goods_no'] = order_goods_data.find('parentGoodsNo').text.strip()
+                        if order_goods_data.find('goodsNo'):	json_order_goods['goods_no'] = order_goods_data.find('goodsNo').text.strip()
+                        if order_goods_data.find('listImageData'):	json_order_goods['list_image_data'] = order_goods_data.find('listImageData').text.strip()
+                        if order_goods_data.find('goodsCd'):	json_order_goods['goods_cd'] = order_goods_data.find('goodsCd').text.strip()
+                        if order_goods_data.find('goodsModelNo'):	json_order_goods['goods_model_no'] = order_goods_data.find('goodsModelNo').text.strip()
+                        if order_goods_data.find('goodsNm'):	json_order_goods['goods_nm'] = order_goods_data.find('goodsNm').text.strip()
+                        if order_goods_data.find('goodsNmStandard'):	json_order_goods['goods_nm_standard'] = order_goods_data.find('goodsNmStandard').text.strip()
+                        if order_goods_data.find('goodsCnt'):	json_order_goods['goods_cnt'] = int(order_goods_data.find('goodsCnt').text.strip())
+                        if order_goods_data.find('goodsPrice'):	json_order_goods['goods_price'] = float(order_goods_data.find('goodsPrice').text.strip())
+                        if order_goods_data.find('divisionUseDeposit'):	json_order_goods['division_use_deposit'] = float(order_goods_data.find('divisionUseDeposit').text.strip())
+                        if order_goods_data.find('divisionUseMileage'):	json_order_goods['division_use_mileage'] = float(order_goods_data.find('divisionUseMileage').text.strip())
+                        if order_goods_data.find('divisionGoodsDeliveryUseDeposit'):	json_order_goods['division_goods_delivery_use_deposit'] = float(order_goods_data.find('divisionGoodsDeliveryUseDeposit').text.strip())
+                        if order_goods_data.find('divisionGoodsDeliveryUseMileage'):	json_order_goods['division_goods_delivery_use_mileage'] = float(order_goods_data.find('divisionGoodsDeliveryUseMileage').text.strip())
+                        if order_goods_data.find('divisionCouponOrderDcPrice'):	json_order_goods['division_coupon_order_dc_price'] = float(order_goods_data.find('divisionCouponOrderDcPrice').text.strip())
+                        if order_goods_data.find('divisionCouponOrderMileage'):	json_order_goods['division_coupon_order_mileage'] = float(order_goods_data.find('divisionCouponOrderMileage').text.strip())
+                        if order_goods_data.find('addGoodsPrice'):	json_order_goods['add_goods_price'] = float(order_goods_data.find('addGoodsPrice').text.strip())
+                        if order_goods_data.find('optionPrice'):	json_order_goods['option_price'] = float(order_goods_data.find('optionPrice').text.strip())
+                        if order_goods_data.find('optionCostPrice'):	json_order_goods['option_cost_price'] = float(order_goods_data.find('optionCostPrice').text.strip())
+                        if order_goods_data.find('optionTextPrice'):	json_order_goods['option_text_price'] = float(order_goods_data.find('optionTextPrice').text.strip())
+                        if order_goods_data.find('fixedPrice'):	json_order_goods['fixed_price'] = float(order_goods_data.find('fixedPrice').text.strip())
+                        if order_goods_data.find('costPrice'):	json_order_goods['cost_price'] = float(order_goods_data.find('costPrice').text.strip())
+                        if order_goods_data.find('goodsDcPrice'):	json_order_goods['goods_dc_price'] = float(order_goods_data.find('goodsDcPrice').text.strip())
+                        if order_goods_data.find('memberDcPrice'):	json_order_goods['member_dc_price'] = float(order_goods_data.find('memberDcPrice').text.strip())
+                        if order_goods_data.find('memberOverlapDcPrice'):	json_order_goods['member_overlap_dc_price'] = float(order_goods_data.find('memberOverlapDcPrice').text.strip())
+                        if order_goods_data.find('couponGoodsDcPrice'):	json_order_goods['coupon_goods_dc_price'] = float(order_goods_data.find('couponGoodsDcPrice').text.strip())
+                        if order_goods_data.find('timeSalePrice'):	json_order_goods['time_sale_price'] = float(order_goods_data.find('timeSalePrice').text.strip())
+                        if order_goods_data.find('brandBankSalePrice'):	json_order_goods['brand_bank_sale_price'] = float(order_goods_data.find('brandBankSalePrice').text.strip())
+                        if order_goods_data.find('myappDcPrice'):	json_order_goods['myapp_dc_price'] = float(order_goods_data.find('myappDcPrice').text.strip())
+                        if order_goods_data.find('goodsDeliveryCollectPrice'):	json_order_goods['goods_delivery_collect_price'] = float(order_goods_data.find('goodsDeliveryCollectPrice').text.strip())
+                        if order_goods_data.find('goodsMileage'):	json_order_goods['goods_mileage'] = float(order_goods_data.find('goodsMileage').text.strip())
+                        if order_goods_data.find('memberMileage'):	json_order_goods['member_mileage'] = float(order_goods_data.find('memberMileage').text.strip())
+                        if order_goods_data.find('couponGoodsMileage'):	json_order_goods['coupon_goods_mileage'] = float(order_goods_data.find('couponGoodsMileage').text.strip())
+                        if order_goods_data.find('goods_delivery_collect_fl'):	json_order_goods['goods_delivery_collect_fl'] = order_goods_data.find('goods_delivery_collect_fl').text.strip()
+                        if order_goods_data.find('minusDepositFl'):	json_order_goods['minus_deposit_fl'] = order_goods_data.find('minusDepositFl').text.strip()
+                        if order_goods_data.find('minusRestoreDepositFl'):	json_order_goods['minus_restore_deposit_fl'] = order_goods_data.find('minusRestoreDepositFl').text.strip()
+                        if order_goods_data.find('minusMileageFl'):	json_order_goods['minus_mileage_fl'] = order_goods_data.find('minusMileageFl').text.strip()
+                        if order_goods_data.find('minusRestoreMileageFl'):	json_order_goods['minus_restore_mileage_fl'] = order_goods_data.find('minusRestoreMileageFl').text.strip()
+                        if order_goods_data.find('plusMileageFl'):	json_order_goods['plus_mileage_fl'] = order_goods_data.find('plusMileageFl').text.strip()
+                        if order_goods_data.find('plusRestoreMileageFl'):	json_order_goods['plus_restore_mileage_fl'] = order_goods_data.find('plusRestoreMileageFl').text.strip()
+                        if order_goods_data.find('minusStockFl'):	json_order_goods['minus_stock_fl'] = order_goods_data.find('minusStockFl').text.strip()
+                        if order_goods_data.find('minusRestoreStockFl'):	json_order_goods['minus_restore_stock_fl'] = order_goods_data.find('minusRestoreStockFl').text.strip()
+                        if order_goods_data.find('optionSno'):	json_order_goods['option_sno'] = order_goods_data.find('optionSno').text.strip()
+                        if order_goods_data.find('optionInfo'):	json_order_goods['option_info'] = order_goods_data.find('optionInfo').text.strip()
+                        if order_goods_data.find('optionTextInfo'):	json_order_goods['option_text_info'] = order_goods_data.find('optionTextInfo').text.strip()
+                        if order_goods_data.find('cateAllCd'):	json_order_goods['cate_all_cd'] = order_goods_data.find('cateAllCd').text.strip()
+                        if order_goods_data.find('hscode'):	json_order_goods['hscode'] = order_goods_data.find('hscode').text.strip()
+                        if order_goods_data.find('cancelDt'):	json_order_goods['cancel_dt'] = order_goods_data.find('cancelDt').text.strip()
+                        if order_goods_data.find('paymentDt'):	json_order_goods['payment_dt'] = order_goods_data.find('paymentDt').text.strip()
+                        if order_goods_data.find('invoiceDt'):	json_order_goods['invoice_dt'] = order_goods_data.find('invoiceDt').text.strip()
+                        if order_goods_data.find('deliveryDt'):	json_order_goods['delivery_dt'] = order_goods_data.find('deliveryDt').text.strip()
+                        if order_goods_data.find('deliveryCompleteDt'):	json_order_goods['delivery_complete_dt'] = order_goods_data.find('deliveryCompleteDt').text.strip()
+                        if order_goods_data.find('finishDt'):	json_order_goods['finish_dt'] = order_goods_data.find('finishDt').text.strip()
+                        if order_goods_data.find('mileageGiveDt'):	json_order_goods['mileage_give_dt'] = order_goods_data.find('mileageGiveDt').text.strip()
+                        if order_goods_data.find('checkoutData'):	json_order_goods['checkout_data'] = order_goods_data.find('checkoutData').text.strip()
+                        if order_goods_data.find('statisticsOrderFl'):	json_order_goods['statistics_order_fl'] = order_goods_data.find('statisticsOrderFl').text.strip()
+                        if order_goods_data.find('statisticsGoodsFl'):	json_order_goods['statistics_goods_fl'] = order_goods_data.find('statisticsGoodsFl').text.strip()
+                        if order_goods_data.find('deliveryMethodFl'):	json_order_goods['delivery_method_fl'] = order_goods_data.find('deliveryMethodFl').text.strip()
+                        if order_goods_data.find('enuri'):	json_order_goods['enuri'] = order_goods_data.find('enuri').text.strip()
+                        if order_goods_data.find('goodsDiscountInfo'):	json_order_goods['goods_discount_info'] = order_goods_data.find('goodsDiscountInfo').text.strip()
+                        if order_goods_data.find('goodsMileageAddInfo'):	json_order_goods['goods_mileage_add_info'] = order_goods_data.find('goodsMileageAddInfo').text.strip()
+                        if order_goods_data.find('inflow'):	json_order_goods['inflow'] = order_goods_data.find('inflow').text.strip()
+                        if order_goods_data.find('linkMainTheme'):	json_order_goods['link_main_theme'] = order_goods_data.find('linkMainTheme').text.strip()
+                        if order_goods_data.find('visitAddress'):	json_order_goods['visit_address'] = order_goods_data.find('visitAddress').text.strip()
+                        if order_goods_data.find('dpxDeliveryType'):	json_order_goods['dpx_delivery_type'] = order_goods_data.find('dpxDeliveryType').text.strip()
+                        if order_goods_data.find('dawnInfoType'):	json_order_goods['dawn_info_type'] = order_goods_data.find('dawnInfoType').text.strip()
+                        if order_goods_data.find('dawnInfoMemo'):	json_order_goods['dawn_info_memo'] = order_goods_data.find('dawnInfoMemo').text.strip()
+                        if order_goods_data.find('dawnInfoAlram'):	json_order_goods['dawn_info_alram'] = order_goods_data.find('dawnInfoAlram').text.strip()
+                        if order_goods_data.find('requestBagFl'):	json_order_goods['request_bag_fl'] = order_goods_data.find('requestBagFl').text.strip()
+                        if order_goods_data.find('goodsVolume'):	json_order_goods['goods_volume'] = order_goods_data.find('goodsVolume').text.strip()
+                        if order_goods_data.find('couponMileageFl'):	json_order_goods['coupon_mileage_fl'] = order_goods_data.find('couponMileageFl').text.strip()
+                        if order_goods_data.find('deliveryBundleFl'):	json_order_goods['delivery_bundle_fl'] = order_goods_data.find('deliveryBundleFl').text.strip()
+                        if order_goods_data.find('deliveryDueDate'):	json_order_goods['delivery_due_date'] = order_goods_data.find('deliveryDueDate').text.strip()
+                        if order_goods_data.find('easypayScmReceiptFl'):	json_order_goods['easypay_scm_receipt_fl'] = order_goods_data.find('easypayScmReceiptFl').text.strip()
+                        order_doc.append('order_goods_data',
+                            json_order_goods
+                        )
+                    # parent.append("holidays", {
+					# 	'holiday_date': holiday_date,
+					# 	'description': holiday_name
+					# })
+					# parent.save()
+                    order_doc.save(
+                        ignore_permissions=True, # ignore write permissions during insert
+				        ignore_version=True # do not create a version record
+                    )
+        except IndexError:
+            print("Godomall XML Parsing Error")
+        
+
+    # print("".join(url)) 
