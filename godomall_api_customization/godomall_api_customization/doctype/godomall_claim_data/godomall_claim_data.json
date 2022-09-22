@@ -1,0 +1,171 @@
+{
+ "actions": [],
+ "autoname": "field:order_sno",
+ "creation": "2022-09-22 23:52:13.503726",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "order_sno",
+  "before_status",
+  "handle_mode",
+  "handle_complete_fl",
+  "handle_reason",
+  "handle_detail_reason",
+  "fandle_detail_reason_show_fl",
+  "handle_dt",
+  "refund_price",
+  "refund_use_deposit",
+  "refund_use_mileage",
+  "refund_delivery_use_deposit",
+  "refund_delivery_use_mileage",
+  "refund_delivery_charge",
+  "refund_delivery_insurance_fee",
+  "refund_delivery_coupon",
+  "refund_charge",
+  "refund_use_deposit_commission",
+  "refund_use_mileage_commission",
+  "handle_group_cd",
+  "reg_dt"
+ ],
+ "fields": [
+  {
+   "fieldname": "order_sno",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Order SNO",
+   "length": 50,
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "before_status",
+   "fieldtype": "Data",
+   "label": "Before Status",
+   "length": 2
+  },
+  {
+   "fieldname": "handle_mode",
+   "fieldtype": "Data",
+   "label": "Handle Mode",
+   "length": 2
+  },
+  {
+   "fieldname": "handle_complete_fl",
+   "fieldtype": "Data",
+   "label": "Handle Complete Fl",
+   "length": 2
+  },
+  {
+   "fieldname": "handle_reason",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Handle Reason",
+   "length": 250
+  },
+  {
+   "fieldname": "handle_detail_reason",
+   "fieldtype": "Data",
+   "label": "Handle Detail Reason",
+   "length": 250
+  },
+  {
+   "fieldname": "fandle_detail_reason_show_fl",
+   "fieldtype": "Data",
+   "label": "Fandle Detail Reason Show Fl",
+   "length": 2
+  },
+  {
+   "fieldname": "handle_dt",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Handle Dt"
+  },
+  {
+   "fieldname": "refund_price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Refund Price"
+  },
+  {
+   "fieldname": "refund_use_deposit",
+   "fieldtype": "Currency",
+   "label": "Refund Use Deposit"
+  },
+  {
+   "fieldname": "refund_use_mileage",
+   "fieldtype": "Currency",
+   "label": "Refund Use Mileage"
+  },
+  {
+   "fieldname": "refund_delivery_use_deposit",
+   "fieldtype": "Currency",
+   "label": "Refund Delivery Use Deposit"
+  },
+  {
+   "fieldname": "refund_delivery_use_mileage",
+   "fieldtype": "Currency",
+   "label": "Refund Delivery Use Mileage"
+  },
+  {
+   "fieldname": "refund_delivery_charge",
+   "fieldtype": "Currency",
+   "label": "Refund Delivery Charge"
+  },
+  {
+   "fieldname": "refund_delivery_insurance_fee",
+   "fieldtype": "Currency",
+   "label": "Refund Delivery Insurance Fee"
+  },
+  {
+   "fieldname": "refund_delivery_coupon",
+   "fieldtype": "Currency",
+   "label": "Refund Delivery Coupon"
+  },
+  {
+   "fieldname": "refund_charge",
+   "fieldtype": "Currency",
+   "label": "Refund Charge"
+  },
+  {
+   "fieldname": "refund_use_deposit_commission",
+   "fieldtype": "Currency",
+   "label": "Refund Use Deposit Commission"
+  },
+  {
+   "fieldname": "refund_use_mileage_commission",
+   "fieldtype": "Currency",
+   "label": "Refund Use Mileage Commission"
+  },
+  {
+   "fieldname": "handle_group_cd",
+   "fieldtype": "Data",
+   "label": "Handle Group Cd",
+   "length": 2
+  },
+  {
+   "fieldname": "reg_dt",
+   "fieldtype": "Datetime",
+   "label": "Reg Dt"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-09-23 00:23:36.595704",
+ "modified_by": "Administrator",
+ "module": "Godomall Api Customization",
+ "name": "Godomall Claim Data",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

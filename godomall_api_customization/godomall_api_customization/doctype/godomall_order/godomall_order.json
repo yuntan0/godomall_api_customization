@@ -54,7 +54,9 @@
   "order_goods_data_section",
   "order_goods_data",
   "order_info_data_section",
-  "order_info_data"
+  "order_info_data",
+  "order_claim_data_section",
+  "order_claim_data"
  ],
  "fields": [
   {
@@ -321,11 +323,22 @@
    "fieldtype": "Data",
    "label": "Order Goods Status Cnt",
    "length": 100
+  },
+  {
+   "fieldname": "order_claim_data_section",
+   "fieldtype": "Section Break",
+   "label": "Order Claim Data"
+  },
+  {
+   "fieldname": "order_claim_data",
+   "fieldtype": "Table",
+   "label": "Order Claim Data",
+   "options": "Godomall Claim Data"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-19 06:48:09.569228",
+ "modified": "2022-09-23 00:22:27.523308",
  "modified_by": "Administrator",
  "module": "Godomall Api Customization",
  "name": "Godomall Order",

@@ -1,0 +1,298 @@
+[
+ {
+  "code": "o1",
+  "code_name": "\uc785\uae08\ub300\uae30",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:36.966156",
+  "name": "o1"
+ },
+ {
+  "code": "p1",
+  "code_name": "\uacb0\uc81c\uc644\ub8cc",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.015404",
+  "name": "p1"
+ },
+ {
+  "code": "g1",
+  "code_name": "\uc0c1\ud488\uc900\ube44\uc911",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.041388",
+  "name": "g1"
+ },
+ {
+  "code": "g2",
+  "code_name": "\uad6c\ub9e4\ubc1c\uc8fc",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.087520",
+  "name": "g2"
+ },
+ {
+  "code": "g3",
+  "code_name": "\uc0c1\ud488\uc785\uace0",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.152477",
+  "name": "g3"
+ },
+ {
+  "code": "g4",
+  "code_name": "\uc0c1\ud488\ucd9c\uace0",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.259895",
+  "name": "g4"
+ },
+ {
+  "code": "d1",
+  "code_name": "\ubc30\uc1a1\uc911",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.340765",
+  "name": "d1"
+ },
+ {
+  "code": "d2",
+  "code_name": "\ubc30\uc1a1\uc644\ub8cc",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.447933",
+  "name": "d2"
+ },
+ {
+  "code": "s1",
+  "code_name": "\uad6c\ub9e4\ud655\uc815",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.577865",
+  "name": "s1"
+ },
+ {
+  "code": "c1",
+  "code_name": "\uc790\ub3d9\ucde8\uc18c",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.620496",
+  "name": "c1"
+ },
+ {
+  "code": "c2",
+  "code_name": "\ud488\uc808\ucde8\uc18c",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.692537",
+  "name": "c2"
+ },
+ {
+  "code": "c3",
+  "code_name": "\uad00\ub9ac\uc790\ucde8\uc18c",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.738453",
+  "name": "c3"
+ },
+ {
+  "code": "c4",
+  "code_name": "\uace0\uac1d\ucde8\uc18c\uc694\uccad",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.776805",
+  "name": "c4"
+ },
+ {
+  "code": "f1",
+  "code_name": "\uacb0\uc81c\uc2dc\ub3c4",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.840372",
+  "name": "f1"
+ },
+ {
+  "code": "f2",
+  "code_name": "\uace0\uac1d\uacb0\uc81c\uc911\ub2e8",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:37.913842",
+  "name": "f2"
+ },
+ {
+  "code": "f3",
+  "code_name": "\uacb0\uc81c\uc2e4\ud328",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:38.015896",
+  "name": "f3"
+ },
+ {
+  "code": "b1",
+  "code_name": "\ubc18\ud488\uc811\uc218",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:38.136325",
+  "name": "b1"
+ },
+ {
+  "code": "b2",
+  "code_name": "\ubc18\uc1a1\uc911",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:38.260609",
+  "name": "b2"
+ },
+ {
+  "code": "b3",
+  "code_name": "\ubc18\ud488\ubcf4\ub958",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:38.394769",
+  "name": "b3"
+ },
+ {
+  "code": "b4",
+  "code_name": "\ubc18\ud488\ud68c\uc218\uc644\ub8cc",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:38.453928",
+  "name": "b4"
+ },
+ {
+  "code": "e1",
+  "code_name": "\uad50\ud658\uc811\uc218",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:38.489802",
+  "name": "e1"
+ },
+ {
+  "code": "e2",
+  "code_name": "\ubc18\uc1a1\uc911",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:38.551886",
+  "name": "e2"
+ },
+ {
+  "code": "e3",
+  "code_name": "\uc7ac\ubc30\uc1a1\uc911",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:38.603748",
+  "name": "e3"
+ },
+ {
+  "code": "e4",
+  "code_name": "\uad50\ud658\ubcf4\ub958",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:38.730670",
+  "name": "e4"
+ },
+ {
+  "code": "e5",
+  "code_name": "\uad50\ud658\uc644\ub8cc",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:38.826674",
+  "name": "e5"
+ },
+ {
+  "code": "r1",
+  "code_name": "\ud658\ubd88\uc811\uc218",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:38.914769",
+  "name": "r1"
+ },
+ {
+  "code": "r2",
+  "code_name": "\ud658\ubd88\ubcf4\ub958",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:39.009499",
+  "name": "r2"
+ },
+ {
+  "code": "r3",
+  "code_name": "\ud658\ubd88\uc644\ub8cc",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:39.107729",
+  "name": "r3"
+ },
+ {
+  "code": "z1",
+  "code_name": "\ucd94\uac00\uc785\uae08\ub300\uae30",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:39.191283",
+  "name": "z1"
+ },
+ {
+  "code": "z2",
+  "code_name": "\ucd94\uac00\uacb0\uc81c\uc644\ub8cc",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:39.268558",
+  "name": "z2"
+ },
+ {
+  "code": "z3",
+  "code_name": "\ucd94\uac00\ubc30\uc1a1\uc911",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:39.341926",
+  "name": "z3"
+ },
+ {
+  "code": "z4",
+  "code_name": "\ucd94\uac00\ubc30\uc1a1\uc644\ub8cc",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:39.501159",
+  "name": "z4"
+ },
+ {
+  "code": "z5",
+  "code_name": "\uad50\ud658\ucd94\uac00\uc644\ub8cc",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-17 18:52:39.581485",
+  "name": "z5"
+ },
+ {
+  "code": "g5",
+  "code_name": "g5",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-22 19:48:54.782278",
+  "name": "g5"
+ },
+ {
+  "code": "g7",
+  "code_name": "g7",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-22 19:49:10.530270",
+  "name": "g7"
+ },
+ {
+  "code": "g8",
+  "code_name": "g8",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-22 19:49:05.969910",
+  "name": "g8"
+ },
+ {
+  "code": "g6",
+  "code_name": "g6",
+  "docstatus": 0,
+  "doctype": "Godomall Order Status",
+  "modified": "2022-09-22 19:49:00.672173",
+  "name": "g6"
+ }
+]

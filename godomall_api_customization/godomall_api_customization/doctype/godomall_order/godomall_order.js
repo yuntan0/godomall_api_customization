@@ -2,7 +2,291 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Godomall Order', {
-	// refresh: function(frm) {
+	refresh: function(frm) {
+	    frm.add_custom_button(__('Updae current order'),function(){
+            //frappe.msgprint(frm.doc.date);
+            let order_no = frm.selected_doc.name;
+            
 
-	// }
+
+
+            frappe.call({
+				method: "godomall_api_customization.api.get_godomall_order?order_no="+order_no, //dotted path to server method
+				kwargs: {
+					'order_no':order_no
+				},
+
+				callback: function(r) {
+
+					console.log(r)
+					//cur_frm.exchange_rate = r.message.exchange_rate;
+					if(r.message) {
+						// code snippet
+						//frappe.msgprint();
+						frappe.msgprint({
+							title: __('Current Order updated'),
+							message: __('Current Order updated')+r.message,
+							indicator: 'orange'
+						});
+						//frm.selected_doc.exchange_rate = r.message.exchange_rate;
+						// cur_frm.set_value('rate',r.message.rate);
+						// cur_frm.set_value('date',r.message.date);
+						// cur_frm.set_value('usd_rate',r.message.usd_rate);
+						// cur_frm.set_value('scale',r.message.scale);
+
+						return;
+						//cur_frm.set_value('exchange_rate',r.message.exchange_rate);
+						//cur_frm.exchange_rate = r.message.exchange_rate;
+
+						}
+				}
+			})
+			
+        }, __("Get Godomall order")    );
+
+	    frm.add_custom_button(__('Create today order'),function(){
+            //frappe.msgprint(frm.doc.date);
+            var today = new Date();
+			var dd = String(today.getDate()).padStart(2, '0');
+			var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+			var yyyy = today.getFullYear();
+
+			today = yyyy+'-'+mm+'-'+dd;
+
+
+				frappe.call({
+					method: "godomall_api_customization.api.get_godomall_order?date_type=order&start_date="+today+"&end_date="+today, //dotted path to server method
+					
+
+					callback: function(r) {
+
+						console.log(r)
+						// code snippet
+						frappe.msgprint({
+							title: __('Today Order Created'),
+							message: __('Godomall Today Order Created'),
+							indicator: 'orange'
+
+						});
+						frm.refresh();
+
+
+
+					}
+				})
+			
+        }, __("Get Godomall order")    );
+
+		frm.add_custom_button(__('Update modified order'),function(){
+            //frappe.msgprint(frm.doc.date);
+            var today = new Date();
+			var dd = String(today.getDate()).padStart(2, '0');
+			var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+			var yyyy = today.getFullYear();
+
+			today = yyyy+'-'+mm+'-'+dd;
+
+
+				frappe.call({
+					method: "godomall_api_customization.api.get_godomall_order", //dotted path to server method
+					kwargs: {
+						'date_type':'modify',
+						'start_date':today,
+						'end_date':today
+					},
+
+					callback: function(r) {
+
+						console.log(r)
+						// code snippet
+						frappe.msgprint({
+							title: __('Today Order Updated'),
+							message: __('Godomall Today Modified Order Updated'),
+							indicator: 'orange'
+
+						});
+
+
+
+					}
+				})
+			
+        }, __("Get Godomall order")    );
+
+		frm.add_custom_button(__('Create D-1 order'),function(){
+            var today = new Date();
+		    var dday = new Date();
+		    dday.setDate(date.getDate() - 1);
+		    
+			var ddd = String(dday.getDate()).padStart(2, '0');
+			var dmm = String(dday.getMonth() + 1).padStart(2, '0'); //January is 0!
+			var dyyyy = dday.getFullYear();
+
+			var dd = String(today.getDate()).padStart(2, '0');
+			var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+			var yyyy = today.getFullYear();
+
+			today = yyyy+'-'+mm+'-'+dd;
+			targetdate =  dyyyy+'-'+dmm+'-'+ddd;
+
+
+				frappe.call({
+					method: "godomall_api_customization.api.get_godomall_order", //dotted path to server method
+					kwargs: {
+						'date_type':'order',
+						'start_date':targetdate,
+						'end_date':today
+					},
+
+					callback: function(r) {
+
+						console.log(r)
+						// code snippet
+						frappe.msgprint({
+							title: __('Today Order Created'),
+							message: __('Godomall Today Order Created'),
+							indicator: 'orange'
+
+						});
+
+
+
+					}
+				})
+			
+        }, __("Get Godomall order")    );
+
+		frm.add_custom_button(__('Update D-1 modified order'),function(){
+            var today = new Date();
+		    var dday = new Date();
+		    dday.setDate(date.getDate() - 1);
+		    
+			var ddd = String(dday.getDate()).padStart(2, '0');
+			var dmm = String(dday.getMonth() + 1).padStart(2, '0'); //January is 0!
+			var dyyyy = dday.getFullYear();
+
+			var dd = String(today.getDate()).padStart(2, '0');
+			var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+			var yyyy = today.getFullYear();
+
+			today = yyyy+'-'+mm+'-'+dd;
+			targetdate =  dyyyy+'-'+dmm+'-'+ddd;
+
+
+				frappe.call({
+					method: "godomall_api_customization.api.get_godomall_order", //dotted path to server method
+					kwargs: {
+						'date_type':'modify',
+						'start_date':targetdate,
+						'end_date':today
+					},
+
+					callback: function(r) {
+
+						console.log(r)
+						// code snippet
+						frappe.msgprint({
+							title: __('Today Order Created'),
+							message: __('Godomall Today Modified Order Updated'),
+							indicator: 'orange'
+
+						});
+
+
+
+					}
+				})
+			
+        }, __("Get Godomall order")    );
+
+		frm.add_custom_button(__('Create D-2 order'),function(){
+            var today = new Date();
+		    var dday = new Date();
+		    dday.setDate(date.getDate() - 2);
+		    
+			var ddd = String(dday.getDate()).padStart(2, '0');
+			var dmm = String(dday.getMonth() + 1).padStart(2, '0'); //January is 0!
+			var dyyyy = dday.getFullYear();
+
+			var dd = String(today.getDate()).padStart(2, '0');
+			var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+			var yyyy = today.getFullYear();
+
+			today = yyyy+'-'+mm+'-'+dd;
+			targetdate =  dyyyy+'-'+dmm+'-'+ddd;
+
+
+				frappe.call({
+					method: "godomall_api_customization.api.get_godomall_order", //dotted path to server method
+					kwargs: {
+						'date_type':'order',
+						'start_date':targetdate,
+						'end_date':today
+					},
+
+					callback: function(r) {
+
+						console.log(r)
+						// code snippet
+						frappe.msgprint({
+							title: __('Today Order Created'),
+							message: __('Godomall Today Order Created'),
+							indicator: 'orange'
+
+						});
+
+
+
+					}
+				})
+			
+        }, __("Get Godomall order")    );
+
+		frm.add_custom_button(__('Update D-2 modified order'),function(){
+            //frappe.msgprint(frm.doc.date);
+            var today = new Date();
+		    var dday = new Date();
+		    dday.setDate(date.getDate() - 2);
+		    
+			var ddd = String(dday.getDate()).padStart(2, '0');
+			var dmm = String(dday.getMonth() + 1).padStart(2, '0'); //January is 0!
+			var dyyyy = dday.getFullYear();
+
+			var dd = String(today.getDate()).padStart(2, '0');
+			var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+			var yyyy = today.getFullYear();
+
+			today = yyyy+'-'+mm+'-'+dd;
+			targetdate =  dyyyy+'-'+dmm+'-'+ddd;
+
+
+				frappe.call({
+					method: "godomall_api_customization.api.get_godomall_order", //dotted path to server method
+					kwargs: {
+						'date_type':'modify',
+						'start_date':targetdate,
+						'end_date':today
+					},
+
+					callback: function(r) {
+
+						console.log(r)
+						// code snippet
+						frappe.msgprint({
+							title: __('Today Order Created'),
+							message: __('Godomall Today Modified Order Updated'),
+							indicator: 'orange'
+
+						});
+
+
+
+					}
+				})
+			
+        }, __("Get Godomall order")    );
+
+
+
+     }
 });

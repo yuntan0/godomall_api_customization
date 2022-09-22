@@ -1,11 +1,12 @@
 {
  "actions": [],
- "autoname": "field:sno",
+ "autoname": "format:{order_no}-{sno}",
  "creation": "2022-09-18 11:16:42.700292",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "order_sno",
   "sno",
   "order_no",
   "mall_sno",
@@ -31,6 +32,7 @@
   "goods_model_no",
   "goods_nm",
   "goods_nm_standard",
+  "column_break_28",
   "goods_cnt",
   "goods_price",
   "division_use_deposit",
@@ -57,6 +59,7 @@
   "member_mileage",
   "coupon_goods_mileage",
   "goods_delivery_collect_fl",
+  "column_break_62",
   "minus_deposit_fl",
   "minus_restore_deposit_fl",
   "minus_mileage_fl",
@@ -75,6 +78,7 @@
   "invoice_dt",
   "delivery_dt",
   "delivery_complete_dt",
+  "column_break_73",
   "finish_dt",
   "mileage_give_dt",
   "checkout_data",
@@ -171,9 +175,10 @@
   },
   {
    "fieldname": "scm_no",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "SCM No",
-   "length": 50
+   "length": 50,
+   "options": "Godomall SCM No"
   },
   {
    "fieldname": "purchase_no",
@@ -220,9 +225,10 @@
   },
   {
    "fieldname": "goods_no",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Goods No",
-   "length": 50
+   "length": 50,
+   "options": "Godomall Goods master"
   },
   {
    "fieldname": "list_image_data",
@@ -393,7 +399,7 @@
    "fieldtype": "Select",
    "label": "Goods Delivery Collect Fl",
    "length": 10,
-   "options": "\npre\nlater"
+   "options": "\npre\nlater\nboth"
   },
   {
    "fieldname": "minus_deposit_fl",
@@ -461,7 +467,7 @@
    "fieldname": "option_info",
    "fieldtype": "Data",
    "label": "Option Info",
-   "length": 50
+   "length": 250
   },
   {
    "fieldname": "option_text_info",
@@ -552,9 +558,8 @@
   },
   {
    "fieldname": "goods_mileage_add_info",
-   "fieldtype": "Data",
-   "label": "Goods Mileage Add Info",
-   "length": 250
+   "fieldtype": "Text",
+   "label": "Goods Mileage Add Info"
   },
   {
    "fieldname": "inflow",
@@ -588,7 +593,7 @@
    "fieldname": "dawn_info_memo",
    "fieldtype": "Data",
    "label": "Dawn Info Memo",
-   "length": 50
+   "length": 250
   },
   {
    "fieldname": "dawn_info_alram",
@@ -632,16 +637,35 @@
    "fieldname": "easypay_scm_receipt_fl",
    "fieldtype": "Data",
    "label": "Easypay Scm Receipt Fl"
+  },
+  {
+   "fieldname": "order_sno",
+   "fieldtype": "Data",
+   "label": "Order SNO",
+   "length": 50,
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_28",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_62",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_73",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-09-19 06:49:17.395334",
+ "modified": "2022-09-23 00:20:28.462855",
  "modified_by": "Administrator",
  "module": "Godomall Api Customization",
  "name": "Godomall Order Goods Data",
- "naming_rule": "By fieldname",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",

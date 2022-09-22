@@ -1,17 +1,20 @@
 {
  "actions": [],
- "autoname": "field:sno",
+ "autoname": "field:order_sno",
  "creation": "2022-09-17 22:35:47.656469",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "order_sno",
+  "order_no",
   "sno",
   "scm_no",
   "commission",
   "scm_adjust_no",
   "delivery_charge",
   "delivery_poliicy_charge",
+  "column_break_9",
   "delivery_area_charge",
   "division_delivery_use_deposit",
   "division_delivery_use_mileage",
@@ -20,6 +23,7 @@
   "delivery_insurance_fee",
   "delivery_fix_fl",
   "delivery_weight_info",
+  "column_break_18",
   "overseas_delivery_policy",
   "delivery_collect_price",
   "delivery_collect_fl",
@@ -33,14 +37,16 @@
    "fieldname": "sno",
    "fieldtype": "Data",
    "label": "SNO",
+   "reqd": 1,
    "unique": 1
   },
   {
    "fieldname": "scm_no",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Scm No"
+   "label": "Scm No",
+   "options": "Godomall SCM No"
   },
   {
    "fieldname": "commission",
@@ -112,7 +118,7 @@
    "fieldtype": "Select",
    "label": "Delivery Collect Fl",
    "length": 5,
-   "options": "\npre\nlater"
+   "options": "\npre\nlater\nboth"
   },
   {
    "fieldname": "order_info_sno",
@@ -144,12 +150,33 @@
    "fieldname": "division_delivery_charge",
    "fieldtype": "Currency",
    "label": "Division Delivery Charge"
+  },
+  {
+   "fieldname": "order_no",
+   "fieldtype": "Data",
+   "label": "Order No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "order_sno",
+   "fieldtype": "Data",
+   "label": "Order SNO",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_18",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-09-18 14:56:16.141031",
+ "modified": "2022-09-22 19:15:09.903852",
  "modified_by": "Administrator",
  "module": "Godomall Api Customization",
  "name": "Godomall Order Delivery Data",
