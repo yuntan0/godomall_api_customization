@@ -130,7 +130,7 @@ frappe.ui.form.on('Godomall Order', {
 		frm.add_custom_button(__('Create D-1 order'),function(){
             var today = new Date();
 		    var dday = new Date();
-		    dday.setDate(date.getDate() - 1);
+		    dday.setDate(dday.getDate() - 1);
 		    
 			var ddd = String(dday.getDate()).padStart(2, '0');
 			var dmm = String(dday.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -141,14 +141,14 @@ frappe.ui.form.on('Godomall Order', {
 			var yyyy = today.getFullYear();
 
 			today = yyyy+'-'+mm+'-'+dd;
-			targetdate =  dyyyy+'-'+dmm+'-'+ddd;
+			dday =  dyyyy+'-'+dmm+'-'+ddd;
 
 
 				frappe.call({
-					method: "godomall_api_customization.api.get_godomall_order?date_type=order&start_date="+targetdate+"&end_date="+today, //dotted path to server method
+					method: "godomall_api_customization.api.get_godomall_order?date_type=order&start_date="+dday+"&end_date="+dday, //dotted path to server method
 					kwargs: {
 						'date_type':'order',
-						'start_date':targetdate,
+						'start_date':dday,
 						'end_date':today
 					},
 
@@ -158,8 +158,8 @@ frappe.ui.form.on('Godomall Order', {
 						if(r.message=='200') {
 						// code snippet
 						frappe.msgprint({
-							title: __('Today Order Created'),
-							message: __('Godomall Today Order Created'),
+							title: __('D-1 Order Created'),
+							message: __('Godomall D-1 Order Created'),
 							indicator: 'orange'
 
 						});
@@ -175,7 +175,7 @@ frappe.ui.form.on('Godomall Order', {
 		frm.add_custom_button(__('Update D-1 modified order'),function(){
             var today = new Date();
 		    var dday = new Date();
-		    dday.setDate(date.getDate() - 1);
+		    dday.setDate(dday.getDate() - 1);
 		    
 			var ddd = String(dday.getDate()).padStart(2, '0');
 			var dmm = String(dday.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -186,14 +186,14 @@ frappe.ui.form.on('Godomall Order', {
 			var yyyy = today.getFullYear();
 
 			today = yyyy+'-'+mm+'-'+dd;
-			targetdate =  dyyyy+'-'+dmm+'-'+ddd;
+			dday =  dyyyy+'-'+dmm+'-'+ddd;
 
 
 				frappe.call({
-					method: "godomall_api_customization.api.get_godomall_order?date_type=modify&start_date="+targetdate+"&end_date="+today, //dotted path to server method
+					method: "godomall_api_customization.api.get_godomall_order?date_type=modify&start_date="+dday+"&end_date="+dday, //dotted path to server method
 					kwargs: {
 						'date_type':'modify',
-						'start_date':targetdate,
+						'start_date':dday,
 						'end_date':today
 					},
 
@@ -203,8 +203,8 @@ frappe.ui.form.on('Godomall Order', {
 						// code snippet
 						if(r.message=='200') {
 						frappe.msgprint({
-							title: __('Today Order Created'),
-							message: __('Godomall Today Modified Order Updated'),
+							title: __('D-1 Order Created'),
+							message: __('Godomall D-1 Modified Order Updated'),
 							indicator: 'orange'
 
 						});
@@ -220,7 +220,7 @@ frappe.ui.form.on('Godomall Order', {
 		frm.add_custom_button(__('Create D-2 order'),function(){
             var today = new Date();
 		    var dday = new Date();
-		    dday.setDate(date.getDate() - 2);
+		    dday.setDate(dday.getDate() - 2);
 		    
 			var ddd = String(dday.getDate()).padStart(2, '0');
 			var dmm = String(dday.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -231,14 +231,14 @@ frappe.ui.form.on('Godomall Order', {
 			var yyyy = today.getFullYear();
 
 			today = yyyy+'-'+mm+'-'+dd;
-			targetdate =  dyyyy+'-'+dmm+'-'+ddd;
+			dday =  dyyyy+'-'+dmm+'-'+ddd;
 
 
 				frappe.call({
-					method: "godomall_api_customization.api.get_godomall_order?date_type=order&start_date="+targetdate+"&end_date="+today, //dotted path to server method
+					method: "godomall_api_customization.api.get_godomall_order?date_type=order&start_date="+dday+"&end_date="+dday, //dotted path to server method
 					kwargs: {
 						'date_type':'order',
-						'start_date':targetdate,
+						'start_date':dday,
 						'end_date':today
 					},
 
@@ -248,8 +248,8 @@ frappe.ui.form.on('Godomall Order', {
 						// code snippet
 						if(r.message=='200') {
 						frappe.msgprint({
-							title: __('Today Order Created'),
-							message: __('Godomall Today Order Created'),
+							title: __('D-2 Order Created'),
+							message: __('Godomall @-2 Order Created'),
 							indicator: 'orange'
 
 						});
@@ -266,7 +266,7 @@ frappe.ui.form.on('Godomall Order', {
             //frappe.msgprint(frm.doc.date);
             var today = new Date();
 		    var dday = new Date();
-		    dday.setDate(date.getDate() - 2);
+		    dday.setDate(dday.getDate() - 2);
 		    
 			var ddd = String(dday.getDate()).padStart(2, '0');
 			var dmm = String(dday.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -277,19 +277,19 @@ frappe.ui.form.on('Godomall Order', {
 			var yyyy = today.getFullYear();
 
 			today = yyyy+'-'+mm+'-'+dd;
-			targetdate =  dyyyy+'-'+dmm+'-'+ddd;
+			dday =  dyyyy+'-'+dmm+'-'+ddd;
 
 
 				frappe.call({
-					method: "godomall_api_customization.api.get_godomall_order?date_type=modify&start_date="+targetdate+"&end_date="+today, //dotted path to server method
+					method: "godomall_api_customization.api.get_godomall_order?date_type=modify&start_date="+dday+"&end_date="+dday, //dotted path to server method
 					callback: function(r) {
 
 						console.log(r)
 						// code snippet
 						if(r.message=='200') {
 						frappe.msgprint({
-							title: __('Today Order Created'),
-							message: __('Godomall Today Modified Order Updated'),
+							title: __('D-2 Order Created'),
+							message: __('Godomall D-2 Modified Order Updated'),
 							indicator: 'orange'
 
 						});
