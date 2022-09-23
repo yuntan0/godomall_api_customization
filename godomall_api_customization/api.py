@@ -9,7 +9,8 @@ from bs4 import BeautifulSoup
 # from pyproj import Proj,transform
 from datetime import datetime ,timedelta
 import time
-
+# bench execute godomall_api_customization.api.get_godomall_goods_batch
+# bench execute godomall_api_customization.api.get_godomall_order  --kwargs "{'start_date':'2022-09-10','end_date':'2022-09-22','order_status':'r3','date_type':'modify'}"
 #  bench execute godomall_api_customization.api.get_godomall_goods --kwargs "{'page_no':'1'}"
 def get_godomall_goods_batch():
     print('start')
@@ -1137,36 +1138,36 @@ def get_godomall_order(**kwargs):
                             json_order_goods
                         )
 
-                    order_claim_data = order.find_all('claimData')
-                    order_claim_seq = order.select('claimData')
-                    json_order_claim={"order_sno":""}
-                    idx = 0
-                    for order_claim in order_claim_data:
-                        json_order_claim['order_sno'] =                cur_order_no +'-'+ order_claim_seq[idx]['idx']
-                        if order_claim.find('beforeStatus'):                json_order_claim['before_status'] = order_claim.find('beforeStatus').text.strip()
-                        if order_claim.find('handleMode'):                  json_order_claim['handle_mode'] = order_claim.find('handleMode').text.strip()
-                        if order_claim.find('handleCompleteFl'):            json_order_claim['handle_complete_fl'] = order_claim.find('handleCompleteFl').text.strip()
-                        if order_claim.find('handleReason'):                json_order_claim['handle_reason'] = order_claim.find('handleReason').text.strip()
-                        if order_claim.find('handleDetailReason'):          json_order_claim['handle_detail_reason'] = order_claim.find('handleDetailReason').text.strip()
-                        if order_claim.find('handleDetailReasonShowFl'):    json_order_claim['fandle_detail_reason_show_fl'] = order_claim.find('handleDetailReasonShowFl').text.strip()
-                        if order_claim.find('handleDt'):                    json_order_claim['handle_dt'] = order_claim.find('handleDt').text.strip()
-                        if order_claim.find('refundPrice'):                 json_order_claim['refund_price'] = float(order_claim.find('refundPrice').text.strip())
-                        if order_claim.find('refundUseDeposit'):            json_order_claim['refund_use_deposit'] = order_claim.find('refundUseDeposit').text.strip()
-                        if order_claim.find('refundUseMileage'):            json_order_claim['refund_use_mileage'] = order_claim.find('refundUseMileage').text.strip()
-                        if order_claim.find('refundDeliveryUseDeposit'):    json_order_claim['refund_delivery_use_deposit'] = order_claim.find('refundDeliveryUseDeposit').text.strip()
-                        if order_claim.find('refundDeliveryUseMileage'):    json_order_claim['refund_delivery_use_mileage'] = order_claim.find('refundDeliveryUseMileage').text.strip()
-                        if order_claim.find('refundDeliveryCharge'):        json_order_claim['refund_delivery_charge'] = order_claim.find('refundDeliveryCharge').text.strip()
-                        if order_claim.find('refundDeliveryInsuranceFee'):  json_order_claim['refund_delivery_insurance_fee'] = order_claim.find('refundDeliveryInsuranceFee').text.strip()
-                        if order_claim.find('refundDeliveryCoupon'):        json_order_claim['refund_delivery_coupon'] = order_claim.find('refundDeliveryCoupon').text.strip()
-                        if order_claim.find('refundCharge'):                json_order_claim['refund_charge'] = order_claim.find('refundCharge').text.strip()
-                        if order_claim.find('refundUseDepositCommission'):  json_order_claim['refund_use_deposit_commission'] = order_claim.find('refundUseDepositCommission').text.strip()
-                        if order_claim.find('refundUseMileageCommission'):  json_order_claim['refund_use_mileage_commission'] = order_claim.find('refundUseMileageCommission').text.strip()
-                        if order_claim.find('handleGroupCd'):               json_order_claim['handle_group_cd'] = order_claim.find('handleGroupCd').text.strip()
-                        if order_claim.find('regDt'):                       json_order_claim['reg_dt'] = order_claim.find('regDt').text.strip()
-                        idx = idx +1
-                        order_doc.append('order_claim_data',
-                            json_order_claim
-                        )
+                        order_claim_data = order_goods_data.find_all('claimData')
+                        order_claim_seq = order_goods_data.select('claimData')
+                        json_order_claim={"order_sno":""}
+                        idx = 0
+                        for order_claim in order_claim_data:
+                            json_order_claim['order_sno'] =                cur_order_no +'-'+ order_goods_data.find('sno').text.strip()
+                            if order_claim.find('beforeStatus'):                json_order_claim['before_status'] = order_claim.find('beforeStatus').text.strip()
+                            if order_claim.find('handleMode'):                  json_order_claim['handle_mode'] = order_claim.find('handleMode').text.strip()
+                            if order_claim.find('handleCompleteFl'):            json_order_claim['handle_complete_fl'] = order_claim.find('handleCompleteFl').text.strip()
+                            if order_claim.find('handleReason'):                json_order_claim['handle_reason'] = order_claim.find('handleReason').text.strip()
+                            if order_claim.find('handleDetailReason'):          json_order_claim['handle_detail_reason'] = order_claim.find('handleDetailReason').text.strip()
+                            if order_claim.find('handleDetailReasonShowFl'):    json_order_claim['fandle_detail_reason_show_fl'] = order_claim.find('handleDetailReasonShowFl').text.strip()
+                            if order_claim.find('handleDt'):                    json_order_claim['handle_dt'] = order_claim.find('handleDt').text.strip()
+                            if order_claim.find('refundPrice'):                 json_order_claim['refund_price'] = float(order_claim.find('refundPrice').text.strip())
+                            if order_claim.find('refundUseDeposit'):            json_order_claim['refund_use_deposit'] = order_claim.find('refundUseDeposit').text.strip()
+                            if order_claim.find('refundUseMileage'):            json_order_claim['refund_use_mileage'] = order_claim.find('refundUseMileage').text.strip()
+                            if order_claim.find('refundDeliveryUseDeposit'):    json_order_claim['refund_delivery_use_deposit'] = order_claim.find('refundDeliveryUseDeposit').text.strip()
+                            if order_claim.find('refundDeliveryUseMileage'):    json_order_claim['refund_delivery_use_mileage'] = order_claim.find('refundDeliveryUseMileage').text.strip()
+                            if order_claim.find('refundDeliveryCharge'):        json_order_claim['refund_delivery_charge'] = order_claim.find('refundDeliveryCharge').text.strip()
+                            if order_claim.find('refundDeliveryInsuranceFee'):  json_order_claim['refund_delivery_insurance_fee'] = order_claim.find('refundDeliveryInsuranceFee').text.strip()
+                            if order_claim.find('refundDeliveryCoupon'):        json_order_claim['refund_delivery_coupon'] = order_claim.find('refundDeliveryCoupon').text.strip()
+                            if order_claim.find('refundCharge'):                json_order_claim['refund_charge'] = order_claim.find('refundCharge').text.strip()
+                            if order_claim.find('refundUseDepositCommission'):  json_order_claim['refund_use_deposit_commission'] = order_claim.find('refundUseDepositCommission').text.strip()
+                            if order_claim.find('refundUseMileageCommission'):  json_order_claim['refund_use_mileage_commission'] = order_claim.find('refundUseMileageCommission').text.strip()
+                            if order_claim.find('handleGroupCd'):               json_order_claim['handle_group_cd'] = order_claim.find('handleGroupCd').text.strip()
+                            if order_claim.find('regDt'):                       json_order_claim['reg_dt'] = order_claim.find('regDt').text.strip()
+                            idx = idx +1
+                            order_doc.append('order_claim_data',
+                                json_order_claim
+                            )
                     # parent.append("holidays", {
 					# 	'holiday_date': holiday_date,
 					# 	'description': holiday_name

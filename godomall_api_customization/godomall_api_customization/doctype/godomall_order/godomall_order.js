@@ -20,7 +20,7 @@ frappe.ui.form.on('Godomall Order', {
 
 					console.log(r)
 					//cur_frm.exchange_rate = r.message.exchange_rate;
-					if(r.message) {
+					if(r.message=='200') {
 						// code snippet
 						//frappe.msgprint();
 						frappe.msgprint({
@@ -37,6 +37,16 @@ frappe.ui.form.on('Godomall Order', {
 						return;
 						//cur_frm.set_value('exchange_rate',r.message.exchange_rate);
 						//cur_frm.exchange_rate = r.message.exchange_rate;
+
+						}else{
+							frappe.msgprint({
+								title: __('Current Order update failed'),
+								message: __('Current Order update failed')+r.message,
+								indicator: 'orange'
+							});
+							
+	
+							return;
 
 						}
 				}
@@ -61,6 +71,7 @@ frappe.ui.form.on('Godomall Order', {
 					callback: function(r) {
 
 						console.log(r)
+						if(r.message=='200') {
 						// code snippet
 						frappe.msgprint({
 							title: __('Today Order Created'),
@@ -69,6 +80,7 @@ frappe.ui.form.on('Godomall Order', {
 
 						});
 						frm.refresh();
+					}
 
 
 
@@ -88,7 +100,7 @@ frappe.ui.form.on('Godomall Order', {
 
 
 				frappe.call({
-					method: "godomall_api_customization.api.get_godomall_order", //dotted path to server method
+					method: "godomall_api_customization.api.get_godomall_order?date_type=modify&start_date="+today+"&end_date="+today, //dotted path to server method
 					kwargs: {
 						'date_type':'modify',
 						'start_date':today,
@@ -98,6 +110,7 @@ frappe.ui.form.on('Godomall Order', {
 					callback: function(r) {
 
 						console.log(r)
+						if(r.message=='200') {
 						// code snippet
 						frappe.msgprint({
 							title: __('Today Order Updated'),
@@ -105,6 +118,7 @@ frappe.ui.form.on('Godomall Order', {
 							indicator: 'orange'
 
 						});
+					}
 
 
 
@@ -131,7 +145,7 @@ frappe.ui.form.on('Godomall Order', {
 
 
 				frappe.call({
-					method: "godomall_api_customization.api.get_godomall_order", //dotted path to server method
+					method: "godomall_api_customization.api.get_godomall_order?date_type=order&start_date="+targetdate+"&end_date="+today, //dotted path to server method
 					kwargs: {
 						'date_type':'order',
 						'start_date':targetdate,
@@ -141,6 +155,7 @@ frappe.ui.form.on('Godomall Order', {
 					callback: function(r) {
 
 						console.log(r)
+						if(r.message=='200') {
 						// code snippet
 						frappe.msgprint({
 							title: __('Today Order Created'),
@@ -148,6 +163,7 @@ frappe.ui.form.on('Godomall Order', {
 							indicator: 'orange'
 
 						});
+					}
 
 
 
@@ -174,7 +190,7 @@ frappe.ui.form.on('Godomall Order', {
 
 
 				frappe.call({
-					method: "godomall_api_customization.api.get_godomall_order", //dotted path to server method
+					method: "godomall_api_customization.api.get_godomall_order?date_type=modify&start_date="+targetdate+"&end_date="+today, //dotted path to server method
 					kwargs: {
 						'date_type':'modify',
 						'start_date':targetdate,
@@ -185,12 +201,14 @@ frappe.ui.form.on('Godomall Order', {
 
 						console.log(r)
 						// code snippet
+						if(r.message=='200') {
 						frappe.msgprint({
 							title: __('Today Order Created'),
 							message: __('Godomall Today Modified Order Updated'),
 							indicator: 'orange'
 
 						});
+					}
 
 
 
@@ -217,7 +235,7 @@ frappe.ui.form.on('Godomall Order', {
 
 
 				frappe.call({
-					method: "godomall_api_customization.api.get_godomall_order", //dotted path to server method
+					method: "godomall_api_customization.api.get_godomall_order?date_type=order&start_date="+targetdate+"&end_date="+today, //dotted path to server method
 					kwargs: {
 						'date_type':'order',
 						'start_date':targetdate,
@@ -228,12 +246,14 @@ frappe.ui.form.on('Godomall Order', {
 
 						console.log(r)
 						// code snippet
+						if(r.message=='200') {
 						frappe.msgprint({
 							title: __('Today Order Created'),
 							message: __('Godomall Today Order Created'),
 							indicator: 'orange'
 
 						});
+					}
 
 
 
@@ -261,23 +281,19 @@ frappe.ui.form.on('Godomall Order', {
 
 
 				frappe.call({
-					method: "godomall_api_customization.api.get_godomall_order", //dotted path to server method
-					kwargs: {
-						'date_type':'modify',
-						'start_date':targetdate,
-						'end_date':today
-					},
-
+					method: "godomall_api_customization.api.get_godomall_order?date_type=modify&start_date="+targetdate+"&end_date="+today, //dotted path to server method
 					callback: function(r) {
 
 						console.log(r)
 						// code snippet
+						if(r.message=='200') {
 						frappe.msgprint({
 							title: __('Today Order Created'),
 							message: __('Godomall Today Modified Order Updated'),
 							indicator: 'orange'
 
 						});
+					}
 
 
 
