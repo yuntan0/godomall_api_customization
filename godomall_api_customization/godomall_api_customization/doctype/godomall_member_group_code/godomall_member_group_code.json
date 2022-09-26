@@ -14,7 +14,6 @@
   {
    "fieldname": "code",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Code",
    "reqd": 1,
    "unique": 1
@@ -30,7 +29,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-22 19:04:46.021952",
+ "modified": "2022-09-24 10:43:26.430808",
  "modified_by": "Administrator",
  "module": "Godomall Api Customization",
  "name": "Godomall Member Group Code",
@@ -50,11 +49,13 @@
    "write": 1
   }
  ],
+ "search_fields": "code_name",
  "show_name_in_global_search": 1,
  "show_preview_popup": 1,
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
+ "title_field": "code_name",
  "translated_doctype": 1
 }

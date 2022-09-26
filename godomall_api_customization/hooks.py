@@ -113,23 +113,28 @@ app_license = "MIT"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-#	"all": [
-#		"godomall_api_customization.tasks.all"
-#	],
-#	"daily": [
-#		"godomall_api_customization.tasks.daily"
-#	],
-#	"hourly": [
-#		"godomall_api_customization.tasks.hourly"
-#	],
-#	"weekly": [
-#		"godomall_api_customization.tasks.weekly"
-#	],
-#	"monthly": [
-#		"godomall_api_customization.tasks.monthly"
-#	],
-# }
+scheduler_events = {
+	"all": [
+		"godomall_api_customization.tasks.all"
+	],
+	"daily": [
+		"godomall_api_customization.tasks.daily"
+	],
+	"hourly": [
+		"godomall_api_customization.tasks.hourly"
+	],
+	"weekly": [
+		"godomall_api_customization.tasks.weekly"
+	],
+	"monthly": [
+		"godomall_api_customization.tasks.monthly"
+	],
+    "cron": {
+		"50 08 * * *": [
+			"godomall_api_customization.tasks.cron"
+		]
+	}
+}
 
 # Testing
 # -------
@@ -197,7 +202,8 @@ fixtures=[
 	 {"dt": "Client Script", "filters": [
         [
             "name", "in", [
-                "Godomall Order add button"
+                "Godomall Order add button",
+                "Godomall Goods Button"
             ]
         ]
     ]}

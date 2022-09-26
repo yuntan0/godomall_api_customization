@@ -1,0 +1,91 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "GDM-.YY.MM.DD.-.####",
+ "creation": "2022-09-25 00:18:21.539734",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "order_from_date",
+  "column_break_2",
+  "order_to_date",
+  "condition_section",
+  "order_status",
+  "column_break_6",
+  "status",
+  "result_section",
+  "result"
+ ],
+ "fields": [
+  {
+   "fieldname": "order_from_date",
+   "fieldtype": "Date",
+   "label": "Order From Date"
+  },
+  {
+   "fieldname": "order_to_date",
+   "fieldtype": "Date",
+   "label": "Order To Date"
+  },
+  {
+   "fieldname": "order_status",
+   "fieldtype": "Data",
+   "label": "Order Status"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Ready\nSuccess\nFailed"
+  },
+  {
+   "fieldname": "result",
+   "fieldtype": "Text",
+   "label": "Result"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "condition_section",
+   "fieldtype": "Section Break",
+   "label": "Condition"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "result_section",
+   "fieldtype": "Section Break",
+   "label": "Result"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-09-25 00:20:34.928423",
+ "modified_by": "Administrator",
+ "module": "Godomall Api Customization",
+ "name": "GodoMall Batch Job",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

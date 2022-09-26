@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from ast import Pass
 from urllib.request import urlopen
 import frappe
 import requests
@@ -12,24 +13,48 @@ import time
 # bench execute godomall_api_customization.api.get_godomall_goods_batch
 # bench execute godomall_api_customization.api.get_godomall_order  --kwargs "{'start_date':'2022-09-10','end_date':'2022-09-22','order_status':'r3','date_type':'modify'}"
 #  bench execute godomall_api_customization.api.get_godomall_goods --kwargs "{'page_no':'1'}"
-def get_godomall_goods_batch():
+@frappe.whitelist()
+def get_godomall_goods_batch_registered(**args):
+    days = 0
+    if args.get('days'):
+        days = int(args.get('days'))
+    else:
+        days=30
     print('start')
-    idx =0
-    max_page_cnt = 0
-    while idx <= max_page_cnt:
-        idx=idx+1
-        max_page_cnt = get_godomall_goods(page_no=str(idx),search_date_type="regDt")
-        print('start:'+str(idx)+"  Page:"+str(max_page_cnt))
-    print('end')
+    today = datetime.today()
+    yesterday = datetime.today() - timedelta(days)
+    start_date = yesterday.strftime('%Y-%m-%d')
+    end_date = today.strftime('%Y-%m-%d')
 
     idx =0
     max_page_cnt = 0
     while idx <= max_page_cnt:
         idx=idx+1
-        max_page_cnt = get_godomall_goods(page_no=str(idx),search_date_type="modDt")
+        max_page_cnt = get_godomall_goods(page_no=str(idx),search_date_type="regDt",start_date=start_date,end_date=end_date)
         print('start:'+str(idx)+"  Page:"+str(max_page_cnt))
     print('end')
 
+
+@frappe.whitelist()
+def get_godomall_goods_batch_modified(**args):
+    days = 0
+    if args.get('days'):
+        days = int(args.get('days'))
+    else:
+        days=30
+    print('start')
+    today = datetime.today()
+    yesterday = datetime.today() - timedelta(days)
+    start_date = yesterday.strftime('%Y-%m-%d')
+    end_date = today.strftime('%Y-%m-%d')
+
+    idx =0
+    max_page_cnt = 0
+    while idx <= max_page_cnt:
+        idx=idx+1
+        max_page_cnt = get_godomall_goods(page_no=str(idx),search_date_type="modDt",start_date=start_date,end_date=end_date)
+        print('start:'+str(idx)+"  Page:"+str(max_page_cnt))
+    print('end')
     
     
     # common_doc.common_doc.doctype.currency_exchange_rate.api.get_exchange_rate_all(exchange_date=today.strftime('%Y-%m-%d'))
@@ -41,16 +66,16 @@ def get_godomall_goods(**kwargs):
     start_date = kwargs.get('start_date')
     end_date = kwargs.get('end_date')
     search_date_type =  kwargs.get('search_date_type')
-    if not search_date_type:
-        search_date_type = "regDt"
-    else:
-        search_date_type = "modDt"
-    today = datetime.today()
-    yesterday = datetime.today() - timedelta(30)
-    if not start_date:
-        start_date = yesterday.strftime('%Y-%m-%d')
-    if not end_date:
-        end_date = today.strftime('%Y-%m-%d')
+    # if not search_date_type:
+    #     search_date_type = "regDt"
+    # else:
+    #     search_date_type = "modDt"
+    # today = datetime.today()
+    # yesterday = datetime.today() - timedelta(30)
+    # if not start_date:
+    #     start_date = yesterday.strftime('%Y-%m-%d')
+    # if not end_date:
+    #     end_date = today.strftime('%Y-%m-%d')
 
     
     secrets_file = os.path.join(os.getcwd(), 'secrets.json')
@@ -546,6 +571,7 @@ def get_godomall_order(**kwargs):
                 cur_order_no = order.find('orderNo').text.strip() 
                 if frappe.db.exists('Godomall Order',order.find("orderNo").text.strip()) :
                     order_doc = frappe.get_doc('Godomall Order',order.find("orderNo").text.strip())
+                    order_doc.order_date = "20"+ order.find('orderNo').text.strip()[0:6]
                     if order.find('memNo'):
                         order_doc.mem_no=order.find('memNo').text.strip()    #회원번호
                     if order.find('apiOrderGoodsNo'):
@@ -864,6 +890,7 @@ def get_godomall_order(**kwargs):
                     print(cur_order_no)
                     order_doc = frappe.new_doc('Godomall Order')
                     order_doc.order_no=order.find('orderNo').text.strip()    #주문번호
+                    order_doc.order_date = "20"+ order.find('orderNo').text.strip()[0:6]
                     if order.find('memNo'):
                         order_doc.mem_no=order.find('memNo').text.strip()    #회원번호
                     if order.find('apiOrderGoodsNo'):
@@ -1180,7 +1207,7 @@ def get_godomall_order(**kwargs):
                     )
         except IndexError:
             print("Godomall XML Parsing Error")
-    print(resp.status_code)
+    print(cur_order_no+":"+resp.status_code)
     print("".join(url))
     return resp.status_code
      
@@ -1355,3 +1382,18 @@ def get_common_member_group_code():
 
         except IndexError:
             print("Xml parsing Error")
+            
+def create_item():
+    goods_list = frappe.db.get_list('Godomall Goods master'
+    # ,filters=[ 
+	# 		['order_date', 'between', [batch_doc.order_from_date, batch_doc.order_to_date]]
+	# 		,['order_status','Not in',['s1','r3']]
+	# 	] 
+        , pluck='name')
+    for goods in goods_list:
+        if frappe.db.exists('Godomall Goods master',goods):
+            goods_doc = frappe.get_doc('Item',goods)
+        else:
+            goods_doc = frappe.new_doc('Item')
+            
+    

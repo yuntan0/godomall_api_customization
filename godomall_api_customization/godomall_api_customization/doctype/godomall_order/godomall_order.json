@@ -8,6 +8,7 @@
  "engine": "InnoDB",
  "field_order": [
   "order_no",
+  "order_date",
   "mem_no",
   "api_order_goods_no",
   "order_status",
@@ -334,11 +335,19 @@
    "fieldtype": "Table",
    "label": "Order Claim Data",
    "options": "Godomall Claim Data"
+  },
+  {
+   "fieldname": "order_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Date",
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-23 00:22:27.523308",
+ "modified": "2022-09-25 10:29:36.018593",
  "modified_by": "Administrator",
  "module": "Godomall Api Customization",
  "name": "Godomall Order",

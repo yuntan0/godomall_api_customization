@@ -37,6 +37,7 @@
   "goods_search_word",
   "goods_open_dt",
   "goods_state",
+  "parent_goods",
   "column_break_29",
   "goods_color",
   "brand_cd",
@@ -209,8 +210,9 @@
   },
   {
    "fieldname": "scm_no",
-   "fieldtype": "Data",
-   "label": "Scm No"
+   "fieldtype": "Link",
+   "label": "Scm No",
+   "options": "Godomall SCM No"
   },
   {
    "fieldname": "apply_fl",
@@ -720,11 +722,17 @@
   {
    "fieldname": "column_break_29",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "parent_goods",
+   "fieldtype": "Link",
+   "label": "Parent Goods",
+   "options": "Godomall Goods master"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-17 15:02:07.661514",
+ "modified": "2022-09-25 18:27:57.271825",
  "modified_by": "Administrator",
  "module": "Godomall Api Customization",
  "name": "Godomall Goods master",

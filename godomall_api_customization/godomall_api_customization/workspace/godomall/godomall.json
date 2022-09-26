@@ -1,0 +1,34 @@
+{
+ "charts": [],
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">GodoMall API</span>\",\"col\":12}},{\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Goods Master\",\"col\":4}},{\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Order\",\"col\":4}}]",
+ "creation": "2022-09-24 10:26:19.110382",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "table",
+ "idx": 0,
+ "label": "GodoMall",
+ "links": [],
+ "modified": "2022-09-24 10:45:50.138232",
+ "modified_by": "Administrator",
+ "module": "Godomall Api Customization",
+ "name": "GodoMall",
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [
+  {
+   "document_type": "Godomall Order",
+   "label": "Order"
+  },
+  {
+   "document_type": "Godomall Goods master",
+   "label": "Goods Master"
+  }
+ ],
+ "roles": [],
+ "sequence_id": 39.0,
+ "shortcuts": [],
+ "title": "GodoMall"
+}
