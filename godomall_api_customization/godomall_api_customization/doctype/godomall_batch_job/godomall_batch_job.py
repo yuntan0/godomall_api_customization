@@ -13,10 +13,11 @@ class GodoMallBatchJob(Document):
 				['order_date', 'between', [self.order_from_date, self.order_to_date]]
 				,['order_status','Not in',['s1','r3']]
 			] , pluck='name')
+			result =""
 			for order in order_list:
 				print(order)
-				godomall_api_customization.api.get_godomall_order(order_no=order)
-			
+				result += godomall_api_customization.api.get_godomall_order(order_no=order)
+			self.result = result
 
 			# godomall_api_customization.api.get_godomall_goods(page_no=str(idx),search_date_type="modDt")
 

@@ -1207,7 +1207,7 @@ def get_godomall_order(**kwargs):
                     )
         except IndexError:
             print("Godomall XML Parsing Error")
-    print(cur_order_no+":"+resp.status_code)
+    print(cur_order_no+":"+str(resp.status_code))
     print("".join(url))
     return resp.status_code
      
@@ -1391,9 +1391,23 @@ def create_item():
 	# 	] 
         , pluck='name')
     for goods in goods_list:
-        if frappe.db.exists('Godomall Goods master',goods):
+        if frappe.db.exists('Item',goods):
             goods_doc = frappe.get_doc('Item',goods)
         else:
-            goods_doc = frappe.new_doc('Item')
+            goods_doc = frappe.get_doc('Godomall Goods master',goods)
+            item_doc = frappe.new_doc('Item')
+            item_doc.item_code = goods_doc.goods_no
+            item_doc.item_name = goods_doc.goods_nm
+            item_doc.item_group = goods_doc.goods_no
+            item_doc.stock_uom = goods_doc.goods_no
+            item_doc.disabled = goods_doc.goods_no
+            item_doc.is_stock_item = 1
+            item_doc.item_code = goods_doc.goods_no
+            item_doc.item_code = goods_doc.goods_no
+            item_doc.item_code = goods_doc.goods_no
+            item_doc.item_code = goods_doc.goods_no
+            item_doc.item_code = goods_doc.goods_no
+            item_doc.item_code = goods_doc.goods_no
+            
             
     
