@@ -23,12 +23,17 @@ def all():
 	# frappe.db.commit()
 
 def daily():
+    today = datetime.today()
+    yesterday = datetime.today() - timedelta(1)
+    start_date = yesterday.strftime('%Y-%m-%d')
+    end_date = today.strftime('%Y-%m-%d')
     godomall_api_customization.api.get_godomall_goods_batch_registered(days=10)
     godomall_api_customization.api.get_godomall_goods_batch_modified(days=10)
+    godomall_api_customization.api.get_godomall_order(start_date=start_date,end_date=end_date,date_type='order')
 
 def hourly():
     batch_list = frappe.db.get_list('GodoMall Batch Job',filters=[ 
-			['status', 'Ready']	
+			['status','=', 'Ready']	
 	] , pluck='name')
     
     for batch in batch_list:
@@ -40,16 +45,31 @@ def hourly():
         result =""
         for order in order_list:
             print(order)
-            result += godomall_api_customization.api.get_godomall_order(order_no=order)
+            result += godomall_api_customization.api.get_godomall_order(order_no=order) +"/n"
         batch_doc.status = 'Success'
         batch_doc.result = result
         batch_doc.save()
 
 def weekly():
-	pass
+	godomall_api_customization.api.get_common_scm_code()
 
 def monthly():
 	pass
 
 def cron():
-    pass
+    today = datetime.today()
+    yesterday = datetime.today() - timedelta(1)
+    tendays = datetime.today() - timedelta(10)
+    start_date = yesterday.strftime('%Y-%m-%d')
+    end_date = today.strftime('%Y-%m-%d')
+    tendays_ago= tendays.strftime('%Y-%m-%d')
+    # godomall_api_customization.api.get_godomall_goods_batch_registered(days=2)
+    # godomall_api_customization.api.get_godomall_goods_batch_modified(days=2)
+    godomall_api_customization.api.get_godomall_order(start_date=start_date,end_date=end_date,date_type='order')
+    order_list = frappe.db.get_list('Godomall Order', filters=[ 
+			['order_date', 'between', [tendays_ago, end_date]]
+			,['order_status','Not in',['s1','r3']]
+		] , pluck='name')
+    for order in order_list:
+        # print(order)
+        godomall_api_customization.api.get_godomall_order(order_no=order) 

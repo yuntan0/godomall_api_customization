@@ -1,0 +1,191 @@
+{
+ "actions": [],
+ "autoname": "field:goods_opt_no",
+ "creation": "2022-09-26 17:32:49.395036",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "goods_opt_no",
+  "sno",
+  "option_value1",
+  "option_value2",
+  "option_value3",
+  "option_value4",
+  "option_value5",
+  "option_price",
+  "option_cost_price",
+  "option_view_fl",
+  "option_sell_fl",
+  "option_sell_code",
+  "option_delivery_fl",
+  "option_delivery_code",
+  "option_code",
+  "stock_cnt",
+  "prev_total_stock_chk",
+  "sell_stop_fl",
+  "sell_stop_stock",
+  "confirm_request_fl",
+  "confirm_request_stock",
+  "option_memo",
+  "delivery_sms_sent",
+  "reg_dt",
+  "mod_dt",
+  "option_image"
+ ],
+ "fields": [
+  {
+   "fieldname": "goods_opt_no",
+   "fieldtype": "Data",
+   "label": "Goods Opt No",
+   "unique": 1
+  },
+  {
+   "fieldname": "option_value1",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Option Value1"
+  },
+  {
+   "fieldname": "option_value2",
+   "fieldtype": "Data",
+   "label": "Option Value2"
+  },
+  {
+   "fieldname": "option_value3",
+   "fieldtype": "Data",
+   "label": "Option Value3"
+  },
+  {
+   "fieldname": "option_value4",
+   "fieldtype": "Data",
+   "label": "Option Value4"
+  },
+  {
+   "fieldname": "option_value5",
+   "fieldtype": "Data",
+   "label": "Option Value5"
+  },
+  {
+   "fieldname": "option_price",
+   "fieldtype": "Currency",
+   "label": "Option Price"
+  },
+  {
+   "fieldname": "option_cost_price",
+   "fieldtype": "Currency",
+   "label": "Option Cost Price"
+  },
+  {
+   "fieldname": "option_view_fl",
+   "fieldtype": "Select",
+   "label": "Option View Fl",
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "option_sell_fl",
+   "fieldtype": "Select",
+   "label": "Option Sell Fl",
+   "options": "\ny\nn"
+  },
+  {
+   "fieldname": "option_sell_code",
+   "fieldtype": "Data",
+   "label": "Option Sell Code"
+  },
+  {
+   "fieldname": "option_delivery_fl",
+   "fieldtype": "Data",
+   "label": "Option Delivery Fl"
+  },
+  {
+   "fieldname": "option_delivery_code",
+   "fieldtype": "Data",
+   "label": "Option Delivery Code"
+  },
+  {
+   "fieldname": "option_code",
+   "fieldtype": "Data",
+   "label": "Option Code"
+  },
+  {
+   "fieldname": "stock_cnt",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Stock Cnt"
+  },
+  {
+   "fieldname": "prev_total_stock_chk",
+   "fieldtype": "Date",
+   "label": "Prev Total Stock Chk"
+  },
+  {
+   "fieldname": "sell_stop_fl",
+   "fieldtype": "Data",
+   "label": "Sell Stop Fl"
+  },
+  {
+   "fieldname": "sell_stop_stock",
+   "fieldtype": "Data",
+   "label": "Sell Stop Stock"
+  },
+  {
+   "fieldname": "confirm_request_fl",
+   "fieldtype": "Data",
+   "label": "Confirm Request Fl"
+  },
+  {
+   "fieldname": "confirm_request_stock",
+   "fieldtype": "Data",
+   "label": "Confirm Request Stock"
+  },
+  {
+   "fieldname": "option_memo",
+   "fieldtype": "Data",
+   "label": "Option Memo",
+   "length": 250
+  },
+  {
+   "fieldname": "delivery_sms_sent",
+   "fieldtype": "Data",
+   "label": "Delivery Sms Sent"
+  },
+  {
+   "fieldname": "reg_dt",
+   "fieldtype": "Datetime",
+   "label": "Reg Dt"
+  },
+  {
+   "fieldname": "mod_dt",
+   "fieldtype": "Datetime",
+   "label": "Mod Dt"
+  },
+  {
+   "fieldname": "option_image",
+   "fieldtype": "Data",
+   "label": "Option Image",
+   "length": 250
+  },
+  {
+   "fieldname": "sno",
+   "fieldtype": "Data",
+   "label": "SNO"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-09-26 22:58:07.138897",
+ "modified_by": "Administrator",
+ "module": "Godomall Api Customization",
+ "name": "Godomall Goods Option",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

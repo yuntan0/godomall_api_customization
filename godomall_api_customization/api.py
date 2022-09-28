@@ -19,7 +19,7 @@ def get_godomall_goods_batch_registered(**args):
     if args.get('days'):
         days = int(args.get('days'))
     else:
-        days=30
+        days=600
     print('start')
     today = datetime.today()
     yesterday = datetime.today() - timedelta(days)
@@ -62,10 +62,7 @@ def get_godomall_goods_batch_modified(**args):
 
 @frappe.whitelist()
 def get_godomall_goods(**kwargs):
-    page_no = kwargs.get('page_no')
-    start_date = kwargs.get('start_date')
-    end_date = kwargs.get('end_date')
-    search_date_type =  kwargs.get('search_date_type')
+    
     # if not search_date_type:
     #     search_date_type = "regDt"
     # else:
@@ -92,15 +89,28 @@ def get_godomall_goods(**kwargs):
     url.append("&key=")
     url.append(secrets["godomall_user_key"])
 
-    url.append("&searchDateType=")
-    url.append(search_date_type)
-    url.append("&startDate=")
-    url.append(start_date)
-    url.append("&endDate=")
-    url.append(end_date)
-    url.append('&size=100')
-    url.append("&page=")
-    url.append(page_no)
+    if kwargs.get('goods_no'):
+        url.append('&goodsNo=')
+        url.append(kwargs.get('goods_no'))
+    if  kwargs.get('page_no'):
+        url.append("&page=")
+        url.append( kwargs.get('page_no'))
+    
+    if  kwargs.get('search_date_type'):
+        start_date = kwargs.get('start_date')
+        end_date = kwargs.get('end_date')
+        search_date_type =  kwargs.get('search_date_type')
+        url.append("&searchDateType=")
+        url.append(search_date_type)
+        url.append("&startDate=")
+        url.append(start_date)
+        url.append("&endDate=")
+        url.append(end_date)
+        url.append('&size=100')
+
+    
+    
+    
 
     print("".join(url))
 
@@ -125,6 +135,7 @@ def get_godomall_goods(**kwargs):
                 print(max_page_cnt)
                 goods_list = soup.find_all("goods_data")
                 for goods in goods_list:
+                    curr_goods_no = goods.find("goodsNo").text.strip()
                     if frappe.db.exists('Godomall Goods master',goods.find("goodsNo").text.strip()):
                         goods_doc = frappe.get_doc('Godomall Goods master',goods.find("goodsNo").text.strip())
                         goods_doc.goods_nm_fl=goods.find('goodsNmFl').text.strip()
@@ -311,6 +322,68 @@ def get_godomall_goods(**kwargs):
                             goods_doc.mod_dt=goods.find('modDt').text.strip()
                         if goods.find('seoTagFl'): 
                             goods_doc.seo_tag_fl=goods.find('seoTagFl').text.strip()
+
+                        goods_options = goods.find_all('optionData')
+                        json_options={}
+                        for option in goods_options:
+                            if frappe.db.exists('Godomall Goods Option',curr_goods_no + '-' +option.find('optionNo').text.strip()):
+                                goods_doc.option_doc = frappe.get_doc('Godomall Goods Option',curr_goods_no + '-' +option.find('optionNo').text.strip())
+                                if option.find('sno'):                  goods_doc.option_doc.sno = option.find('sno').text.strip()
+                                if option.find('optionNo'):             goods_doc.option_doc.option_no = option.find('optionNo').text.strip()
+                                if option.find('optionValue1'):         goods_doc.option_doc.option_value1= option.find('optionValue1').text.strip()
+                                if option.find('optionValue2'):         goods_doc.option_doc.option_value2= option.find('optionValue2').text.strip()
+                                if option.find('optionValue3'):         goods_doc.option_doc.option_value3= option.find('optionValue3').text.strip()
+                                if option.find('optionValue4'):         goods_doc.option_doc.option_value4= option.find('optionValue4').text.strip()
+                                if option.find('optionValue5'):         goods_doc.option_doc.option_value5= option.find('optionValue5').text.strip()
+                                if option.find('optionPrice'):          goods_doc.option_doc.option_price= float(option.find('optionPrice').text.strip())
+                                if option.find('optionCostPrice'):      goods_doc.option_doc.option_cost_price= float(option.find('optionCostPrice').text.strip())
+                                if option.find('optionViewFl'):         goods_doc.option_doc.option_view_fl= option.find('optionViewFl').text.strip()
+                                if option.find('optionSellFl'):         goods_doc.option_doc.option_sell_fl= option.find('optionSellFl').text.strip()
+                                if option.find('optionSellCode'):       goods_doc.option_doc.option_sell_code= option.find('optionSellCode').text.strip()
+                                if option.find('optionDeliveryFl'):     goods_doc.option_doc.option_delivery_fl= option.find('optionDeliveryFl').text.strip()
+                                if option.find('optionDeliveryCode'):   goods_doc.option_doc.option_delivery_code= option.find('optionDeliveryCode').text.strip()
+                                if option.find('optionCode'):           goods_doc.option_doc.option_code= option.find('optionCode').text.strip()
+                                if option.find('stockCnt'):             goods_doc.option_doc.stock_cnt= int(option.find('stockCnt').text.strip())
+                                if option.find('prevTotalStockChk'):    goods_doc.option_doc.prev_total_stock_chk= option.find('prevTotalStockChk').text.strip()
+                                if option.find('sellStopFl'):           goods_doc.option_doc.sell_stop_fl= option.find('sellStopFl').text.strip()
+                                if option.find('sellStopStock'):        goods_doc.option_doc.sell_stop_stock= option.find('sellStopStock').text.strip()
+                                if option.find('confirmRequestStock'):  goods_doc.option_doc.confirm_request_stock= option.find('confirmRequestStock').text.strip()
+                                if option.find('optionMemo'):           goods_doc.option_doc.option_memo= option.find('optionMemo').text.strip()
+                                if option.find('deliverySmsSent'):      goods_doc.option_doc.delivery_sms_sent= option.find('deliverySmsSent').text.strip()
+                                if option.find('optionImage'):          goods_doc.option_doc.option_image= option.find('optionImage').text.strip()
+                                if option.find('regDt'):                goods_doc.option_doc.reg_dt= option.find('regDt').text.strip()
+                                if option.find('modDt'):                goods_doc.option_doc.mod_dt= option.find('modDt').text.strip()
+                            else:
+                                json_options['goods_opt_no'] = curr_goods_no +'-'+ option.find('optionNo').text.strip()
+                                if option.find('sno'):                  json_options['sno'] = option.find('sno').text.strip()
+                                if option.find('optionNo'):             json_options['option_no'] = option.find('optionNo').text.strip()
+                                if option.find('optionValue1'):         json_options['option_value1'] = option.find('optionValue1').text.strip()
+                                if option.find('optionValue2'):         json_options['option_value2'] = option.find('optionValue2').text.strip()
+                                if option.find('optionValue3'):         json_options['option_value3'] = option.find('optionValue3').text.strip()
+                                if option.find('optionValue4'):         json_options['option_value4'] = option.find('optionValue4').text.strip()
+                                if option.find('optionValue5'):         json_options['option_value5'] = option.find('optionValue5').text.strip()
+                                if option.find('optionPrice'):          json_options['option_price'] = float(option.find('optionPrice').text.strip())
+                                if option.find('optionCostPrice'):      json_options['option_cost_price'] = float(option.find('optionCostPrice').text.strip())
+                                if option.find('optionViewFl'):         json_options['option_view_fl'] = option.find('optionViewFl').text.strip()
+                                if option.find('optionSellFl'):         json_options['option_sell_fl'] = option.find('optionSellFl').text.strip()
+                                if option.find('optionSellCode'):       json_options['option_sell_code'] = option.find('optionSellCode').text.strip()
+                                if option.find('optionDeliveryFl'):     json_options['option_delivery_fl'] = option.find('optionDeliveryFl').text.strip()
+                                if option.find('optionDeliveryCode'):   json_options['option_delivery_code'] = option.find('optionDeliveryCode').text.strip()
+                                if option.find('optionCode'):           json_options['option_code'] = option.find('optionCode').text.strip()
+                                if option.find('stockCnt'):             json_options['stock_cnt'] = int(option.find('stockCnt').text.strip())
+                                if option.find('prevTotalStockChk'):    json_options['prev_total_stock_chk'] = option.find('prevTotalStockChk').text.strip()
+                                if option.find('sellStopFl'):           json_options['sell_stop_fl'] = option.find('sellStopFl').text.strip()
+                                if option.find('sellStopStock'):        json_options['sell_stop_stock'] = option.find('sellStopStock').text.strip()
+                                if option.find('confirmRequestStock'):  json_options['confirm_request_stock'] = option.find('confirmRequestStock').text.strip()
+                                if option.find('optionMemo'):           json_options['option_memo'] = option.find('optionMemo').text.strip()
+                                if option.find('deliverySmsSent'):      json_options['delivery_sms_sent'] = option.find('deliverySmsSent').text.strip()
+                                if option.find('optionImage'):          json_options['option_image'] = option.find('optionImage').text.strip()
+                                if option.find('regDt'):                json_options['reg_dt'] = option.find('regDt').text.strip()
+                                if option.find('modDt'):                json_options['mod_dt'] = option.find('modDt').text.strip()
+                                goods_doc.append('goods_option',
+                                    json_options
+                                )
+
                         goods_doc.save(
                                         ignore_permissions=True, # ignore write permissions during insert
                                         ignore_version=True # do not create a version record
@@ -491,6 +564,67 @@ def get_godomall_goods(**kwargs):
                             goods_doc.mod_dt=goods.find('modDt').text.strip()
                         if goods.find('seoTagFl'): 
                             goods_doc.seo_tag_fl=goods.find('seoTagFl').text.strip()
+                        
+                        goods_options = goods.find_all('optionData')
+                        json_options={}
+                        for option in goods_options:
+                            if frappe.db.exists('Godomall Goods Option',curr_goods_no + '-' +option.find('optionNo').text.strip()):
+                                goods_doc.option_doc = frappe.get_doc('Godomall Goods Option',curr_goods_no + '-' +option.find('optionNo').text.strip())
+                                if option.find('sno'):                  goods_doc.option_doc.sno = option.find('sno').text.strip()
+                                if option.find('optionNo'):             goods_doc.option_doc.option_no = option.find('optionNo').text.strip()
+                                if option.find('optionValue1'):         goods_doc.option_doc.option_value1= option.find('optionValue1').text.strip()
+                                if option.find('optionValue2'):         goods_doc.option_doc.option_value2= option.find('optionValue2').text.strip()
+                                if option.find('optionValue3'):         goods_doc.option_doc.option_value3= option.find('optionValue3').text.strip()
+                                if option.find('optionValue4'):         goods_doc.option_doc.option_value4= option.find('optionValue4').text.strip()
+                                if option.find('optionValue5'):         goods_doc.option_doc.option_value5= option.find('optionValue5').text.strip()
+                                if option.find('optionPrice'):          goods_doc.option_doc.option_price= float(option.find('optionPrice').text.strip())
+                                if option.find('optionCostPrice'):      goods_doc.option_doc.option_cost_price= float(option.find('optionCostPrice').text.strip())
+                                if option.find('optionViewFl'):         goods_doc.option_doc.option_view_fl= option.find('optionViewFl').text.strip()
+                                if option.find('optionSellFl'):         goods_doc.option_doc.option_sell_fl= option.find('optionSellFl').text.strip()
+                                if option.find('optionSellCode'):       goods_doc.option_doc.option_sell_code= option.find('optionSellCode').text.strip()
+                                if option.find('optionDeliveryFl'):     goods_doc.option_doc.option_delivery_fl= option.find('optionDeliveryFl').text.strip()
+                                if option.find('optionDeliveryCode'):   goods_doc.option_doc.option_delivery_code= option.find('optionDeliveryCode').text.strip()
+                                if option.find('optionCode'):           goods_doc.option_doc.option_code= option.find('optionCode').text.strip()
+                                if option.find('stockCnt'):             goods_doc.option_doc.stock_cnt= int(option.find('stockCnt').text.strip())
+                                if option.find('prevTotalStockChk'):    goods_doc.option_doc.prev_total_stock_chk= option.find('prevTotalStockChk').text.strip()
+                                if option.find('sellStopFl'):           goods_doc.option_doc.sell_stop_fl= option.find('sellStopFl').text.strip()
+                                if option.find('sellStopStock'):        goods_doc.option_doc.sell_stop_stock= option.find('sellStopStock').text.strip()
+                                if option.find('confirmRequestStock'):  goods_doc.option_doc.confirm_request_stock= option.find('confirmRequestStock').text.strip()
+                                if option.find('optionMemo'):           goods_doc.option_doc.option_memo= option.find('optionMemo').text.strip()
+                                if option.find('deliverySmsSent'):      goods_doc.option_doc.delivery_sms_sent= option.find('deliverySmsSent').text.strip()
+                                if option.find('optionImage'):          goods_doc.option_doc.option_image= option.find('optionImage').text.strip()
+                                if option.find('regDt'):                goods_doc.option_doc.reg_dt= option.find('regDt').text.strip()
+                                if option.find('modDt'):                goods_doc.option_doc.mod_dt= option.find('modDt').text.strip()
+                            else:
+                                json_options['goods_opt_no'] = curr_goods_no +'-'+ option.find('optionNo').text.strip()
+                                if option.find('sno'):                  json_options['sno'] = option.find('sno').text.strip()
+                                if option.find('optionNo'):             json_options['option_no'] = option.find('optionNo').text.strip()
+                                if option.find('optionValue1'):         json_options['option_value1'] = option.find('optionValue1').text.strip()
+                                if option.find('optionValue2'):         json_options['option_value2'] = option.find('optionValue2').text.strip()
+                                if option.find('optionValue3'):         json_options['option_value3'] = option.find('optionValue3').text.strip()
+                                if option.find('optionValue4'):         json_options['option_value4'] = option.find('optionValue4').text.strip()
+                                if option.find('optionValue5'):         json_options['option_value5'] = option.find('optionValue5').text.strip()
+                                if option.find('optionPrice'):          json_options['option_price'] = float(option.find('optionPrice').text.strip())
+                                if option.find('optionCostPrice'):      json_options['option_cost_price'] = float(option.find('optionCostPrice').text.strip())
+                                if option.find('optionViewFl'):         json_options['option_view_fl'] = option.find('optionViewFl').text.strip()
+                                if option.find('optionSellFl'):         json_options['option_sell_fl'] = option.find('optionSellFl').text.strip()
+                                if option.find('optionSellCode'):       json_options['option_sell_code'] = option.find('optionSellCode').text.strip()
+                                if option.find('optionDeliveryFl'):     json_options['option_delivery_fl'] = option.find('optionDeliveryFl').text.strip()
+                                if option.find('optionDeliveryCode'):   json_options['option_delivery_code'] = option.find('optionDeliveryCode').text.strip()
+                                if option.find('optionCode'):           json_options['option_code'] = option.find('optionCode').text.strip()
+                                if option.find('stockCnt'):             json_options['stock_cnt'] = int(option.find('stockCnt').text.strip())
+                                if option.find('prevTotalStockChk'):    json_options['prev_total_stock_chk'] = option.find('prevTotalStockChk').text.strip()
+                                if option.find('sellStopFl'):           json_options['sell_stop_fl'] = option.find('sellStopFl').text.strip()
+                                if option.find('sellStopStock'):        json_options['sell_stop_stock'] = option.find('sellStopStock').text.strip()
+                                if option.find('confirmRequestStock'):  json_options['confirm_request_stock'] = option.find('confirmRequestStock').text.strip()
+                                if option.find('optionMemo'):           json_options['option_memo'] = option.find('optionMemo').text.strip()
+                                if option.find('deliverySmsSent'):      json_options['delivery_sms_sent'] = option.find('deliverySmsSent').text.strip()
+                                if option.find('optionImage'):          json_options['option_image'] = option.find('optionImage').text.strip()
+                                if option.find('regDt'):                json_options['reg_dt'] = option.find('regDt').text.strip()
+                                if option.find('modDt'):                json_options['mod_dt'] = option.find('modDt').text.strip()
+                                goods_doc.append('goods_option',
+                                    json_options
+                                )
 
                         goods_doc.insert(ignore_permissions=True, # ignore write permissions during insert
                                         ignore_links=True
@@ -703,6 +837,7 @@ def get_godomall_order(**kwargs):
 
                     for order_info_data in order_info_data_list:
                         order_doc.order_info_doc = frappe.get_doc('Godomall Order Info Data',cur_order_no +'-'+ order_seq[idx]['idx'])
+                        idx = idx+1
                         if order_info_data.find('orderName'):	order_doc.order_info_doc.order_name = order_info_data.find('orderName').text.strip()
                         if order_info_data.find('orderEmail'):	order_doc.order_info_doc.order_email= order_info_data.find('orderEmail').text.strip()
                         if order_info_data.find('orderCellPhone'):	order_doc.order_info_doc.order_cell_phone= order_info_data.find('orderCellPhone').text.strip()
@@ -1209,9 +1344,9 @@ def get_godomall_order(**kwargs):
             print("Godomall XML Parsing Error")
     print(cur_order_no+":"+str(resp.status_code))
     print("".join(url))
-    return resp.status_code
+    return cur_order_no+":"+str(resp.status_code)+"/n"
      
-
+@frappe.whitelist()
 def get_common_scm_code():
     secrets_file = os.path.join(os.getcwd(), 'secrets.json')
     with open(secrets_file) as f:
@@ -1231,6 +1366,7 @@ def get_common_scm_code():
     # https://openhub.godo.co.kr/godomall5/common/Code_Search.php?partner_key=JUQ2JTg1JUJCQVklRjAlMjYlOTc=&key=JUY1JUI0JUNGJTdGSCUxQlUlMkElRkMlRDIlQjIlRDZYJUIzbGElMUMlMjclMjhnJUExJTk5JTlBLiVCRiVBNCU5MyU5NSU5RCU5RCVFQSVBOSU1RSVBQzYlRTQlQUElMDAlMUFw&code_type=scm
 # bench execute godomall_api_customization.api.get_common_scm_code
     resp = requests.get("".join(url))
+    print("".join(url))
     if (resp.status_code == 200):
         # print(resp)
         xml_common_code = resp.content
@@ -1247,6 +1383,32 @@ def get_common_scm_code():
                         scm_doc.code = common_code.find('scmNo').text.strip()
                         if common_code.find('companyNm'):
                             scm_doc.code_name=common_code.find('companyNm').text.strip()
+                        
+                        if frappe.db.exists('Supplier',common_code.find("scmNo").text.strip()):
+                            supplier_doc = frappe.get_doc('Supplier',common_code.find("scmNo").text.strip())
+                            supplier_doc.supplier_name = common_code.find('companyNm').text.strip()
+                            supplier_doc.country = 'Korea, Republic of'
+                            supplier_doc.supplier_group ='Distributor'
+                            supplier_doc.supplier_type = 'Company'
+                            supplier_doc.save(
+                                        ignore_permissions=True, # ignore write permissions during insert
+                                        ignore_version=True # do not create a version record
+                                    )
+                        else:
+                            supplier_doc = frappe.new_doc('Supplier')
+                            supplier_doc.name = common_code.find('scmNo').text.strip()
+                            supplier_doc.supplier_name = common_code.find('companyNm').text.strip()
+                            supplier_doc.country = 'Korea, Republic of'
+                            supplier_doc.supplier_group ='Distributor'
+                            supplier_doc.supplier_type = 'Company'
+                            supplier_doc.insert(ignore_permissions=True, # ignore write permissions during insert
+                                        ignore_links=True
+                                        )
+
+                        supplier_doc.supplier_name = common_code.find('companyNm').text.strip()
+                        supplier_doc.country = 'Korea, Republic of'
+                        supplier_doc.supplier_group ='Distributor'
+                        supplier_doc.supplier_type = 'Company'
                        
                         scm_doc.save(
                                         ignore_permissions=True, # ignore write permissions during insert
@@ -1254,21 +1416,35 @@ def get_common_scm_code():
                                     )
                         frappe.db.commit()
 
+
                     else:
                         scm_doc = frappe.new_doc('Godomall SCM No')
                         scm_doc.code = common_code.find('scmNo').text.strip()
                         if common_code.find('companyNm'):
                             scm_doc.code_name=common_code.find('companyNm').text.strip()
                         
+                        supplier_doc = frappe.new_doc('Supplier')
+                        supplier_doc.name = common_code.find('scmNo').text.strip()
+                        supplier_doc.supplier_name = common_code.find('companyNm').text.strip()
+                        supplier_doc.country = 'Korea, Republic of'
+                        supplier_doc.supplier_group ='Distributor'
+                        supplier_doc.supplier_type = 'Company'
 
+                        supplier_doc.insert(ignore_permissions=True, # ignore write permissions during insert
+                                        ignore_links=True
+                                        )
+                        
                         scm_doc.insert(ignore_permissions=True, # ignore write permissions during insert
                                         ignore_links=True
                                         )
                         frappe.db.commit()
+        
 
         except IndexError:
             print("Xml parsing Error")
+    return resp.status_code
 
+@frappe.whitelist()
 def get_common_delivery_code():
     secrets_file = os.path.join(os.getcwd(), 'secrets.json')
     with open(secrets_file) as f:
@@ -1289,6 +1465,7 @@ def get_common_delivery_code():
 # bench execute godomall_api_customization.api.get_common_delivery_code
     resp = requests.get("".join(url))
     if (resp.status_code == 200):
+
         # print(resp)
         xml_common_code = resp.content
         soup = BeautifulSoup(xml_common_code,"xml")
@@ -1325,7 +1502,7 @@ def get_common_delivery_code():
 
         except IndexError:
             print("Xml parsing Error")
-
+@frappe.whitelist()
 def get_common_member_group_code():
     secrets_file = os.path.join(os.getcwd(), 'secrets.json')
     with open(secrets_file) as f:
@@ -1382,32 +1559,197 @@ def get_common_member_group_code():
 
         except IndexError:
             print("Xml parsing Error")
-            
-def create_item():
+
+@frappe.whitelist()           
+def create_update_item():
     goods_list = frappe.db.get_list('Godomall Goods master'
-    # ,filters=[ 
-	# 		['order_date', 'between', [batch_doc.order_from_date, batch_doc.order_to_date]]
-	# 		,['order_status','Not in',['s1','r3']]
-	# 	] 
+    ,filters=[ 
+			['docstatus','=', '1' ]
+			,['parent_goods','=','']
+		] 
         , pluck='name')
     for goods in goods_list:
-        if frappe.db.exists('Item',goods):
-            goods_doc = frappe.get_doc('Item',goods)
+        if frappe.db.exists('Godomall Goods Option',{"parent": goods}):
+
+            option_list = frappe.db.get_list('Godomall Goods Option',{"parent": goods} , pluck='name')
+            goods_doc = frappe.get_doc('Godomall Goods master',goods)
+
+            for option in option_list:
+                if frappe.db.exists('Item',option):
+                    option_doc1 = frappe.get_doc('Godomall Goods Option',option)
+                    item_doc = frappe.get_doc('Item',option)
+                    itm_name =goods_doc.goods_nm 
+                    if option_doc1.option_value1:
+                        itm_name=itm_name +"-"+ option_doc1.option_value1
+                    
+                    if option_doc1.option_value2:
+                        itm_name=itm_name +"-"+ option_doc1.option_value2
+
+                    if option_doc1.option_value3:
+                        itm_name=itm_name +"-"+ option_doc1.option_value3
+
+                    if option_doc1.option_value4:
+                        itm_name=itm_name +"-"+ option_doc1.option_value4
+
+                    if option_doc1.option_value5:
+                        itm_name=itm_name +"-"+ option_doc1.option_value5
+
+                    item_doc.item_name = itm_name
+                    item_doc.item_group = goods_doc.goods_cd
+                    item_doc.stock_uom = 'EA'
+                    item_doc.disabled = 0
+                    item_doc.godo_mall_goods_no =  goods_doc.goods_no
+                    if goods_doc.goods_cd == "맛집":
+                        item_doc.is_stock_item = 1
+                        item_doc.item_group = goods_doc.goods_cd
+                    elif goods_doc.goods_cd == "공동구매":
+                        item_doc.is_stock_item = 1
+                        item_doc.item_group = goods_doc.goods_cd
+                    elif goods_doc.goods_cd == "직매입":
+                        item_doc.is_stock_item = 1
+                        item_doc.item_group = goods_doc.goods_cd
+                    else:
+                        item_doc.is_stock_item = 0
+                        item_doc.item_group = "위탁"
+                    # item_doc.opening_stock = goods_doc.goods_no
+                    item_doc.is_fixed_asset = 0
+                    item_doc.description = goods_doc.goods_search_word
+                    item_doc.valuation_method = 'Moving Average'
+                    
+
+                    item_doc.purchase_uom = 'EA'
+                    item_doc.sales_uom = 'EA'
+                    item_doc.is_purchase_item = 1
+                    item_doc.is_sales_item = 1
+                    item_doc.save()
+                    # update
+                else:
+                    item_doc = frappe.new_doc('Item')
+                    item_doc.name = option
+                    item_doc.item_code = option
+                    item_doc.item_name = goods_doc.goods_nm
+                    item_doc.item_group = goods_doc.goods_cd
+                    item_doc.stock_uom = 'EA'
+                    item_doc.disabled = 0
+                    item_doc.godo_mall_goods_no =  goods_doc.goods_no
+                    if goods_doc.goods_cd == "맛집":
+                        item_doc.is_stock_item = 1
+                        item_doc.item_group = goods_doc.goods_cd
+                    elif goods_doc.goods_cd == "공동구매":
+                        item_doc.is_stock_item = 1
+                        item_doc.item_group = goods_doc.goods_cd
+                    elif goods_doc.goods_cd == "직매입":
+                        item_doc.is_stock_item = 1
+                        item_doc.item_group = goods_doc.goods_cd
+                    else:
+                        item_doc.is_stock_item = 0
+                        item_doc.item_group = "위탁"
+                    # item_doc.opening_stock = goods_doc.goods_no
+                    item_doc.is_fixed_asset = 0
+                    item_doc.description = goods_doc.goods_search_word
+                    item_doc.valuation_method = 'Moving Average'
+                    json_item_defaults={}
+                    json_item_defaults['company'] = 'Thingool'
+                    json_item_defaults['default_warehouse'] = '통합물류센터 - TG'
+                    json_item_defaults['default_price_list'] = 'Standard Selling'
+                    json_item_defaults['default_discount_account'] = ''
+                    json_item_defaults['buying_cost_center'] = 'Main - TG'
+                    json_item_defaults['default_supplier'] = goods_doc.scm_no
+                    json_item_defaults['expense_account'] = '5111 - Cost of Goods Sold - TG'
+                    json_item_defaults['selling_cost_center'] = 'Main - TG'
+                    json_item_defaults['income_account'] = '4110 - Sales - TG'
+                    item_doc.append('item_defaults',
+                                json_item_defaults
+                            )
+                    item_doc.purchase_uom = 'EA'
+                    item_doc.sales_uom = 'EA'
+                    item_doc.is_purchase_item = 1
+                    item_doc.is_sales_item = 1
+                    item_doc.insert(ignore_permissions=True, # ignore write permissions during insert
+                                            ignore_links=True
+                                            )
+                    pass
+                    # insert
+
         else:
             goods_doc = frappe.get_doc('Godomall Goods master',goods)
-            item_doc = frappe.new_doc('Item')
-            item_doc.item_code = goods_doc.goods_no
-            item_doc.item_name = goods_doc.goods_nm
-            item_doc.item_group = goods_doc.goods_no
-            item_doc.stock_uom = goods_doc.goods_no
-            item_doc.disabled = goods_doc.goods_no
-            item_doc.is_stock_item = 1
-            item_doc.item_code = goods_doc.goods_no
-            item_doc.item_code = goods_doc.goods_no
-            item_doc.item_code = goods_doc.goods_no
-            item_doc.item_code = goods_doc.goods_no
-            item_doc.item_code = goods_doc.goods_no
-            item_doc.item_code = goods_doc.goods_no
-            
-            
+            if frappe.db.exists('Item',goods):
+                item_doc = frappe.get_doc('Item',goods)
+                item_doc.item_code = goods_doc.goods_no
+                item_doc.item_name = goods_doc.goods_nm
+                item_doc.item_group = goods_doc.goods_cd
+                item_doc.stock_uom = 'EA'
+                item_doc.disabled = 0
+                item_doc.godo_mall_goods_no =  goods_doc.goods_no
+                if goods_doc.goods_cd == "맛집":
+                    item_doc.is_stock_item = 1
+                    item_doc.item_group = goods_doc.goods_cd
+                elif goods_doc.goods_cd == "공동구매":
+                    item_doc.is_stock_item = 1
+                    item_doc.item_group = goods_doc.goods_cd
+                elif goods_doc.goods_cd == "직매입":
+                    item_doc.is_stock_item = 1
+                    item_doc.item_group = goods_doc.goods_cd
+                else:
+                    item_doc.is_stock_item = 0
+                    item_doc.item_group = "위탁"
+                # item_doc.opening_stock = goods_doc.goods_no
+                item_doc.is_fixed_asset = 0
+                item_doc.description = goods_doc.goods_search_word
+                item_doc.valuation_method = 'Moving Average'
+                item_doc.purchase_uom = 'EA'
+                item_doc.sales_uom = 'EA'
+                item_doc.is_purchase_item = 1
+                item_doc.is_sales_item = 1
+                item_doc.save()
+            else:
+                
+                item_doc = frappe.new_doc('Item')
+                item_doc.name = goods_doc.goods_no
+                item_doc.item_code = goods_doc.goods_no
+                item_doc.item_name = goods_doc.goods_nm
+                item_doc.item_group = goods_doc.goods_cd
+                item_doc.stock_uom = 'EA'
+                item_doc.disabled = 0
+                item_doc.godo_mall_goods_no =  goods_doc.goods_no
+                if goods_doc.goods_cd == "맛집":
+                    item_doc.is_stock_item = 1
+                    item_doc.item_group = goods_doc.goods_cd
+                elif goods_doc.goods_cd == "공동구매":
+                    item_doc.is_stock_item = 1
+                    item_doc.item_group = goods_doc.goods_cd
+                elif goods_doc.goods_cd == "직매입":
+                    item_doc.is_stock_item = 1
+                    item_doc.item_group = goods_doc.goods_cd
+                else:
+                    item_doc.is_stock_item = 0
+                    item_doc.item_group = "위탁"
+                # item_doc.opening_stock = goods_doc.goods_no
+                item_doc.is_fixed_asset = 0
+                item_doc.description = goods_doc.goods_search_word
+                item_doc.valuation_method = 'Moving Average'
+                json_item_defaults={}
+                json_item_defaults['company'] = 'Thingool'
+                json_item_defaults['default_warehouse'] = '통합물류센터 - TG'
+                json_item_defaults['default_price_list'] = 'Standard Selling'
+                json_item_defaults['default_discount_account'] = ''
+                json_item_defaults['buying_cost_center'] = 'Main - TG'
+                json_item_defaults['default_supplier'] = goods_doc.scm_no
+                json_item_defaults['expense_account'] = '5111 - Cost of Goods Sold - TG'
+                json_item_defaults['selling_cost_center'] = 'Main - TG'
+                json_item_defaults['income_account'] = '4110 - Sales - TG'
+                item_doc.append('item_defaults',
+                            json_item_defaults
+                        )
+                item_doc.purchase_uom = 'EA'
+                item_doc.sales_uom = 'EA'
+                item_doc.is_purchase_item = 1
+                item_doc.is_sales_item = 1
+                item_doc.insert(ignore_permissions=True, # ignore write permissions during insert
+                                        ignore_links=True
+                                        )
+                
+@frappe.whitelist()           
+def create_update_supplier():
+    pass
     

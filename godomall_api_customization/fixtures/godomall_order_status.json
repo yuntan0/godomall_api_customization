@@ -265,34 +265,34 @@
  },
  {
   "code": "g5",
-  "code_name": "g5",
+  "code_name": "\ud488\uc808\ubc30\uc1a1\ubd88\uac00",
   "docstatus": 0,
   "doctype": "Godomall Order Status",
-  "modified": "2022-09-22 19:48:54.782278",
+  "modified": "2022-09-27 14:41:00.674122",
   "name": "g5"
  },
  {
   "code": "g7",
-  "code_name": "g7",
+  "code_name": "\ucd9c\uace0\uc900\ube44\uc911",
   "docstatus": 0,
   "doctype": "Godomall Order Status",
-  "modified": "2022-09-22 19:49:10.530270",
+  "modified": "2022-09-27 14:41:17.551241",
   "name": "g7"
  },
  {
   "code": "g8",
-  "code_name": "g8",
+  "code_name": "\uc775\uc77c\ubc30\uc1a1",
   "docstatus": 0,
   "doctype": "Godomall Order Status",
-  "modified": "2022-09-22 19:49:05.969910",
+  "modified": "2022-09-27 14:41:27.249569",
   "name": "g8"
  },
  {
   "code": "g6",
-  "code_name": "g6",
+  "code_name": "\ub2f9\uc77c\ubc30\ub2ec\uc900\ube44",
   "docstatus": 0,
   "doctype": "Godomall Order Status",
-  "modified": "2022-09-22 19:49:00.672173",
+  "modified": "2022-09-27 14:41:08.197589",
   "name": "g6"
  }
 ]

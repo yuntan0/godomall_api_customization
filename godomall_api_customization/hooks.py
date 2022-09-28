@@ -130,7 +130,7 @@ scheduler_events = {
 		"godomall_api_customization.tasks.monthly"
 	],
     "cron": {
-		"50 08 * * *": [
+		"50 07 * * *": [
 			"godomall_api_customization.tasks.cron"
 		]
 	}

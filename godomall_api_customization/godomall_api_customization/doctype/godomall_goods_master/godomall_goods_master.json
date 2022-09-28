@@ -63,6 +63,7 @@
   "max_order_cnt",
   "sales_start_ymd",
   "sales_end_ymd",
+  "bundle_yn",
   "column_break_44",
   "restock_fl",
   "mileage_fl",
@@ -115,7 +116,10 @@
   "description_section",
   "goods_description",
   "goods_description_mobile",
-  "short_description"
+  "short_description",
+  "goods_option_section",
+  "goods_option",
+  "amended_from"
  ],
  "fields": [
   {
@@ -728,11 +732,38 @@
    "fieldtype": "Link",
    "label": "Parent Goods",
    "options": "Godomall Goods master"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Godomall Goods master",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "goods_option",
+   "fieldtype": "Table",
+   "label": "Goods Option",
+   "options": "Godomall Goods Option"
+  },
+  {
+   "fieldname": "goods_option_section",
+   "fieldtype": "Section Break",
+   "label": "Goods Option"
+  },
+  {
+   "fieldname": "bundle_yn",
+   "fieldtype": "Select",
+   "label": "Bundle YN",
+   "options": "\nN\nY"
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2022-09-25 18:27:57.271825",
+ "modified": "2022-09-27 23:34:32.439231",
  "modified_by": "Administrator",
  "module": "Godomall Api Customization",
  "name": "Godomall Goods master",
@@ -752,7 +783,12 @@
    "write": 1
   }
  ],
+ "search_fields": "goods_no",
+ "show_preview_popup": 1,
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "goods_nm",
+ "translated_doctype": 1
 }
