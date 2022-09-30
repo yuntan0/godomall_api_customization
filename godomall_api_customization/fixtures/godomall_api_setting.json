@@ -1,0 +1,19 @@
+[
+ {
+  "buying_cost_center": "Main - TG",
+  "company": "Thingool",
+  "default_discount_account": "5120 - Sales Discount - TG",
+  "default_price_list": "Standard Selling",
+  "default_warehouse": "\ud1b5\ud569\ubb3c\ub958\uc13c\ud130 - TG",
+  "disposal_account": null,
+  "disposal_warehouse": null,
+  "docstatus": 0,
+  "doctype": "Godomall API Setting",
+  "expense_account": "5111 - Cost of Goods Sold - TG",
+  "income_account": "4110 - Sales - TG",
+  "item_valuation_method": "Moving Average",
+  "modified": "2022-09-30 10:07:55.572177",
+  "name": "Godomall API Setting",
+  "selling_cost_center": "Main - TG"
+ }
+]

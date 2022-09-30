@@ -199,6 +199,7 @@ fixtures=[
             "Godomall Member Group Code",
             "Godomall Delivery Code",
             "Godomall Order Status",
+			"Godomall API Setting",
 	 {"dt": "Client Script", "filters": [
         [
             "name", "in", [
