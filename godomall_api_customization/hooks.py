@@ -203,7 +203,8 @@ fixtures=[
         [
             "name", "in", [
                 "Godomall Order add button",
-                "Godomall Goods Button"
+                "Godomall Goods Button",
+				"Create SCM and Supplier"
             ]
         ]
     ]}

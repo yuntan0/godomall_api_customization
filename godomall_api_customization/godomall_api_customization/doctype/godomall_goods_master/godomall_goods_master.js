@@ -19,7 +19,7 @@ frappe.ui.form.on('Godomall Goods master', {
 
 					console.log(r)
 					//cur_frm.exchange_rate = r.message.exchange_rate;
-					if(r.message=='200') {
+					if(r.message) {
 						// code snippet
 						//frappe.msgprint();
 						frappe.msgprint({
@@ -41,7 +41,7 @@ frappe.ui.form.on('Godomall Goods master', {
 				}
 			})
 			
-        }, __("Get Godomall order")    );
+        }, __("Get Godomall goods")    );
 
 	    frm.add_custom_button(__('Create today order'),function(){
             //frappe.msgprint(frm.doc.date);
@@ -60,11 +60,11 @@ frappe.ui.form.on('Godomall Goods master', {
 					callback: function(r) {
 
 						console.log(r)
-						if(r.message=='200') {
+						if(r.message) {
 						// code snippet
 						frappe.msgprint({
 							title: __('From 30days to today Goods Created'),
-							message: __('Godomall From 30days to today Goods Created'),
+							message: __('Godomall From 30days to today Goods Created')+r.message,
 							indicator: 'orange'
 
 						});
@@ -76,7 +76,47 @@ frappe.ui.form.on('Godomall Goods master', {
 					}
 				})
 			
-        }, __("Get Godomall order")    );
+        }, __("Get Godomall goods")    );
+
+		frm.add_custom_button(__('Create and Update Item'),function(){
+            //frappe.msgprint(frm.doc.date);
+            let goods_no = frm.selected_doc.name;
+            
+
+
+            frappe.call({
+				method: "godomall_api_customization.api.create_update_item?goods_no="+goods_no, //dotted path to server method
+				args: {
+					'goods_no':goods_no
+				},
+
+				callback: function(r) {
+
+					console.log(r)
+					//cur_frm.exchange_rate = r.message.exchange_rate;
+					if(r.message) {
+						// code snippet
+						//frappe.msgprint();
+						frappe.msgprint({
+							title: __('Current Goods Item Create'),
+							message: __('Current Goods Item Create')+r.message,
+							indicator: 'orange'
+						});
+						//frm.selected_doc.exchange_rate = r.message.exchange_rate;
+						// cur_frm.set_value('rate',r.message.rate);
+						// cur_frm.set_value('date',r.message.date);
+						// cur_frm.set_value('usd_rate',r.message.usd_rate);
+						// cur_frm.set_value('scale',r.message.scale);
+
+						return;
+						//cur_frm.set_value('exchange_rate',r.message.exchange_rate);
+						//cur_frm.exchange_rate = r.message.exchange_rate;
+
+						}
+				}
+			})
+			
+        }, __("Get Godomall goods")    );
 
 
 

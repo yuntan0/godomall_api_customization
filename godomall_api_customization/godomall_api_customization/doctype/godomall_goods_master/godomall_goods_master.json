@@ -21,6 +21,9 @@
   "goods_nm_partner",
   "goods_setting_section",
   "purchase_goods_nm",
+  "item_code",
+  "bundle_yn",
+  "parent_goods",
   "goods_display_fl",
   "goods_display_mobile_fl",
   "goods_sell_fl",
@@ -37,7 +40,6 @@
   "goods_search_word",
   "goods_open_dt",
   "goods_state",
-  "parent_goods",
   "column_break_29",
   "goods_color",
   "brand_cd",
@@ -63,7 +65,6 @@
   "max_order_cnt",
   "sales_start_ymd",
   "sales_end_ymd",
-  "bundle_yn",
   "column_break_44",
   "restock_fl",
   "mileage_fl",
@@ -181,6 +182,7 @@
    "label": "Purchase Goods Nm"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "goods_display_fl",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -190,6 +192,7 @@
    "options": "\ny\nn"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "goods_display_mobile_fl",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -199,6 +202,7 @@
    "options": "\ny\nn"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "goods_sell_fl",
    "fieldtype": "Select",
    "label": "Goods Sell Fl",
@@ -206,6 +210,7 @@
    "options": "\ny\nn"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "goods_sell_mobile_fl",
    "fieldtype": "Select",
    "label": "Goods Sell Mobile Fl",
@@ -728,6 +733,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "parent_goods",
    "fieldtype": "Link",
    "label": "Parent Goods",
@@ -754,16 +760,24 @@
    "label": "Goods Option"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "bundle_yn",
    "fieldtype": "Select",
    "label": "Bundle YN",
    "options": "\nN\nY"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-27 23:34:32.439231",
+ "modified": "2022-09-30 15:56:20.415580",
  "modified_by": "Administrator",
  "module": "Godomall Api Customization",
  "name": "Godomall Goods master",

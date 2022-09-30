@@ -17,7 +17,7 @@ frappe.ui.form.on('Godomall SCM No', {
 
 					console.log(r)
 					//cur_frm.exchange_rate = r.message.exchange_rate;
-					if(r.message=='200') {
+					if(r.message) {
 						// code snippet
 						//frappe.msgprint();
 						frappe.msgprint({

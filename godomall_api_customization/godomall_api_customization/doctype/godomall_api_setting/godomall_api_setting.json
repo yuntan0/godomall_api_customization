@@ -1,0 +1,137 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-09-29 08:09:49.848693",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "item_default_section",
+  "default_warehouse",
+  "default_price_list",
+  "column_break_5",
+  "default_discount_account",
+  "buying_cost_center",
+  "column_break_8",
+  "expense_account",
+  "selling_cost_center",
+  "column_break_11",
+  "income_account",
+  "item_valuation_method",
+  "section_break_14",
+  "disposal_warehouse",
+  "disposal_account"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "item_default_section",
+   "fieldtype": "Section Break",
+   "label": "Item Default"
+  },
+  {
+   "fieldname": "default_warehouse",
+   "fieldtype": "Link",
+   "label": "Default Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "default_price_list",
+   "fieldtype": "Link",
+   "label": "Default Price List",
+   "options": "Price List"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "default_discount_account",
+   "fieldtype": "Link",
+   "label": "Default Discount Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "buying_cost_center",
+   "fieldtype": "Link",
+   "label": "Buying Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "label": "Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "selling_cost_center",
+   "fieldtype": "Link",
+   "label": "Selling Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "income_account",
+   "fieldtype": "Link",
+   "label": "Income Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "item_valuation_method",
+   "fieldtype": "Data",
+   "label": "Item Valuation Method"
+  },
+  {
+   "fieldname": "section_break_14",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "disposal_warehouse",
+   "fieldtype": "Link",
+   "label": "Disposal Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "disposal_account",
+   "fieldtype": "Link",
+   "label": "Disposal Account",
+   "options": "Account"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2022-09-30 10:08:48.424169",
+ "modified_by": "Administrator",
+ "module": "Godomall Api Customization",
+ "name": "Godomall API Setting",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

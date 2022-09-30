@@ -1344,7 +1344,7 @@ def get_godomall_order(**kwargs):
             print("Godomall XML Parsing Error")
     print(cur_order_no+":"+str(resp.status_code))
     print("".join(url))
-    return cur_order_no+":"+str(resp.status_code)+"/n"
+    return cur_order_no+":"+str(resp.status_code)+"\n"
      
 @frappe.whitelist()
 def get_common_scm_code():
@@ -1561,14 +1561,32 @@ def get_common_member_group_code():
             print("Xml parsing Error")
 
 @frappe.whitelist()           
-def create_update_item():
-    goods_list = frappe.db.get_list('Godomall Goods master'
-    ,filters=[ 
-			['docstatus','=', '1' ]
+def create_update_item(**args):
+    print(args)
+    goods_filter=[]
+    goods_list =[]
+    if args.get('goods_no'):
+        goods_list = frappe.db.get_list('Godomall Goods master'
+            ,filters= [
+            ['docstatus','=', '1' ]
 			,['parent_goods','=','']
-		] 
-        , pluck='name')
+            ,['bundle_yn','=','N']
+            ,['goods_no','=',args.get('goods_no')]
+            ]
+            , pluck='name')
+    else:
+        goods_list = frappe.db.get_list('Godomall Goods master'
+            ,filters= [
+                ['docstatus','=', '1' ]
+                ,['parent_goods','=','']
+                ,['bundle_yn','=','N']
+            ]
+            , pluck='name')
+
+
+    print(goods_list)
     for goods in goods_list:
+        item_name =""
         if frappe.db.exists('Godomall Goods Option',{"parent": goods}):
 
             option_list = frappe.db.get_list('Godomall Goods Option',{"parent": goods} , pluck='name')
@@ -1576,6 +1594,7 @@ def create_update_item():
 
             for option in option_list:
                 if frappe.db.exists('Item',option):
+                    
                     option_doc1 = frappe.get_doc('Godomall Goods Option',option)
                     item_doc = frappe.get_doc('Item',option)
                     itm_name =goods_doc.goods_nm 
@@ -1621,7 +1640,10 @@ def create_update_item():
                     item_doc.sales_uom = 'EA'
                     item_doc.is_purchase_item = 1
                     item_doc.is_sales_item = 1
-                    item_doc.save()
+                    item_doc.save(
+                        ignore_permissions=True, # ignore write permissions during insert
+                        ignore_version=True # do not create a version record
+                    )
                     # update
                 else:
                     item_doc = frappe.new_doc('Item')
@@ -1668,11 +1690,12 @@ def create_update_item():
                     item_doc.insert(ignore_permissions=True, # ignore write permissions during insert
                                             ignore_links=True
                                             )
-                    pass
+                    
                     # insert
 
         else:
             goods_doc = frappe.get_doc('Godomall Goods master',goods)
+            item_name = goods
             if frappe.db.exists('Item',goods):
                 item_doc = frappe.get_doc('Item',goods)
                 item_doc.item_code = goods_doc.goods_no
@@ -1701,7 +1724,10 @@ def create_update_item():
                 item_doc.sales_uom = 'EA'
                 item_doc.is_purchase_item = 1
                 item_doc.is_sales_item = 1
-                item_doc.save()
+                item_doc.save(
+                    ignore_permissions=True, # ignore write permissions during insert
+                    ignore_version=True # do not create a version record
+                )
             else:
                 
                 item_doc = frappe.new_doc('Item')
@@ -1727,17 +1753,17 @@ def create_update_item():
                 # item_doc.opening_stock = goods_doc.goods_no
                 item_doc.is_fixed_asset = 0
                 item_doc.description = goods_doc.goods_search_word
-                item_doc.valuation_method = 'Moving Average'
+                item_doc.valuation_method =  frappe.db.get_single_value('Godomall API Setting', 'item_valuation_method')
                 json_item_defaults={}
-                json_item_defaults['company'] = 'Thingool'
-                json_item_defaults['default_warehouse'] = '통합물류센터 - TG'
-                json_item_defaults['default_price_list'] = 'Standard Selling'
-                json_item_defaults['default_discount_account'] = ''
-                json_item_defaults['buying_cost_center'] = 'Main - TG'
+                json_item_defaults['company'] = frappe.db.get_single_value('Godomall API Setting', 'company')
+                json_item_defaults['default_warehouse'] =  frappe.db.get_single_value('Godomall API Setting', 'default_warehouse')
+                json_item_defaults['default_price_list'] = frappe.db.get_single_value('Godomall API Setting', 'default_price_list')
+                json_item_defaults['default_discount_account'] = frappe.db.get_single_value('Godomall API Setting', 'default_discount_account')
+                json_item_defaults['buying_cost_center'] = frappe.db.get_single_value('Godomall API Setting', 'buying_cost_center')
                 json_item_defaults['default_supplier'] = goods_doc.scm_no
-                json_item_defaults['expense_account'] = '5111 - Cost of Goods Sold - TG'
-                json_item_defaults['selling_cost_center'] = 'Main - TG'
-                json_item_defaults['income_account'] = '4110 - Sales - TG'
+                json_item_defaults['expense_account'] = frappe.db.get_single_value('Godomall API Setting', 'expense_account')
+                json_item_defaults['selling_cost_center'] = frappe.db.get_single_value('Godomall API Setting', 'selling_cost_center')
+                json_item_defaults['income_account'] = frappe.db.get_single_value('Godomall API Setting', 'income_account')
                 item_doc.append('item_defaults',
                             json_item_defaults
                         )
@@ -1748,6 +1774,8 @@ def create_update_item():
                 item_doc.insert(ignore_permissions=True, # ignore write permissions during insert
                                         ignore_links=True
                                         )
+        frappe.db.set_value('Godomall Goods master', goods, 'item_code', item_name)
+
                 
 @frappe.whitelist()           
 def create_update_supplier():

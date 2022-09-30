@@ -30,7 +30,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-26 18:11:31.453664",
+ "modified": "2022-09-28 12:40:03.740224",
  "modified_by": "Administrator",
  "module": "Godomall Api Customization",
  "name": "Godomall SCM No",
@@ -50,13 +50,13 @@
    "write": 1
   }
  ],
- "search_fields": "code_name",
+ "search_fields": "code",
  "show_name_in_global_search": 1,
  "show_preview_popup": 1,
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "code",
+ "title_field": "code_name",
  "translated_doctype": 1
 }
