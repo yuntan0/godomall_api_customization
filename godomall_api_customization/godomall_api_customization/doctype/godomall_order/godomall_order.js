@@ -40,7 +40,7 @@ frappe.ui.form.on('Godomall Order', {
 
 						
 				}
-			})
+			}})
 			
         }, __("Get Godomall order")    );
 
