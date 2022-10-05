@@ -627,7 +627,8 @@ def get_godomall_goods(**kwargs):
                                 )
 
                         goods_doc.insert(ignore_permissions=True, # ignore write permissions during insert
-                                        ignore_links=True
+                                        ignore_links=True,
+                                        ignore_mandatory=True
                                         )
                         frappe.db.commit()
 
@@ -644,6 +645,7 @@ def get_godomall_order(**kwargs):
     order_status = kwargs.get('orderStatus')
     order_channel = kwargs.get('orderChannel')
     search_type = kwargs.get('searchType')
+    batch_no = kwargs.get('batch_no')
     today = datetime.today()
     days_before = datetime.today() - timedelta(1)
     secrets_file = os.path.join(os.getcwd(), 'secrets.json')
@@ -693,6 +695,8 @@ def get_godomall_order(**kwargs):
         url.append(search_type)
     
     resp = requests.get("".join(url))
+    print("".join(url))
+    cur_order_no=""
     if (resp.status_code == 200):
         # print(resp)
         xml_orders = resp.content
@@ -785,237 +789,469 @@ def get_godomall_order(**kwargs):
                     
                     order_delivery_list = order.find_all('orderDeliveryData')
                     for order_delivery in order_delivery_list:
-                        order_doc.order_delivery_doc = frappe.get_doc('Godomall Order Delivery Data',cur_order_no + '-' + order_delivery.find('sno').text.strip())
-                        if order_delivery.find('sno'):
-                            order_doc.order_delivery_doc.order_sno = cur_order_no + '-' + order_delivery.find('sno').text.strip()
-                            order_doc.order_delivery_doc.order_no = cur_order_no
-                            order_doc.order_delivery_doc.sno =  order_delivery.find('sno').text.strip()
-                        if order_delivery.find('scmNo'):
-                            order_doc.order_delivery_doc.scm_no =  order_delivery.find('scmNo').text.strip()
-                        if order_delivery.find('commission'):
-                            order_doc.order_delivery_doc.commission =  float(order_delivery.find('commission').text.strip())
-                        if order_delivery.find('scmAdjustNo'):
-                            order_doc.order_delivery_doc.scm_adjust_no =  order_delivery.find('scmAdjustNo').text.strip()
-                        if order_delivery.find('scmAdjustAfterNo'):
-                            order_doc.order_delivery_doc.scm_adjust_after_no =  order_delivery.find('scmAdjustAfterNo').text.strip()
-                        if order_delivery.find('deliveryCharge'):
-                            order_doc.order_delivery_doc.delivery_charge =  float(order_delivery.find('deliveryCharge').text.strip())
-                        if order_delivery.find('deliveryPolicyCharge'):
-                            order_doc.order_delivery_doc.delivery_policy_charge =  float(order_delivery.find('deliveryPolicyCharge').text.strip())
-                        if order_delivery.find('deliveryAreaCharge'):
-                            order_doc.order_delivery_doc.delivery_area_charge =  float(order_delivery.find('deliveryAreaCharge').text.strip())
-                        if order_delivery.find('divisionDeliveryUseDeposit'):
-                            order_doc.order_delivery_doc.division_delivery_use_deposit =  float(order_delivery.find('divisionDeliveryUseDeposit').text.strip())
-                        if order_delivery.find('divisionDeliveryUseMileage'):
-                            order_doc.order_delivery_doc.division_delivery_use_mileage =  float(order_delivery.find('divisionDeliveryUseMileage').text.strip())
-                        if order_delivery.find('divisionDeliveryCharge'):
-                            order_doc.order_delivery_doc.division_delivery_charge =  float(order_delivery.find('divisionDeliveryCharge').text.strip())
-                        if order_delivery.find('divisionMemberDeliveryDcPrice'):
-                            order_doc.order_delivery_doc.division_member_melivery_dc_price =  float(order_delivery.find('divisionMemberDeliveryDcPrice').text.strip())
-                        if order_delivery.find('deliveryInsuranceFee'):
-                            order_doc.order_delivery_doc.delivery_insurance_fee =  float(order_delivery.find('deliveryInsuranceFee').text.strip())
-                        if order_delivery.find('deliveryFixFl'):
-                            order_doc.order_delivery_doc.delivery_fix_fl =  order_delivery.find('deliveryFixFl').text.strip()
-                        if order_delivery.find('deliveryWeightInfo'):
-                            order_doc.order_delivery_doc.delivery_weight_info =  order_delivery.find('deliveryWeightInfo').text.strip()
-                        if order_delivery.find('overseasDeliveryPolicy'):
-                            order_doc.order_delivery_doc.overseas_delivery_policy =  order_delivery.find('overseasDeliveryPolicy').text.strip()
-                        if order_delivery.find('deliveryCollectFl'):
-                            order_doc.order_delivery_doc.delivery_collect_fl =  order_delivery.find('deliveryCollectFl').text.strip()
-                        if order_delivery.find('deliveryCollectPrice'):
-                            order_doc.order_delivery_doc.delivery_collect_price =  float(order_delivery.find('deliveryCollectPrice').text.strip())
-                        if order_delivery.find('deliveryWholeFreePrice'):
-                            order_doc.order_delivery_doc.delivery_whole_free_price =  float(order_delivery.find('deliveryWholeFreePrice').text.strip())
-                        if order_delivery.find('statisticsOrderFl'):
-                            order_doc.order_delivery_doc.statistics_order_fl =  order_delivery.find('statisticsOrderFl').text.strip()
+                        if frappe.db.exists('Godomall Order Delivery Data',cur_order_no + '-' + order_delivery.find('sno').text.strip()):
+                            order_doc.order_delivery_doc = frappe.get_doc('Godomall Order Delivery Data',cur_order_no + '-' + order_delivery.find('sno').text.strip())
+                            if order_delivery.find('sno'):
+                                order_doc.order_delivery_doc.order_sno = cur_order_no + '-' + order_delivery.find('sno').text.strip()
+                                order_doc.order_delivery_doc.order_no = cur_order_no
+                                order_doc.order_delivery_doc.sno =  order_delivery.find('sno').text.strip()
+                            if order_delivery.find('scmNo'):
+                                order_doc.order_delivery_doc.scm_no =  order_delivery.find('scmNo').text.strip()
+                            if order_delivery.find('commission'):
+                                order_doc.order_delivery_doc.commission =  float(order_delivery.find('commission').text.strip())
+                            if order_delivery.find('scmAdjustNo'):
+                                order_doc.order_delivery_doc.scm_adjust_no =  order_delivery.find('scmAdjustNo').text.strip()
+                            if order_delivery.find('scmAdjustAfterNo'):
+                                order_doc.order_delivery_doc.scm_adjust_after_no =  order_delivery.find('scmAdjustAfterNo').text.strip()
+                            if order_delivery.find('deliveryCharge'):
+                                order_doc.order_delivery_doc.delivery_charge =  float(order_delivery.find('deliveryCharge').text.strip())
+                            if order_delivery.find('deliveryPolicyCharge'):
+                                order_doc.order_delivery_doc.delivery_policy_charge =  float(order_delivery.find('deliveryPolicyCharge').text.strip())
+                            if order_delivery.find('deliveryAreaCharge'):
+                                order_doc.order_delivery_doc.delivery_area_charge =  float(order_delivery.find('deliveryAreaCharge').text.strip())
+                            if order_delivery.find('divisionDeliveryUseDeposit'):
+                                order_doc.order_delivery_doc.division_delivery_use_deposit =  float(order_delivery.find('divisionDeliveryUseDeposit').text.strip())
+                            if order_delivery.find('divisionDeliveryUseMileage'):
+                                order_doc.order_delivery_doc.division_delivery_use_mileage =  float(order_delivery.find('divisionDeliveryUseMileage').text.strip())
+                            if order_delivery.find('divisionDeliveryCharge'):
+                                order_doc.order_delivery_doc.division_delivery_charge =  float(order_delivery.find('divisionDeliveryCharge').text.strip())
+                            if order_delivery.find('divisionMemberDeliveryDcPrice'):
+                                order_doc.order_delivery_doc.division_member_melivery_dc_price =  float(order_delivery.find('divisionMemberDeliveryDcPrice').text.strip())
+                            if order_delivery.find('deliveryInsuranceFee'):
+                                order_doc.order_delivery_doc.delivery_insurance_fee =  float(order_delivery.find('deliveryInsuranceFee').text.strip())
+                            if order_delivery.find('deliveryFixFl'):
+                                order_doc.order_delivery_doc.delivery_fix_fl =  order_delivery.find('deliveryFixFl').text.strip()
+                            if order_delivery.find('deliveryWeightInfo'):
+                                order_doc.order_delivery_doc.delivery_weight_info =  order_delivery.find('deliveryWeightInfo').text.strip()
+                            if order_delivery.find('overseasDeliveryPolicy'):
+                                order_doc.order_delivery_doc.overseas_delivery_policy =  order_delivery.find('overseasDeliveryPolicy').text.strip()
+                            if order_delivery.find('deliveryCollectFl'):
+                                order_doc.order_delivery_doc.delivery_collect_fl =  order_delivery.find('deliveryCollectFl').text.strip()
+                            if order_delivery.find('deliveryCollectPrice'):
+                                order_doc.order_delivery_doc.delivery_collect_price =  float(order_delivery.find('deliveryCollectPrice').text.strip())
+                            if order_delivery.find('deliveryWholeFreePrice'):
+                                order_doc.order_delivery_doc.delivery_whole_free_price =  float(order_delivery.find('deliveryWholeFreePrice').text.strip())
+                            if order_delivery.find('statisticsOrderFl'):
+                                order_doc.order_delivery_doc.statistics_order_fl =  order_delivery.find('statisticsOrderFl').text.strip()
                         # order_doc.order_delivery_doc.save()
+                        else:
+                            json_delivery={"order_sno":""}
+                            if order_delivery.find('sno'):
+                                json_delivery["order_sno"] = cur_order_no + '-' + order_delivery.find('sno').text.strip()
+                                json_delivery["order_no"] = cur_order_no
+                                json_delivery["sno"] =  order_delivery.find('sno').text.strip()
+                            if order_delivery.find('scmNo'):
+                                json_delivery["scm_no"] =  order_delivery.find('scmNo').text.strip()
+                            if order_delivery.find('commission'):
+                                json_delivery["commission"] =  float(order_delivery.find('commission').text.strip())
+                            if order_delivery.find('scmAdjustNo'):
+                                json_delivery["scm_adjust_no"] =  order_delivery.find('scmAdjustNo').text.strip()
+                            if order_delivery.find('scmAdjustAfterNo'):
+                                json_delivery["scm_adjust_after_no"] =  order_delivery.find('scmAdjustAfterNo').text.strip()
+                            if order_delivery.find('deliveryCharge'):
+                                json_delivery["delivery_charge"] =  float(order_delivery.find('deliveryCharge').text.strip())
+                            if order_delivery.find('deliveryPolicyCharge'):
+                                json_delivery["delivery_policy_charge"] =  float(order_delivery.find('deliveryPolicyCharge').text.strip())
+                            if order_delivery.find('deliveryAreaCharge'):
+                                json_delivery["delivery_area_charge"] =  float(order_delivery.find('deliveryAreaCharge').text.strip())
+                            if order_delivery.find('divisionDeliveryUseDeposit'):
+                                json_delivery["division_delivery_use_deposit"] =  float(order_delivery.find('divisionDeliveryUseDeposit').text.strip())
+                            if order_delivery.find('divisionDeliveryUseMileage'):
+                                json_delivery["division_delivery_use_mileage"] =  float(order_delivery.find('divisionDeliveryUseMileage').text.strip())
+                            if order_delivery.find('divisionDeliveryCharge'):
+                                json_delivery["division_delivery_charge"] =  float(order_delivery.find('divisionDeliveryCharge').text.strip())
+                            if order_delivery.find('divisionMemberDeliveryDcPrice'):
+                                json_delivery["division_member_melivery_dc_price"] =  float(order_delivery.find('divisionMemberDeliveryDcPrice').text.strip())
+                            if order_delivery.find('deliveryInsuranceFee'):
+                                json_delivery["delivery_insurance_fee"] =  float(order_delivery.find('deliveryInsuranceFee').text.strip())
+                            if order_delivery.find('deliveryFixFl'):
+                                json_delivery["delivery_fix_fl"] =  order_delivery.find('deliveryFixFl').text.strip()
+                            if order_delivery.find('deliveryWeightInfo'):
+                                json_delivery["delivery_weight_info"] =  order_delivery.find('deliveryWeightInfo').text.strip()
+                            if order_delivery.find('overseasDeliveryPolicy'):
+                                json_delivery["overseas_delivery_policy"] =  order_delivery.find('overseasDeliveryPolicy').text.strip()
+                            if order_delivery.find('deliveryCollectFl'):
+                                json_delivery["delivery_collect_fl"] =  order_delivery.find('deliveryCollectFl').text.strip()
+                            if order_delivery.find('deliveryCollectPrice'):
+                                json_delivery["delivery_collect_price"] =  float(order_delivery.find('deliveryCollectPrice').text.strip())
+                            if order_delivery.find('deliveryWholeFreePrice'):
+                                json_delivery["delivery_whole_free_price"] =  float(order_delivery.find('deliveryWholeFreePrice').text.strip())
+                            if order_delivery.find('statisticsOrderFl'):
+                                json_delivery["statistics_order_fl"] =  order_delivery.find('statisticsOrderFl').text.strip()
+                            # print(json.dumps(json_delivery))
+                            order_doc.append('order_delivery_data',
+                                json_delivery
+                            )
 
                     order_info_data_list = order.find_all('orderInfoData')
                     order_seq = order.select('orderInfoData')
                     idx = 0
                     # print(order_seq[0]['idx'])
+                    if frappe.db.exists('Customer',order.find('orderEmail').text.strip()):
+                        cust_doc =frappe.get_doc('Customer',order.find('orderEmail').text.strip())
+                        cust_doc.name = order.find('orderEmail').text.strip()
+                        cust_doc.customer_name = order_info_data_list[0].find('orderName').text.strip()
+                        if order.find('memGroupNm') and frappe.db.exists('Customer Group',order.find('memGroupNm').text.strip()):
+                            
+                            cust_doc.customer_group = order.find('memGroupNm').text.strip() 
+                        else:
+                            cust_doc.customer_group = '손님'
+                        cust_doc.customer_type = 'Individual'
+                        # print(cust_data.order_zonecode[0:2])
+                        city_name =""
+                        if order_info_data_list[0].find('orderZonecode').text.strip():
+                            cust_doc.territory = get_territory_by_zipcode(zip_code=order_info_data_list[0].find('orderZonecode').text.strip())
+                        cust_doc.so_required = 1
+                        cust_doc.dn_required = 1
+                        cust_doc.is_internal_customer = 0
+                        cust_doc.default_currency = 'KRW'
+                        cust_doc.default_price_list = frappe.db.get_single_value('Godomall API Setting', 'default_price_list')
+                        cust_doc.save()
+                    else:
+                        cust_doc =frappe.new_doc('Customer')
+                        cust_doc.name = order.find('orderEmail').text.strip()
+                        cust_doc.customer_name = order_info_data_list[0].find('orderName').text.strip()
+                        if order.find('memGroupNm'):
+                            cust_doc.customer_group = order.find('memGroupNm').text.strip() 
+                        else:
+                            cust_doc.customer_group = '손님'
+                        cust_doc.customer_type = 'Individual'
+                        # print(cust_data.order_zonecode[0:2])
+                        city_name =""
+                        if order_info_data_list[0].find('orderZonecode').text.strip():
+                            cust_doc.territory = get_territory_by_zipcode(zip_code=order_info_data_list[0].find('orderZonecode').text.strip())
+                        cust_doc.so_required = 1
+                        cust_doc.dn_required = 1
+                        cust_doc.is_internal_customer = 0
+                        cust_doc.default_currency = 'KRW'
+                        cust_doc.default_price_list = frappe.db.get_single_value('Godomall API Setting', 'default_price_list')
+                        cust_doc.insert(
+                            ignore_permissions=True, # ignore write permissions during insert
+                            ignore_links=True,
+                            ignore_mandatory=True
+
+                        )
 
                     for order_info_data in order_info_data_list:
-                        order_doc.order_info_doc = frappe.get_doc('Godomall Order Info Data',cur_order_no +'-'+ order_seq[idx]['idx'])
-                        idx = idx+1
-                        if order_info_data.find('orderName'):	order_doc.order_info_doc.order_name = order_info_data.find('orderName').text.strip()
-                        if order_info_data.find('orderEmail'):	order_doc.order_info_doc.order_email= order_info_data.find('orderEmail').text.strip()
-                        if order_info_data.find('orderCellPhone'):	order_doc.order_info_doc.order_cell_phone= order_info_data.find('orderCellPhone').text.strip()
-                        if order_info_data.find('orderZipcode'):	order_doc.order_info_doc.order_zipcode= order_info_data.find('orderZipcode').text.strip()
-                        if order_info_data.find('orderZonecode'):	order_doc.order_info_doc.order_zonecode= order_info_data.find('orderZonecode').text.strip()
-                        if order_info_data.find('orderState'):	order_doc.order_info_doc.order_state= order_info_data.find('orderState').text.strip()
-                        if order_info_data.find('orderCity'):	order_doc.order_info_doc.order_city= order_info_data.find('orderCity').text.strip()
-                        if order_info_data.find('orderAddress'):	order_doc.order_info_doc.order_address= order_info_data.find('orderAddress').text.strip()
-                        if order_info_data.find('orderAddressSub'):	order_doc.order_info_doc.order_address_sub= order_info_data.find('orderAddressSub').text.strip()
-                        if order_info_data.find('receiverName'):	order_doc.order_info_doc.receiver_name= order_info_data.find('receiverName').text.strip()
-                        if order_info_data.find('receiverCellPhone'):	order_doc.order_info_doc.receiver_cell_phone= order_info_data.find('receiverCellPhone').text.strip()
-                        if order_info_data.find('receiverUseSafeNumberFl'):	order_doc.order_info_doc.receiver_use_safe_number_fl= order_info_data.find('receiverUseSafeNumberFl').text.strip()
-                        if order_info_data.find('receiverSafeNumber'):	order_doc.order_info_doc.receiver_safe_number= order_info_data.find('receiverSafeNumber').text.strip()
-                        if order_info_data.find('receiverSafeNumberDt'):	order_doc.order_info_doc.receiver_safe_number_dt= order_info_data.find('receiverSafeNumberDt').text.strip()
-                        if order_info_data.find('receiverZipcode'):	order_doc.order_info_doc.receiver_zipcode= order_info_data.find('receiverZipcode').text.strip()
-                        if order_info_data.find('receiverZonecode'):	order_doc.order_info_doc.receiver_zonecode= order_info_data.find('receiverZonecode').text.strip()
-                        if order_info_data.find('receiverCountry'):	order_doc.order_info_doc.receiver_country= order_info_data.find('receiverCountry').text.strip()
-                        if order_info_data.find('receiverState'):	order_doc.order_info_doc.receiver_state= order_info_data.find('receiverState').text.strip()
-                        if order_info_data.find('receiverCity'):	order_doc.order_info_doc.receiver_city= order_info_data.find('receiverCity').text.strip()
-                        if order_info_data.find('receiverAddress'):	order_doc.order_info_doc.receiver_address= order_info_data.find('receiverAddress').text.strip()
-                        if order_info_data.find('receiverAddressSub'):	order_doc.order_info_doc.receiver_address_sub= order_info_data.find('receiverAddressSub').text.strip()
-                        if order_info_data.find('deliveryVisit'):	order_doc.order_info_doc.delivery_visit= order_info_data.find('deliveryVisit').text.strip()
-                        if order_info_data.find('orderinfoCd'):	order_doc.order_info_doc.orderinfo_cd= order_info_data.find('orderinfoCd').text.strip()
-                        if order_info_data.find('gitMessage'):	order_doc.order_info_doc.gift_message= order_info_data.find('gitMessage').text.strip()
+                        if frappe.db.exists('Godomall Order Info Data',cur_order_no +'-'+ order_seq[idx]['idx']):
+                            order_doc.order_info_doc = frappe.get_doc('Godomall Order Info Data',cur_order_no +'-'+ order_seq[idx]['idx'])
+                            idx = idx+1
+                            if order_info_data.find('orderName'):	order_doc.order_info_doc.order_name = order_info_data.find('orderName').text.strip()
+                            if order_info_data.find('orderEmail'):	order_doc.order_info_doc.order_email= order_info_data.find('orderEmail').text.strip()
+                            if order_info_data.find('orderCellPhone'):	order_doc.order_info_doc.order_cell_phone= order_info_data.find('orderCellPhone').text.strip()
+                            if order_info_data.find('orderZipcode'):	order_doc.order_info_doc.order_zipcode= order_info_data.find('orderZipcode').text.strip()
+                            if order_info_data.find('orderZonecode'):	order_doc.order_info_doc.order_zonecode= order_info_data.find('orderZonecode').text.strip()
+                            if order_info_data.find('orderState'):	order_doc.order_info_doc.order_state= order_info_data.find('orderState').text.strip()
+                            if order_info_data.find('orderCity'):	order_doc.order_info_doc.order_city= order_info_data.find('orderCity').text.strip()
+                            if order_info_data.find('orderAddress'):	order_doc.order_info_doc.order_address= order_info_data.find('orderAddress').text.strip()
+                            if order_info_data.find('orderAddressSub'):	order_doc.order_info_doc.order_address_sub= order_info_data.find('orderAddressSub').text.strip()
+                            if order_info_data.find('receiverName'):	order_doc.order_info_doc.receiver_name= order_info_data.find('receiverName').text.strip()
+                            if order_info_data.find('receiverCellPhone'):	order_doc.order_info_doc.receiver_cell_phone= order_info_data.find('receiverCellPhone').text.strip()
+                            if order_info_data.find('receiverUseSafeNumberFl'):	order_doc.order_info_doc.receiver_use_safe_number_fl= order_info_data.find('receiverUseSafeNumberFl').text.strip()
+                            if order_info_data.find('receiverSafeNumber'):	order_doc.order_info_doc.receiver_safe_number= order_info_data.find('receiverSafeNumber').text.strip()
+                            if order_info_data.find('receiverSafeNumberDt'):	order_doc.order_info_doc.receiver_safe_number_dt= order_info_data.find('receiverSafeNumberDt').text.strip()
+                            if order_info_data.find('receiverZipcode'):	order_doc.order_info_doc.receiver_zipcode= order_info_data.find('receiverZipcode').text.strip()
+                            if order_info_data.find('receiverZonecode'):	order_doc.order_info_doc.receiver_zonecode= order_info_data.find('receiverZonecode').text.strip()
+                            if order_info_data.find('receiverCountry'):	order_doc.order_info_doc.receiver_country= order_info_data.find('receiverCountry').text.strip()
+                            if order_info_data.find('receiverState'):	order_doc.order_info_doc.receiver_state= order_info_data.find('receiverState').text.strip()
+                            if order_info_data.find('receiverCity'):	order_doc.order_info_doc.receiver_city= order_info_data.find('receiverCity').text.strip()
+                            if order_info_data.find('receiverAddress'):	order_doc.order_info_doc.receiver_address= order_info_data.find('receiverAddress').text.strip()
+                            if order_info_data.find('receiverAddressSub'):	order_doc.order_info_doc.receiver_address_sub= order_info_data.find('receiverAddressSub').text.strip()
+                            if order_info_data.find('deliveryVisit'):	order_doc.order_info_doc.delivery_visit= order_info_data.find('deliveryVisit').text.strip()
+                            if order_info_data.find('orderinfoCd'):	order_doc.order_info_doc.orderinfo_cd= order_info_data.find('orderinfoCd').text.strip()
+                            if order_info_data.find('gitMessage'):	order_doc.order_info_doc.gift_message= order_info_data.find('gitMessage').text.strip()
+                        else:
+                            json_order_info={"order_sub_no":""}
+                            json_order_info["order_sub_no"] =  cur_order_no +'-'+ order_seq[idx]['idx']
+                            idx = idx + 1
+                            if order_info_data.find('orderName'):	json_order_info['order_name'] = order_info_data.find('orderName').text.strip()
+                            if order_info_data.find('orderEmail'):	json_order_info['order_email'] = order_info_data.find('orderEmail').text.strip()
+                            if order_info_data.find('orderCellPhone'):	json_order_info['order_cell_phone'] = order_info_data.find('orderCellPhone').text.strip()
+                            if order_info_data.find('orderZipcode'):	json_order_info['order_zipcode'] = order_info_data.find('orderZipcode').text.strip()
+                            if order_info_data.find('orderZonecode'):	json_order_info['order_zonecode'] = order_info_data.find('orderZonecode').text.strip()
+                            if order_info_data.find('orderState'):	json_order_info['order_state'] = order_info_data.find('orderState').text.strip()
+                            if order_info_data.find('orderCity'):	json_order_info['order_city'] = order_info_data.find('orderCity').text.strip()
+                            if order_info_data.find('orderAddress'):	json_order_info['order_address'] = order_info_data.find('orderAddress').text.strip()
+                            if order_info_data.find('orderAddressSub'):	json_order_info['order_address_sub'] = order_info_data.find('orderAddressSub').text.strip()
+                            if order_info_data.find('receiverName'):	json_order_info['receiver_name'] = order_info_data.find('receiverName').text.strip()
+                            if order_info_data.find('receiverCellPhone'):	json_order_info['receiver_cell_phone'] = order_info_data.find('receiverCellPhone').text.strip()
+                            if order_info_data.find('receiverUseSafeNumberFl'):	json_order_info['receiver_use_safe_number_fl'] = order_info_data.find('receiverUseSafeNumberFl').text.strip()
+                            if order_info_data.find('receiverSafeNumber'):	json_order_info['receiver_safe_number'] = order_info_data.find('receiverSafeNumber').text.strip()
+                            if order_info_data.find('receiverSafeNumberDt'):	json_order_info['receiver_safe_number_dt'] = order_info_data.find('receiverSafeNumberDt').text.strip()
+                            if order_info_data.find('receiverZipcode'):	json_order_info['receiver_zipcode'] = order_info_data.find('receiverZipcode').text.strip()
+                            if order_info_data.find('receiverZonecode'):	json_order_info['receiver_zonecode'] = order_info_data.find('receiverZonecode').text.strip()
+                            if order_info_data.find('receiverCountry'):	json_order_info['receiver_country'] = order_info_data.find('receiverCountry').text.strip()
+                            if order_info_data.find('receiverState'):	json_order_info['receiver_state'] = order_info_data.find('receiverState').text.strip()
+                            if order_info_data.find('receiverCity'):	json_order_info['receiver_city'] = order_info_data.find('receiverCity').text.strip()
+                            if order_info_data.find('receiverAddress'):	json_order_info['receiver_address'] = order_info_data.find('receiverAddress').text.strip()
+                            if order_info_data.find('receiverAddressSub'):	json_order_info['receiver_address_sub'] = order_info_data.find('receiverAddressSub').text.strip()
+                            if order_info_data.find('deliveryVisit'):	json_order_info['delivery_visit'] = order_info_data.find('deliveryVisit').text.strip()
+                            if order_info_data.find('orderinfoCd'):	json_order_info['orderinfo_cd'] = order_info_data.find('orderinfoCd').text.strip()
+                            if order_info_data.find('gitMessage'):	json_order_info['gift_message'] = order_info_data.find('gitMessage').text.strip()
+                            # print(json.dumps(json_order_info))
+                            order_doc.append('order_info_data',
+                                json_order_info
+                            )
+
                         # order_info_data.save()
                     order_goods_data_list = order.find_all('orderGoodsData')
                     for order_goods_data in order_goods_data_list:
                         # print(order_goods_data.find('sno').text.strip() )
-                        order_doc.order_goods_doc = frappe.get_doc('Godomall Order Goods Data',cur_order_no + '-' +order_goods_data.find('sno').text.strip())
-                        if order_goods_data.find('sno'):	order_doc.order_goods_doc.sno= order_goods_data.find('sno').text.strip()
-                        if order_goods_data.find('orderNo'):	order_doc.order_goods_doc.order_no= order_goods_data.find('orderNo').text.strip()
-                        if order_goods_data.find('mailSno'):	order_doc.order_goods_doc.mall_sno= order_goods_data.find('mailSno').text.strip()
-                        if order_goods_data.find('apiOrderGoodsNo'):	order_doc.order_goods_doc.api_order_goods_no= order_goods_data.find('apiOrderGoodsNo').text.strip()
-                        if order_goods_data.find('orderCd'):	order_doc.order_goods_doc.order_cd= order_goods_data.find('orderCd').text.strip()
-                        if order_goods_data.find('orderGroupCd'):	order_doc.order_goods_doc.order_group_cd= order_goods_data.find('orderGroupCd').text.strip()
-                        if order_goods_data.find('eventCd'):	order_doc.order_goods_doc.event_sno= order_goods_data.find('eventCd').text.strip()
-                        if order_goods_data.find('orderStatus'):	order_doc.order_goods_doc.order_status= order_goods_data.find('orderStatus').text.strip()
-                        if order_goods_data.find('orderDeliverySno'):	order_doc.order_goods_doc.order_delivery_sno= order_goods_data.find('orderDeliverySno').text.strip()
-                        if order_goods_data.find('invoiceCompanySno'):	order_doc.order_goods_doc.invoice_company_sno= order_goods_data.find('invoiceCompanySno').text.strip()
-                        if order_goods_data.find('invoiceNo'):	order_doc.order_goods_doc.invoice_no= order_goods_data.find('invoiceNo').text.strip()
-                        if order_goods_data.find('scmNo'):	order_doc.order_goods_doc.scm_no= order_goods_data.find('scmNo').text.strip()
-                        if order_goods_data.find('purchaseNo'):	order_doc.order_goods_doc.purchase_no= order_goods_data.find('purchaseNo').text.strip()
-                        if order_goods_data.find('commission'):	order_doc.order_goods_doc.commission= order_goods_data.find('commission').text.strip()
-                        if order_goods_data.find('scmAdjustAfterNo'):	order_doc.order_goods_doc.scm_adjust_after_no= order_goods_data.find('scmAdjustAfterNo').text.strip()
-                        if order_goods_data.find('goodsType'):	order_doc.order_goods_doc.goods_type= order_goods_data.find('goodsType').text.strip()
-                        if order_goods_data.find('timeSaleFl'):	order_doc.order_goods_doc.time_sale_fl= order_goods_data.find('timeSaleFl').text.strip()
-                        if order_goods_data.find('parentMustFl'):	order_doc.order_goods_doc.parent_must_fl= order_goods_data.find('parentMustFl').text.strip()
-                        if order_goods_data.find('parentGoodsNo'):	order_doc.order_goods_doc.parent_goods_no= order_goods_data.find('parentGoodsNo').text.strip()
-                        if order_goods_data.find('goodsNo'):	order_doc.order_goods_doc.goods_no= order_goods_data.find('goodsNo').text.strip()
-                        if order_goods_data.find('listImageData'):	order_doc.order_goods_doc.list_image_data= order_goods_data.find('listImageData').text.strip()
-                        if order_goods_data.find('goodsCd'):	order_doc.order_goods_doc.goods_cd= order_goods_data.find('goodsCd').text.strip()
-                        if order_goods_data.find('goodsModelNo'):	order_doc.order_goods_doc.goods_model_no= order_goods_data.find('goodsModelNo').text.strip()
-                        if order_goods_data.find('goodsNm'):	order_doc.order_goods_doc.goods_nm= order_goods_data.find('goodsNm').text.strip()
-                        if order_goods_data.find('goodsNmStandard'):	order_doc.order_goods_doc.goods_nm_standard= order_goods_data.find('goodsNmStandard').text.strip()
-                        if order_goods_data.find('goodsCnt'):	order_doc.order_goods_doc.goods_cnt= int(order_goods_data.find('goodsCnt').text.strip())
-                        if order_goods_data.find('goodsPrice'):	order_doc.order_goods_doc.goods_price= float(order_goods_data.find('goodsPrice').text.strip())
-                        if order_goods_data.find('divisionUseDeposit'):	order_doc.order_goods_doc.division_use_deposit= float(order_goods_data.find('divisionUseDeposit').text.strip())
-                        if order_goods_data.find('divisionUseMileage'):	order_doc.order_goods_doc.division_use_mileage= float(order_goods_data.find('divisionUseMileage').text.strip())
-                        if order_goods_data.find('divisionGoodsDeliveryUseDeposit'):	order_doc.order_goods_doc.division_goods_delivery_use_deposit= float(order_goods_data.find('divisionGoodsDeliveryUseDeposit').text.strip())
-                        if order_goods_data.find('divisionGoodsDeliveryUseMileage'):	order_doc.order_goods_doc.division_goods_delivery_use_mileage= float(order_goods_data.find('divisionGoodsDeliveryUseMileage').text.strip())
-                        if order_goods_data.find('divisionCouponOrderDcPrice'):	order_doc.order_goods_doc.division_coupon_order_dc_price= float(order_goods_data.find('divisionCouponOrderDcPrice').text.strip())
-                        if order_goods_data.find('divisionCouponOrderMileage'):	order_doc.order_goods_doc.division_coupon_order_mileage= float(order_goods_data.find('divisionCouponOrderMileage').text.strip())
-                        if order_goods_data.find('addGoodsPrice'):	order_doc.order_goods_doc.add_goods_price= float(order_goods_data.find('addGoodsPrice').text.strip())
-                        if order_goods_data.find('optionPrice'):	order_doc.order_goods_doc.option_price= float(order_goods_data.find('optionPrice').text.strip())
-                        if order_goods_data.find('optionCostPrice'):	order_doc.order_goods_doc.option_cost_price= float(order_goods_data.find('optionCostPrice').text.strip())
-                        if order_goods_data.find('optionTextPrice'):	order_doc.order_goods_doc.option_text_price= float(order_goods_data.find('optionTextPrice').text.strip())
-                        if order_goods_data.find('fixedPrice'):	order_doc.order_goods_doc.fixed_price= float(order_goods_data.find('fixedPrice').text.strip())
-                        if order_goods_data.find('costPrice'):	order_doc.order_goods_doc.cost_price=float( order_goods_data.find('costPrice').text.strip())
-                        if order_goods_data.find('goodsDcPrice'):	order_doc.order_goods_doc.goods_dc_price= float(order_goods_data.find('goodsDcPrice').text.strip())
-                        if order_goods_data.find('memberDcPrice'):	order_doc.order_goods_doc.member_dc_price= float(order_goods_data.find('memberDcPrice').text.strip())
-                        if order_goods_data.find('memberOverlapDcPrice'):	order_doc.order_goods_doc.member_overlap_dc_price= float(order_goods_data.find('memberOverlapDcPrice').text.strip())
-                        if order_goods_data.find('couponGoodsDcPrice'):	order_doc.order_goods_doc.coupon_goods_dc_price= float(order_goods_data.find('couponGoodsDcPrice').text.strip())
-                        if order_goods_data.find('timeSalePrice'):	order_doc.order_goods_doc.time_sale_price= float(order_goods_data.find('timeSalePrice').text.strip())
-                        if order_goods_data.find('brandBankSalePrice'):	order_doc.order_goods_doc.brand_bank_sale_price= float(order_goods_data.find('brandBankSalePrice').text.strip())
-                        if order_goods_data.find('myappDcPrice'):	order_doc.order_goods_doc.myapp_dc_price= float(order_goods_data.find('myappDcPrice').text.strip())
-                        if order_goods_data.find('goodsDeliveryCollectPrice'):	order_doc.order_goods_doc.goods_delivery_collect_price= float(order_goods_data.find('goodsDeliveryCollectPrice').text.strip())
-                        if order_goods_data.find('goodsMileage'):	order_doc.order_goods_doc.goods_mileage= float(order_goods_data.find('goodsMileage').text.strip())
-                        if order_goods_data.find('memberMileage'):	order_doc.order_goods_doc.member_mileage= float(order_goods_data.find('memberMileage').text.strip())
-                        if order_goods_data.find('couponGoodsMileage'):	order_doc.order_goods_doc.coupon_goods_mileage= float(order_goods_data.find('couponGoodsMileage').text.strip())
-                        if order_goods_data.find('goodsDeliveryCollectPrice'):	order_doc.order_goods_doc.goods_delivery_collect_fl= order_goods_data.find('goodsDeliveryCollectPrice').text.strip()
-                        if order_goods_data.find('minusDepositFl'):	order_doc.order_goods_doc.minus_deposit_fl= order_goods_data.find('minusDepositFl').text.strip()
-                        if order_goods_data.find('minusRestoreDepositFl'):	order_doc.order_goods_doc.minus_restore_deposit_fl= order_goods_data.find('minusRestoreDepositFl').text.strip()
-                        if order_goods_data.find('minusMileageFl'):	order_doc.order_goods_doc.minus_mileage_fl= order_goods_data.find('minusMileageFl').text.strip()
-                        if order_goods_data.find('minusRestoreMileageFl'):	order_doc.order_goods_doc.minus_restore_mileage_fl= order_goods_data.find('minusRestoreMileageFl').text.strip()
-                        if order_goods_data.find('plusMileageFl'):	order_doc.order_goods_doc.plus_mileage_fl= order_goods_data.find('plusMileageFl').text.strip()
-                        if order_goods_data.find('plusRestoreMileageFl'):	order_doc.order_goods_doc.plus_restore_mileage_fl= order_goods_data.find('plusRestoreMileageFl').text.strip()
-                        if order_goods_data.find('minusStockFl'):	order_doc.order_goods_doc.minus_stock_fl= order_goods_data.find('minusStockFl').text.strip()
-                        if order_goods_data.find('minusRestoreStockFl'):	order_doc.order_goods_doc.minus_restore_stock_fl= order_goods_data.find('minusRestoreStockFl').text.strip()
-                        if order_goods_data.find('optionSno'):	order_doc.order_goods_doc.option_sno= order_goods_data.find('optionSno').text.strip()
-                        if order_goods_data.find('optionInfo'):	order_doc.order_goods_doc.option_info= order_goods_data.find('optionInfo').text.strip()
-                        if order_goods_data.find('optionTextInfo'):	order_doc.order_goods_doc.option_text_info= order_goods_data.find('optionTextInfo').text.strip()
-                        if order_goods_data.find('cateAllCd'):	order_doc.order_goods_doc.cate_all_cd= order_goods_data.find('cateAllCd').text.strip()
-                        if order_goods_data.find('hscode'):	order_doc.order_goods_doc.hscode= order_goods_data.find('hscode').text.strip()
-                        if order_goods_data.find('cancelDt'):	order_doc.order_goods_doc.cancel_dt= order_goods_data.find('cancelDt').text.strip()
-                        if order_goods_data.find('paymentDt'):	order_doc.order_goods_doc.payment_dt= order_goods_data.find('paymentDt').text.strip()
-                        if order_goods_data.find('invoiceDt'):	order_doc.order_goods_doc.invoice_dt= order_goods_data.find('invoiceDt').text.strip()
-                        if order_goods_data.find('deliveryDt'):	order_doc.order_goods_doc.delivery_dt= order_goods_data.find('deliveryDt').text.strip()
-                        if order_goods_data.find('deliveryCompleteDt'):	order_doc.order_goods_doc.delivery_complete_dt= order_goods_data.find('deliveryCompleteDt').text.strip()
-                        if order_goods_data.find('finishDt'):	order_doc.order_goods_doc.finish_dt= order_goods_data.find('finishDt').text.strip()
-                        if order_goods_data.find('mileageGiveDt'):	order_doc.order_goods_doc.mileage_give_dt= order_goods_data.find('mileageGiveDt').text.strip()
-                        if order_goods_data.find('checkoutData'):	order_doc.order_goods_doc.checkout_data= order_goods_data.find('checkoutData').text.strip()
-                        if order_goods_data.find('statisticsOrderFl'):	order_doc.order_goods_doc.statistics_order_fl= order_goods_data.find('statisticsOrderFl').text.strip()
-                        if order_goods_data.find('statisticsGoodsFl'):	order_doc.order_goods_doc.statistics_goods_fl= order_goods_data.find('statisticsGoodsFl').text.strip()
-                        if order_goods_data.find('deliveryMethodFl'):	order_doc.order_goods_doc.delivery_method_fl= order_goods_data.find('deliveryMethodFl').text.strip()
-                        if order_goods_data.find('enuri'):	order_doc.order_goods_doc.enuri= order_goods_data.find('enuri').text.strip()
-                        if order_goods_data.find('goodsDiscountInfo'):	order_doc.order_goods_doc.goods_discount_info= order_goods_data.find('goodsDiscountInfo').text.strip()
-                        if order_goods_data.find('goodsMileageAddInfo'):	order_doc.order_goods_doc.goods_mileage_add_info= order_goods_data.find('goodsMileageAddInfo').text.strip()
-                        if order_goods_data.find('inflow'):	order_doc.order_goods_doc.inflow= order_goods_data.find('inflow').text.strip()
-                        if order_goods_data.find('linkMainTheme'):	order_doc.order_goods_doc.link_main_theme= order_goods_data.find('linkMainTheme').text.strip()
-                        if order_goods_data.find('visitAddress'):	order_doc.order_goods_doc.visit_address= order_goods_data.find('visitAddress').text.strip()
-                        if order_goods_data.find('dpxDeliveryType'):	order_doc.order_goods_doc.dpx_delivery_type= order_goods_data.find('dpxDeliveryType').text.strip()
-                        if order_goods_data.find('dawnInfoType'):	order_doc.order_goods_doc.dawn_info_type= order_goods_data.find('dawnInfoType').text.strip()
-                        if order_goods_data.find('dawnInfoMemo'):	order_doc.order_goods_doc.dawn_info_memo= order_goods_data.find('dawnInfoMemo').text.strip()
-                        if order_goods_data.find('dawnInfoAlram'):	order_doc.order_goods_doc.dawn_info_alram= order_goods_data.find('dawnInfoAlram').text.strip()
-                        if order_goods_data.find('requestBagFl'):	order_doc.order_goods_doc.request_bag_fl= order_goods_data.find('requestBagFl').text.strip()
-                        if order_goods_data.find('goodsVolume'):	order_doc.order_goods_doc.goods_volume= order_goods_data.find('goodsVolume').text.strip()
-                        if order_goods_data.find('couponMileageFl'):	order_doc.order_goods_doc.coupon_mileage_fl= order_goods_data.find('couponMileageFl').text.strip()
-                        if order_goods_data.find('deliveryBundleFl'):	order_doc.order_goods_doc.delivery_bundle_fl= order_goods_data.find('deliveryBundleFl').text.strip()
-                        if order_goods_data.find('deliveryDueDate'):	order_doc.order_goods_doc.delivery_due_date= order_goods_data.find('deliveryDueDate').text.strip()
-                        if order_goods_data.find('easypayScmReceiptFl'):	order_doc.order_goods_doc.easypay_scm_receipt_fl= order_goods_data.find('easypayScmReceiptFl').text.strip()
-                        # order_goods_data.save()
-                        order_claim_data = order_goods_data.find_all('claimData')
-                        order_claim_seq = order_goods_data.select('claimData')
-                        # print(order_claim_data)
-                        idx = 0
-                        for order_claim in order_claim_data:
-                            # print(order_claim)
-                            if frappe.db.exists('Godomall Claim Data',cur_order_no + '-' +order_goods_data.find('sno').text.strip()):
-                                order_doc.order_claim_doc = frappe.get_doc('Godomall Claim Data',cur_order_no + '-' +order_goods_data.find('sno').text.strip())
+                        if frappe.db.exists('Godomall Order Goods Data',cur_order_no + '-' +order_goods_data.find('sno').text.strip()):
+                            order_doc.order_goods_doc = frappe.get_doc('Godomall Order Goods Data',cur_order_no + '-' +order_goods_data.find('sno').text.strip())
+                            if order_goods_data.find('sno'):	order_doc.order_goods_doc.sno= order_goods_data.find('sno').text.strip()
+                            if order_goods_data.find('orderNo'):	order_doc.order_goods_doc.order_no= order_goods_data.find('orderNo').text.strip()
+                            if order_goods_data.find('mailSno'):	order_doc.order_goods_doc.mall_sno= order_goods_data.find('mailSno').text.strip()
+                            if order_goods_data.find('apiOrderGoodsNo'):	order_doc.order_goods_doc.api_order_goods_no= order_goods_data.find('apiOrderGoodsNo').text.strip()
+                            if order_goods_data.find('orderCd'):	order_doc.order_goods_doc.order_cd= order_goods_data.find('orderCd').text.strip()
+                            if order_goods_data.find('orderGroupCd'):	order_doc.order_goods_doc.order_group_cd= order_goods_data.find('orderGroupCd').text.strip()
+                            if order_goods_data.find('eventCd'):	order_doc.order_goods_doc.event_sno= order_goods_data.find('eventCd').text.strip()
+                            if order_goods_data.find('orderStatus'):	order_doc.order_goods_doc.order_status= order_goods_data.find('orderStatus').text.strip()
+                            if order_goods_data.find('orderDeliverySno'):	order_doc.order_goods_doc.order_delivery_sno= order_goods_data.find('orderDeliverySno').text.strip()
+                            if order_goods_data.find('invoiceCompanySno'):	order_doc.order_goods_doc.invoice_company_sno= order_goods_data.find('invoiceCompanySno').text.strip()
+                            if order_goods_data.find('invoiceNo'):	order_doc.order_goods_doc.invoice_no= order_goods_data.find('invoiceNo').text.strip()
+                            if order_goods_data.find('scmNo'):	order_doc.order_goods_doc.scm_no= order_goods_data.find('scmNo').text.strip()
+                            if order_goods_data.find('purchaseNo'):	order_doc.order_goods_doc.purchase_no= order_goods_data.find('purchaseNo').text.strip()
+                            if order_goods_data.find('commission'):	order_doc.order_goods_doc.commission= order_goods_data.find('commission').text.strip()
+                            if order_goods_data.find('scmAdjustAfterNo'):	order_doc.order_goods_doc.scm_adjust_after_no= order_goods_data.find('scmAdjustAfterNo').text.strip()
+                            if order_goods_data.find('goodsType'):	order_doc.order_goods_doc.goods_type= order_goods_data.find('goodsType').text.strip()
+                            if order_goods_data.find('timeSaleFl'):	order_doc.order_goods_doc.time_sale_fl= order_goods_data.find('timeSaleFl').text.strip()
+                            if order_goods_data.find('parentMustFl'):	order_doc.order_goods_doc.parent_must_fl= order_goods_data.find('parentMustFl').text.strip()
+                            if order_goods_data.find('parentGoodsNo'):	order_doc.order_goods_doc.parent_goods_no= order_goods_data.find('parentGoodsNo').text.strip()
+                            if order_goods_data.find('goodsNo'):	order_doc.order_goods_doc.goods_no= order_goods_data.find('goodsNo').text.strip()
+                            if order_goods_data.find('listImageData'):	order_doc.order_goods_doc.list_image_data= order_goods_data.find('listImageData').text.strip()
+                            if order_goods_data.find('goodsCd'):	order_doc.order_goods_doc.goods_cd= order_goods_data.find('goodsCd').text.strip()
+                            if order_goods_data.find('goodsModelNo'):	order_doc.order_goods_doc.goods_model_no= order_goods_data.find('goodsModelNo').text.strip()
+                            if order_goods_data.find('goodsNm'):	order_doc.order_goods_doc.goods_nm= order_goods_data.find('goodsNm').text.strip()
+                            if order_goods_data.find('goodsNmStandard'):	order_doc.order_goods_doc.goods_nm_standard= order_goods_data.find('goodsNmStandard').text.strip()
+                            if order_goods_data.find('goodsCnt'):	order_doc.order_goods_doc.goods_cnt= int(order_goods_data.find('goodsCnt').text.strip())
+                            if order_goods_data.find('goodsPrice'):	order_doc.order_goods_doc.goods_price= float(order_goods_data.find('goodsPrice').text.strip())
+                            if order_goods_data.find('divisionUseDeposit'):	order_doc.order_goods_doc.division_use_deposit= float(order_goods_data.find('divisionUseDeposit').text.strip())
+                            if order_goods_data.find('divisionUseMileage'):	order_doc.order_goods_doc.division_use_mileage= float(order_goods_data.find('divisionUseMileage').text.strip())
+                            if order_goods_data.find('divisionGoodsDeliveryUseDeposit'):	order_doc.order_goods_doc.division_goods_delivery_use_deposit= float(order_goods_data.find('divisionGoodsDeliveryUseDeposit').text.strip())
+                            if order_goods_data.find('divisionGoodsDeliveryUseMileage'):	order_doc.order_goods_doc.division_goods_delivery_use_mileage= float(order_goods_data.find('divisionGoodsDeliveryUseMileage').text.strip())
+                            if order_goods_data.find('divisionCouponOrderDcPrice'):	order_doc.order_goods_doc.division_coupon_order_dc_price= float(order_goods_data.find('divisionCouponOrderDcPrice').text.strip())
+                            if order_goods_data.find('divisionCouponOrderMileage'):	order_doc.order_goods_doc.division_coupon_order_mileage= float(order_goods_data.find('divisionCouponOrderMileage').text.strip())
+                            if order_goods_data.find('addGoodsPrice'):	order_doc.order_goods_doc.add_goods_price= float(order_goods_data.find('addGoodsPrice').text.strip())
+                            if order_goods_data.find('optionPrice'):	order_doc.order_goods_doc.option_price= float(order_goods_data.find('optionPrice').text.strip())
+                            if order_goods_data.find('optionCostPrice'):	order_doc.order_goods_doc.option_cost_price= float(order_goods_data.find('optionCostPrice').text.strip())
+                            if order_goods_data.find('optionTextPrice'):	order_doc.order_goods_doc.option_text_price= float(order_goods_data.find('optionTextPrice').text.strip())
+                            if order_goods_data.find('fixedPrice'):	order_doc.order_goods_doc.fixed_price= float(order_goods_data.find('fixedPrice').text.strip())
+                            if order_goods_data.find('costPrice'):	order_doc.order_goods_doc.cost_price=float( order_goods_data.find('costPrice').text.strip())
+                            if order_goods_data.find('goodsDcPrice'):	order_doc.order_goods_doc.goods_dc_price= float(order_goods_data.find('goodsDcPrice').text.strip())
+                            if order_goods_data.find('memberDcPrice'):	order_doc.order_goods_doc.member_dc_price= float(order_goods_data.find('memberDcPrice').text.strip())
+                            if order_goods_data.find('memberOverlapDcPrice'):	order_doc.order_goods_doc.member_overlap_dc_price= float(order_goods_data.find('memberOverlapDcPrice').text.strip())
+                            if order_goods_data.find('couponGoodsDcPrice'):	order_doc.order_goods_doc.coupon_goods_dc_price= float(order_goods_data.find('couponGoodsDcPrice').text.strip())
+                            if order_goods_data.find('timeSalePrice'):	order_doc.order_goods_doc.time_sale_price= float(order_goods_data.find('timeSalePrice').text.strip())
+                            if order_goods_data.find('brandBankSalePrice'):	order_doc.order_goods_doc.brand_bank_sale_price= float(order_goods_data.find('brandBankSalePrice').text.strip())
+                            if order_goods_data.find('myappDcPrice'):	order_doc.order_goods_doc.myapp_dc_price= float(order_goods_data.find('myappDcPrice').text.strip())
+                            if order_goods_data.find('goodsDeliveryCollectPrice'):	order_doc.order_goods_doc.goods_delivery_collect_price= float(order_goods_data.find('goodsDeliveryCollectPrice').text.strip())
+                            if order_goods_data.find('goodsMileage'):	order_doc.order_goods_doc.goods_mileage= float(order_goods_data.find('goodsMileage').text.strip())
+                            if order_goods_data.find('memberMileage'):	order_doc.order_goods_doc.member_mileage= float(order_goods_data.find('memberMileage').text.strip())
+                            if order_goods_data.find('couponGoodsMileage'):	order_doc.order_goods_doc.coupon_goods_mileage= float(order_goods_data.find('couponGoodsMileage').text.strip())
+                            if order_goods_data.find('goodsDeliveryCollectPrice'):	order_doc.order_goods_doc.goods_delivery_collect_fl= order_goods_data.find('goodsDeliveryCollectPrice').text.strip()
+                            if order_goods_data.find('minusDepositFl'):	order_doc.order_goods_doc.minus_deposit_fl= order_goods_data.find('minusDepositFl').text.strip()
+                            if order_goods_data.find('minusRestoreDepositFl'):	order_doc.order_goods_doc.minus_restore_deposit_fl= order_goods_data.find('minusRestoreDepositFl').text.strip()
+                            if order_goods_data.find('minusMileageFl'):	order_doc.order_goods_doc.minus_mileage_fl= order_goods_data.find('minusMileageFl').text.strip()
+                            if order_goods_data.find('minusRestoreMileageFl'):	order_doc.order_goods_doc.minus_restore_mileage_fl= order_goods_data.find('minusRestoreMileageFl').text.strip()
+                            if order_goods_data.find('plusMileageFl'):	order_doc.order_goods_doc.plus_mileage_fl= order_goods_data.find('plusMileageFl').text.strip()
+                            if order_goods_data.find('plusRestoreMileageFl'):	order_doc.order_goods_doc.plus_restore_mileage_fl= order_goods_data.find('plusRestoreMileageFl').text.strip()
+                            if order_goods_data.find('minusStockFl'):	order_doc.order_goods_doc.minus_stock_fl= order_goods_data.find('minusStockFl').text.strip()
+                            if order_goods_data.find('minusRestoreStockFl'):	order_doc.order_goods_doc.minus_restore_stock_fl= order_goods_data.find('minusRestoreStockFl').text.strip()
+                            if order_goods_data.find('optionSno'):	order_doc.order_goods_doc.option_sno= order_goods_data.find('optionSno').text.strip()
+                            if order_goods_data.find('optionInfo'):	order_doc.order_goods_doc.option_info= order_goods_data.find('optionInfo').text.strip()
+                            if order_goods_data.find('optionTextInfo'):	order_doc.order_goods_doc.option_text_info= order_goods_data.find('optionTextInfo').text.strip()
+                            if order_goods_data.find('cateAllCd'):	order_doc.order_goods_doc.cate_all_cd= order_goods_data.find('cateAllCd').text.strip()
+                            if order_goods_data.find('hscode'):	order_doc.order_goods_doc.hscode= order_goods_data.find('hscode').text.strip()
+                            if order_goods_data.find('cancelDt'):	order_doc.order_goods_doc.cancel_dt= order_goods_data.find('cancelDt').text.strip()
+                            if order_goods_data.find('paymentDt'):	order_doc.order_goods_doc.payment_dt= order_goods_data.find('paymentDt').text.strip()
+                            if order_goods_data.find('invoiceDt'):	order_doc.order_goods_doc.invoice_dt= order_goods_data.find('invoiceDt').text.strip()
+                            if order_goods_data.find('deliveryDt'):	order_doc.order_goods_doc.delivery_dt= order_goods_data.find('deliveryDt').text.strip()
+                            if order_goods_data.find('deliveryCompleteDt'):	order_doc.order_goods_doc.delivery_complete_dt= order_goods_data.find('deliveryCompleteDt').text.strip()
+                            if order_goods_data.find('finishDt'):	order_doc.order_goods_doc.finish_dt= order_goods_data.find('finishDt').text.strip()
+                            if order_goods_data.find('mileageGiveDt'):	order_doc.order_goods_doc.mileage_give_dt= order_goods_data.find('mileageGiveDt').text.strip()
+                            if order_goods_data.find('checkoutData'):	order_doc.order_goods_doc.checkout_data= order_goods_data.find('checkoutData').text.strip()
+                            if order_goods_data.find('statisticsOrderFl'):	order_doc.order_goods_doc.statistics_order_fl= order_goods_data.find('statisticsOrderFl').text.strip()
+                            if order_goods_data.find('statisticsGoodsFl'):	order_doc.order_goods_doc.statistics_goods_fl= order_goods_data.find('statisticsGoodsFl').text.strip()
+                            if order_goods_data.find('deliveryMethodFl'):	order_doc.order_goods_doc.delivery_method_fl= order_goods_data.find('deliveryMethodFl').text.strip()
+                            if order_goods_data.find('enuri'):	order_doc.order_goods_doc.enuri= order_goods_data.find('enuri').text.strip()
+                            if order_goods_data.find('goodsDiscountInfo'):	order_doc.order_goods_doc.goods_discount_info= order_goods_data.find('goodsDiscountInfo').text.strip()
+                            if order_goods_data.find('goodsMileageAddInfo'):	order_doc.order_goods_doc.goods_mileage_add_info= order_goods_data.find('goodsMileageAddInfo').text.strip()
+                            if order_goods_data.find('inflow'):	order_doc.order_goods_doc.inflow= order_goods_data.find('inflow').text.strip()
+                            if order_goods_data.find('linkMainTheme'):	order_doc.order_goods_doc.link_main_theme= order_goods_data.find('linkMainTheme').text.strip()
+                            if order_goods_data.find('visitAddress'):	order_doc.order_goods_doc.visit_address= order_goods_data.find('visitAddress').text.strip()
+                            if order_goods_data.find('dpxDeliveryType'):	order_doc.order_goods_doc.dpx_delivery_type= order_goods_data.find('dpxDeliveryType').text.strip()
+                            if order_goods_data.find('dawnInfoType'):	order_doc.order_goods_doc.dawn_info_type= order_goods_data.find('dawnInfoType').text.strip()
+                            if order_goods_data.find('dawnInfoMemo'):	order_doc.order_goods_doc.dawn_info_memo= order_goods_data.find('dawnInfoMemo').text.strip()
+                            if order_goods_data.find('dawnInfoAlram'):	order_doc.order_goods_doc.dawn_info_alram= order_goods_data.find('dawnInfoAlram').text.strip()
+                            if order_goods_data.find('requestBagFl'):	order_doc.order_goods_doc.request_bag_fl= order_goods_data.find('requestBagFl').text.strip()
+                            if order_goods_data.find('goodsVolume'):	order_doc.order_goods_doc.goods_volume= order_goods_data.find('goodsVolume').text.strip()
+                            if order_goods_data.find('couponMileageFl'):	order_doc.order_goods_doc.coupon_mileage_fl= order_goods_data.find('couponMileageFl').text.strip()
+                            if order_goods_data.find('deliveryBundleFl'):	order_doc.order_goods_doc.delivery_bundle_fl= order_goods_data.find('deliveryBundleFl').text.strip()
+                            if order_goods_data.find('deliveryDueDate'):	order_doc.order_goods_doc.delivery_due_date= order_goods_data.find('deliveryDueDate').text.strip()
+                            if order_goods_data.find('easypayScmReceiptFl'):	order_doc.order_goods_doc.easypay_scm_receipt_fl= order_goods_data.find('easypayScmReceiptFl').text.strip()
+                        else:
+                            json_order_goods={"order_sno":""}
+                            if order_goods_data.find('sno'):	
+                                json_order_goods['order_sno'] = order_goods_data.find('orderNo').text.strip() + '-' +order_goods_data.find('sno').text.strip()
+                                json_order_goods['sno'] = order_goods_data.find('sno').text.strip()
+                            if order_goods_data.find('orderNo'):	json_order_goods['order_no'] = order_goods_data.find('orderNo').text.strip()
+                            if order_goods_data.find('mailSno'):	json_order_goods['mall_sno'] = order_goods_data.find('mailSno').text.strip()
+                            if order_goods_data.find('apiOrderGoodsNo'):	json_order_goods['api_order_goods_no'] = order_goods_data.find('apiOrderGoodsNo').text.strip()
+                            if order_goods_data.find('orderCd'):	json_order_goods['order_cd'] = order_goods_data.find('orderCd').text.strip()
+                            if order_goods_data.find('orderGroupCd'):	json_order_goods['order_group_cd'] = order_goods_data.find('orderGroupCd').text.strip()
+                            if order_goods_data.find('eventCd'):	json_order_goods['event_sno'] = order_goods_data.find('eventCd').text.strip()
+                            if order_goods_data.find('orderStatus'):	json_order_goods['order_status'] = order_goods_data.find('orderStatus').text.strip()
+                            if order_goods_data.find('orderDeliverySno'):	json_order_goods['order_delivery_sno'] = order_goods_data.find('orderDeliverySno').text.strip()
+                            if order_goods_data.find('invoiceCompanySno'):	json_order_goods['invoice_company_sno'] = order_goods_data.find('invoiceCompanySno').text.strip()
+                            if order_goods_data.find('invoiceNo'):	json_order_goods['invoice_no'] = order_goods_data.find('invoiceNo').text.strip()
+                            if order_goods_data.find('scmNo'):	json_order_goods['scm_no'] = order_goods_data.find('scmNo').text.strip()
+                            if order_goods_data.find('purchaseNo'):	json_order_goods['purchase_no'] = order_goods_data.find('purchaseNo').text.strip()
+                            if order_goods_data.find('commission'):	json_order_goods['commission'] = float(order_goods_data.find('commission').text.strip())
+                            if order_goods_data.find('scmAdjustAfterNo'):	json_order_goods['scm_adjust_after_no'] = order_goods_data.find('scmAdjustAfterNo').text.strip()
+                            if order_goods_data.find('goodsType'):	json_order_goods['goods_type'] = order_goods_data.find('goodsType').text.strip()
+                            if order_goods_data.find('timeSaleFl'):	json_order_goods['time_sale_fl'] = order_goods_data.find('timeSaleFl').text.strip()
+                            if order_goods_data.find('parentMustFl'):	json_order_goods['parent_must_fl'] = order_goods_data.find('parentMustFl').text.strip()
+                            if order_goods_data.find('parentGoodsNo'):	json_order_goods['parent_goods_no'] = order_goods_data.find('parentGoodsNo').text.strip()
+                            if order_goods_data.find('goodsNo'):	json_order_goods['goods_no'] = order_goods_data.find('goodsNo').text.strip()
+                            if order_goods_data.find('listImageData'):	json_order_goods['list_image_data'] = order_goods_data.find('listImageData').text.strip()
+                            if order_goods_data.find('goodsCd'):	json_order_goods['goods_cd'] = order_goods_data.find('goodsCd').text.strip()
+                            if order_goods_data.find('goodsModelNo'):	json_order_goods['goods_model_no'] = order_goods_data.find('goodsModelNo').text.strip()
+                            if order_goods_data.find('goodsNm'):	json_order_goods['goods_nm'] = order_goods_data.find('goodsNm').text.strip()
+                            if order_goods_data.find('goodsNmStandard'):	json_order_goods['goods_nm_standard'] = order_goods_data.find('goodsNmStandard').text.strip()
+                            if order_goods_data.find('goodsCnt'):	json_order_goods['goods_cnt'] = int(order_goods_data.find('goodsCnt').text.strip())
+                            if order_goods_data.find('goodsPrice'):	json_order_goods['goods_price'] = float(order_goods_data.find('goodsPrice').text.strip())
+                            if order_goods_data.find('divisionUseDeposit'):	json_order_goods['division_use_deposit'] = float(order_goods_data.find('divisionUseDeposit').text.strip())
+                            if order_goods_data.find('divisionUseMileage'):	json_order_goods['division_use_mileage'] = float(order_goods_data.find('divisionUseMileage').text.strip())
+                            if order_goods_data.find('divisionGoodsDeliveryUseDeposit'):	json_order_goods['division_goods_delivery_use_deposit'] = float(order_goods_data.find('divisionGoodsDeliveryUseDeposit').text.strip())
+                            if order_goods_data.find('divisionGoodsDeliveryUseMileage'):	json_order_goods['division_goods_delivery_use_mileage'] = float(order_goods_data.find('divisionGoodsDeliveryUseMileage').text.strip())
+                            if order_goods_data.find('divisionCouponOrderDcPrice'):	json_order_goods['division_coupon_order_dc_price'] = float(order_goods_data.find('divisionCouponOrderDcPrice').text.strip())
+                            if order_goods_data.find('divisionCouponOrderMileage'):	json_order_goods['division_coupon_order_mileage'] = float(order_goods_data.find('divisionCouponOrderMileage').text.strip())
+                            if order_goods_data.find('addGoodsPrice'):	json_order_goods['add_goods_price'] = float(order_goods_data.find('addGoodsPrice').text.strip())
+                            if order_goods_data.find('optionPrice'):	json_order_goods['option_price'] = float(order_goods_data.find('optionPrice').text.strip())
+                            if order_goods_data.find('optionCostPrice'):	json_order_goods['option_cost_price'] = float(order_goods_data.find('optionCostPrice').text.strip())
+                            if order_goods_data.find('optionTextPrice'):	json_order_goods['option_text_price'] = float(order_goods_data.find('optionTextPrice').text.strip())
+                            if order_goods_data.find('fixedPrice'):	json_order_goods['fixed_price'] = float(order_goods_data.find('fixedPrice').text.strip())
+                            if order_goods_data.find('costPrice'):	json_order_goods['cost_price'] = float(order_goods_data.find('costPrice').text.strip())
+                            if order_goods_data.find('goodsDcPrice'):	json_order_goods['goods_dc_price'] = float(order_goods_data.find('goodsDcPrice').text.strip())
+                            if order_goods_data.find('memberDcPrice'):	json_order_goods['member_dc_price'] = float(order_goods_data.find('memberDcPrice').text.strip())
+                            if order_goods_data.find('memberOverlapDcPrice'):	json_order_goods['member_overlap_dc_price'] = float(order_goods_data.find('memberOverlapDcPrice').text.strip())
+                            if order_goods_data.find('couponGoodsDcPrice'):	json_order_goods['coupon_goods_dc_price'] = float(order_goods_data.find('couponGoodsDcPrice').text.strip())
+                            if order_goods_data.find('timeSalePrice'):	json_order_goods['time_sale_price'] = float(order_goods_data.find('timeSalePrice').text.strip())
+                            if order_goods_data.find('brandBankSalePrice'):	json_order_goods['brand_bank_sale_price'] = float(order_goods_data.find('brandBankSalePrice').text.strip())
+                            if order_goods_data.find('myappDcPrice'):	json_order_goods['myapp_dc_price'] = float(order_goods_data.find('myappDcPrice').text.strip())
+                            if order_goods_data.find('goodsDeliveryCollectPrice'):	json_order_goods['goods_delivery_collect_price'] = float(order_goods_data.find('goodsDeliveryCollectPrice').text.strip())
+                            if order_goods_data.find('goodsMileage'):	json_order_goods['goods_mileage'] = float(order_goods_data.find('goodsMileage').text.strip())
+                            if order_goods_data.find('memberMileage'):	json_order_goods['member_mileage'] = float(order_goods_data.find('memberMileage').text.strip())
+                            if order_goods_data.find('couponGoodsMileage'):	json_order_goods['coupon_goods_mileage'] = float(order_goods_data.find('couponGoodsMileage').text.strip())
+                            if order_goods_data.find('goods_delivery_collect_fl'):	json_order_goods['goods_delivery_collect_fl'] = order_goods_data.find('goods_delivery_collect_fl').text.strip()
+                            if order_goods_data.find('minusDepositFl'):	json_order_goods['minus_deposit_fl'] = order_goods_data.find('minusDepositFl').text.strip()
+                            if order_goods_data.find('minusRestoreDepositFl'):	json_order_goods['minus_restore_deposit_fl'] = order_goods_data.find('minusRestoreDepositFl').text.strip()
+                            if order_goods_data.find('minusMileageFl'):	json_order_goods['minus_mileage_fl'] = order_goods_data.find('minusMileageFl').text.strip()
+                            if order_goods_data.find('minusRestoreMileageFl'):	json_order_goods['minus_restore_mileage_fl'] = order_goods_data.find('minusRestoreMileageFl').text.strip()
+                            if order_goods_data.find('plusMileageFl'):	json_order_goods['plus_mileage_fl'] = order_goods_data.find('plusMileageFl').text.strip()
+                            if order_goods_data.find('plusRestoreMileageFl'):	json_order_goods['plus_restore_mileage_fl'] = order_goods_data.find('plusRestoreMileageFl').text.strip()
+                            if order_goods_data.find('minusStockFl'):	json_order_goods['minus_stock_fl'] = order_goods_data.find('minusStockFl').text.strip()
+                            if order_goods_data.find('minusRestoreStockFl'):	json_order_goods['minus_restore_stock_fl'] = order_goods_data.find('minusRestoreStockFl').text.strip()
+                            if order_goods_data.find('optionSno'):	json_order_goods['option_sno'] = order_goods_data.find('optionSno').text.strip()
+                            if order_goods_data.find('optionInfo'):	json_order_goods['option_info'] = order_goods_data.find('optionInfo').text.strip()
+                            if order_goods_data.find('optionTextInfo'):	json_order_goods['option_text_info'] = order_goods_data.find('optionTextInfo').text.strip()
+                            if order_goods_data.find('cateAllCd'):	json_order_goods['cate_all_cd'] = order_goods_data.find('cateAllCd').text.strip()
+                            if order_goods_data.find('hscode'):	json_order_goods['hscode'] = order_goods_data.find('hscode').text.strip()
+                            if order_goods_data.find('cancelDt'):	json_order_goods['cancel_dt'] = order_goods_data.find('cancelDt').text.strip()
+                            if order_goods_data.find('paymentDt'):	json_order_goods['payment_dt'] = order_goods_data.find('paymentDt').text.strip()
+                            if order_goods_data.find('invoiceDt'):	json_order_goods['invoice_dt'] = order_goods_data.find('invoiceDt').text.strip()
+                            if order_goods_data.find('deliveryDt'):	json_order_goods['delivery_dt'] = order_goods_data.find('deliveryDt').text.strip()
+                            if order_goods_data.find('deliveryCompleteDt'):	json_order_goods['delivery_complete_dt'] = order_goods_data.find('deliveryCompleteDt').text.strip()
+                            if order_goods_data.find('finishDt'):	json_order_goods['finish_dt'] = order_goods_data.find('finishDt').text.strip()
+                            if order_goods_data.find('mileageGiveDt'):	json_order_goods['mileage_give_dt'] = order_goods_data.find('mileageGiveDt').text.strip()
+                            if order_goods_data.find('checkoutData'):	json_order_goods['checkout_data'] = order_goods_data.find('checkoutData').text.strip()
+                            if order_goods_data.find('statisticsOrderFl'):	json_order_goods['statistics_order_fl'] = order_goods_data.find('statisticsOrderFl').text.strip()
+                            if order_goods_data.find('statisticsGoodsFl'):	json_order_goods['statistics_goods_fl'] = order_goods_data.find('statisticsGoodsFl').text.strip()
+                            if order_goods_data.find('deliveryMethodFl'):	json_order_goods['delivery_method_fl'] = order_goods_data.find('deliveryMethodFl').text.strip()
+                            if order_goods_data.find('enuri'):	json_order_goods['enuri'] = order_goods_data.find('enuri').text.strip()
+                            if order_goods_data.find('goodsDiscountInfo'):	json_order_goods['goods_discount_info'] = order_goods_data.find('goodsDiscountInfo').text.strip()
+                            if order_goods_data.find('goodsMileageAddInfo'):	json_order_goods['goods_mileage_add_info'] = order_goods_data.find('goodsMileageAddInfo').text.strip()
+                            if order_goods_data.find('inflow'):	json_order_goods['inflow'] = order_goods_data.find('inflow').text.strip()
+                            if order_goods_data.find('linkMainTheme'):	json_order_goods['link_main_theme'] = order_goods_data.find('linkMainTheme').text.strip()
+                            if order_goods_data.find('visitAddress'):	json_order_goods['visit_address'] = order_goods_data.find('visitAddress').text.strip()
+                            if order_goods_data.find('dpxDeliveryType'):	json_order_goods['dpx_delivery_type'] = order_goods_data.find('dpxDeliveryType').text.strip()
+                            if order_goods_data.find('dawnInfoType'):	json_order_goods['dawn_info_type'] = order_goods_data.find('dawnInfoType').text.strip()
+                            if order_goods_data.find('dawnInfoMemo'):	json_order_goods['dawn_info_memo'] = order_goods_data.find('dawnInfoMemo').text.strip()
+                            if order_goods_data.find('dawnInfoAlram'):	json_order_goods['dawn_info_alram'] = order_goods_data.find('dawnInfoAlram').text.strip()
+                            if order_goods_data.find('requestBagFl'):	json_order_goods['request_bag_fl'] = order_goods_data.find('requestBagFl').text.strip()
+                            if order_goods_data.find('goodsVolume'):	json_order_goods['goods_volume'] = order_goods_data.find('goodsVolume').text.strip()
+                            if order_goods_data.find('couponMileageFl'):	json_order_goods['coupon_mileage_fl'] = order_goods_data.find('couponMileageFl').text.strip()
+                            if order_goods_data.find('deliveryBundleFl'):	json_order_goods['delivery_bundle_fl'] = order_goods_data.find('deliveryBundleFl').text.strip()
+                            if order_goods_data.find('deliveryDueDate'):	json_order_goods['delivery_due_date'] = order_goods_data.find('deliveryDueDate').text.strip()
+                            if order_goods_data.find('easypayScmReceiptFl'):	json_order_goods['easypay_scm_receipt_fl'] = order_goods_data.find('easypayScmReceiptFl').text.strip()
                                 
-                                if order_claim.find('beforeStatus'):                order_doc.order_claim_doc.before_status = order_claim.find('beforeStatus').text.strip()
-                                if order_claim.find('handleMode'):                  order_doc.order_claim_doc.handle_mode = order_claim.find('handleMode').text.strip()
-                                if order_claim.find('handleCompleteFl'):            order_doc.order_claim_doc.handle_complete_fl = order_claim.find('handleCompleteFl').text.strip()
-                                if order_claim.find('handleReason'):                order_doc.order_claim_doc.handle_reason = order_claim.find('handleReason').text.strip()
-                                if order_claim.find('handleDetailReason'):          order_doc.order_claim_doc.handle_detail_reason = order_claim.find('handleDetailReason').text.strip()
-                                if order_claim.find('handleDetailReasonShowFl'):    order_doc.order_claim_doc.fandle_detail_reason_show_fl = order_claim.find('handleDetailReasonShowFl').text.strip()
-                                if order_claim.find('handleDt'):                    order_doc.order_claim_doc.handle_dt = order_claim.find('handleDt').text.strip()
-                                if order_claim.find('refundPrice'):                 order_doc.order_claim_doc.refund_price = float(order_claim.find('refundPrice').text.strip())
-                                if order_claim.find('refundUseDeposit'):            order_doc.order_claim_doc.refund_use_deposit = float(order_claim.find('refundUseDeposit').text.strip())
-                                if order_claim.find('refundUseMileage'):            order_doc.order_claim_doc.refund_use_mileage = float(order_claim.find('refundUseMileage').text.strip())
-                                if order_claim.find('refundDeliveryUseDeposit'):    order_doc.order_claim_doc.refund_delivery_use_deposit = float(order_claim.find('refundDeliveryUseDeposit').text.strip())
-                                if order_claim.find('refundDeliveryUseMileage'):    order_doc.order_claim_doc.refund_delivery_use_mileage = float(order_claim.find('refundDeliveryUseMileage').text.strip())
-                                if order_claim.find('refundDeliveryCharge'):        order_doc.order_claim_doc.refund_delivery_charge = float(order_claim.find('refundDeliveryCharge').text.strip())
-                                if order_claim.find('refundDeliveryInsuranceFee'):  order_doc.order_claim_doc.refund_delivery_insurance_fee = float(order_claim.find('refundDeliveryInsuranceFee').text.strip())
-                                if order_claim.find('refundDeliveryCoupon'):        order_doc.order_claim_doc.refund_delivery_coupon = float(order_claim.find('refundDeliveryCoupon').text.strip())
-                                if order_claim.find('refundCharge'):                order_doc.order_claim_doc.refund_charge = float(order_claim.find('refundCharge').text.strip())
-                                if order_claim.find('refundUseDepositCommission'):  order_doc.order_claim_doc.refund_use_deposit_commission = float(order_claim.find('refundUseDepositCommission').text.strip())
-                                if order_claim.find('refundUseMileageCommission'):  order_doc.order_claim_doc.refund_use_mileage_commission = float(order_claim.find('refundUseMileageCommission').text.strip())
-                                if order_claim.find('handleGroupCd'):               order_doc.order_claim_doc.handle_group_cd = order_claim.find('handleGroupCd').text.strip()
-                                if order_claim.find('regDt'):                       order_doc.order_claim_doc.reg_dt = order_claim.find('regDt').text.strip()
-                                idx = idx +1
-                            else:
-                                json_order_claim={"order_sno":""}
-                                json_order_claim['order_sno'] =                cur_order_no +'-'+order_goods_data.find('sno').text.strip()
-                                if order_claim.find('beforeStatus'):                json_order_claim['before_status'] = order_claim.find('beforeStatus').text.strip()
-                                if order_claim.find('handleMode'):                  json_order_claim['handle_mode'] = order_claim.find('handleMode').text.strip()
-                                if order_claim.find('handleCompleteFl'):            json_order_claim['handle_complete_fl'] = order_claim.find('handleCompleteFl').text.strip()
-                                if order_claim.find('handleReason'):                json_order_claim['handle_reason'] = order_claim.find('handleReason').text.strip()
-                                if order_claim.find('handleDetailReason'):          json_order_claim['handle_detail_reason'] = order_claim.find('handleDetailReason').text.strip()
-                                if order_claim.find('handleDetailReasonShowFl'):    json_order_claim['fandle_detail_reason_show_fl'] = order_claim.find('handleDetailReasonShowFl').text.strip()
-                                if order_claim.find('handleDt'):                    json_order_claim['handle_dt'] = order_claim.find('handleDt').text.strip()
-                                if order_claim.find('refundPrice'):                 json_order_claim['refund_price'] = float(order_claim.find('refundPrice').text.strip())
-                                if order_claim.find('refundUseDeposit'):            json_order_claim['refund_use_deposit'] = float(order_claim.find('refundUseDeposit').text.strip())
-                                if order_claim.find('refundUseMileage'):            json_order_claim['refund_use_mileage'] = float(order_claim.find('refundUseMileage').text.strip())
-                                if order_claim.find('refundDeliveryUseDeposit'):    json_order_claim['refund_delivery_use_deposit'] = float(order_claim.find('refundDeliveryUseDeposit').text.strip())
-                                if order_claim.find('refundDeliveryUseMileage'):    json_order_claim['refund_delivery_use_mileage'] = float(order_claim.find('refundDeliveryUseMileage').text.strip())
-                                if order_claim.find('refundDeliveryCharge'):        json_order_claim['refund_delivery_charge'] = float(order_claim.find('refundDeliveryCharge').text.strip())
-                                if order_claim.find('refundDeliveryInsuranceFee'):  json_order_claim['refund_delivery_insurance_fee'] = float(order_claim.find('refundDeliveryInsuranceFee').text.strip())
-                                if order_claim.find('refundDeliveryCoupon'):        json_order_claim['refund_delivery_coupon'] = float(order_claim.find('refundDeliveryCoupon').text.strip())
-                                if order_claim.find('refundCharge'):                json_order_claim['refund_charge'] = float(order_claim.find('refundCharge').text.strip())
-                                if order_claim.find('refundUseDepositCommission'):  json_order_claim['refund_use_deposit_commission'] = float(order_claim.find('refundUseDepositCommission').text.strip())
-                                if order_claim.find('refundUseMileageCommission'):  json_order_claim['refund_use_mileage_commission'] = float(order_claim.find('refundUseMileageCommission').text.strip())
-                                if order_claim.find('handleGroupCd'):               json_order_claim['handle_group_cd'] = order_claim.find('handleGroupCd').text.strip()
-                                if order_claim.find('regDt'):                       json_order_claim['reg_dt'] = order_claim.find('regDt').text.strip()
-                                idx = idx +1
-                                order_doc.append('order_claim_data',
-                                    json_order_claim
-                                )
+                                
+
+                            order_doc.append('order_goods_data',
+                                json_order_goods
+                            )
+
+                            
+                            
+                            # order_goods_data.save()
+                            order_claim_data = order_goods_data.find_all('claimData')
+                            order_claim_seq = order_goods_data.select('claimData')
+                            # print(order_claim_data)
+                            idx = 0
+                            for order_claim in order_claim_data:
+                                # print(order_claim)
+                                if frappe.db.exists('Godomall Claim Data',cur_order_no + '-' +order_goods_data.find('sno').text.strip()):
+                                    order_doc.order_claim_doc = frappe.get_doc('Godomall Claim Data',cur_order_no + '-' +order_goods_data.find('sno').text.strip())
+                                    
+                                    if order_claim.find('beforeStatus'):                order_doc.order_claim_doc.before_status = order_claim.find('beforeStatus').text.strip()
+                                    if order_claim.find('handleMode'):                  order_doc.order_claim_doc.handle_mode = order_claim.find('handleMode').text.strip()
+                                    if order_claim.find('handleCompleteFl'):            order_doc.order_claim_doc.handle_complete_fl = order_claim.find('handleCompleteFl').text.strip()
+                                    if order_claim.find('handleReason'):                order_doc.order_claim_doc.handle_reason = order_claim.find('handleReason').text.strip()
+                                    if order_claim.find('handleDetailReason'):          order_doc.order_claim_doc.handle_detail_reason = order_claim.find('handleDetailReason').text.strip()
+                                    if order_claim.find('handleDetailReasonShowFl'):    order_doc.order_claim_doc.fandle_detail_reason_show_fl = order_claim.find('handleDetailReasonShowFl').text.strip()
+                                    if order_claim.find('handleDt'):                    order_doc.order_claim_doc.handle_dt = order_claim.find('handleDt').text.strip()
+                                    if order_claim.find('refundPrice'):                 order_doc.order_claim_doc.refund_price = float(order_claim.find('refundPrice').text.strip())
+                                    if order_claim.find('refundUseDeposit'):            order_doc.order_claim_doc.refund_use_deposit = float(order_claim.find('refundUseDeposit').text.strip())
+                                    if order_claim.find('refundUseMileage'):            order_doc.order_claim_doc.refund_use_mileage = float(order_claim.find('refundUseMileage').text.strip())
+                                    if order_claim.find('refundDeliveryUseDeposit'):    order_doc.order_claim_doc.refund_delivery_use_deposit = float(order_claim.find('refundDeliveryUseDeposit').text.strip())
+                                    if order_claim.find('refundDeliveryUseMileage'):    order_doc.order_claim_doc.refund_delivery_use_mileage = float(order_claim.find('refundDeliveryUseMileage').text.strip())
+                                    if order_claim.find('refundDeliveryCharge'):        order_doc.order_claim_doc.refund_delivery_charge = float(order_claim.find('refundDeliveryCharge').text.strip())
+                                    if order_claim.find('refundDeliveryInsuranceFee'):  order_doc.order_claim_doc.refund_delivery_insurance_fee = float(order_claim.find('refundDeliveryInsuranceFee').text.strip())
+                                    if order_claim.find('refundDeliveryCoupon'):        order_doc.order_claim_doc.refund_delivery_coupon = float(order_claim.find('refundDeliveryCoupon').text.strip())
+                                    if order_claim.find('refundCharge'):                order_doc.order_claim_doc.refund_charge = float(order_claim.find('refundCharge').text.strip())
+                                    if order_claim.find('refundUseDepositCommission'):  order_doc.order_claim_doc.refund_use_deposit_commission = float(order_claim.find('refundUseDepositCommission').text.strip())
+                                    if order_claim.find('refundUseMileageCommission'):  order_doc.order_claim_doc.refund_use_mileage_commission = float(order_claim.find('refundUseMileageCommission').text.strip())
+                                    if order_claim.find('handleGroupCd'):               order_doc.order_claim_doc.handle_group_cd = order_claim.find('handleGroupCd').text.strip()
+                                    if order_claim.find('regDt'):                       order_doc.order_claim_doc.reg_dt = order_claim.find('regDt').text.strip()
+                                    idx = idx +1
+                                else:
+                                    json_order_claim={"order_sno":""}
+                                    json_order_claim['order_sno'] =                cur_order_no +'-'+order_goods_data.find('sno').text.strip()
+                                    if order_claim.find('beforeStatus'):                json_order_claim['before_status'] = order_claim.find('beforeStatus').text.strip()
+                                    if order_claim.find('handleMode'):                  json_order_claim['handle_mode'] = order_claim.find('handleMode').text.strip()
+                                    if order_claim.find('handleCompleteFl'):            json_order_claim['handle_complete_fl'] = order_claim.find('handleCompleteFl').text.strip()
+                                    if order_claim.find('handleReason'):                json_order_claim['handle_reason'] = order_claim.find('handleReason').text.strip()
+                                    if order_claim.find('handleDetailReason'):          json_order_claim['handle_detail_reason'] = order_claim.find('handleDetailReason').text.strip()
+                                    if order_claim.find('handleDetailReasonShowFl'):    json_order_claim['fandle_detail_reason_show_fl'] = order_claim.find('handleDetailReasonShowFl').text.strip()
+                                    if order_claim.find('handleDt'):                    json_order_claim['handle_dt'] = order_claim.find('handleDt').text.strip()
+                                    if order_claim.find('refundPrice'):                 json_order_claim['refund_price'] = float(order_claim.find('refundPrice').text.strip())
+                                    if order_claim.find('refundUseDeposit'):            json_order_claim['refund_use_deposit'] = float(order_claim.find('refundUseDeposit').text.strip())
+                                    if order_claim.find('refundUseMileage'):            json_order_claim['refund_use_mileage'] = float(order_claim.find('refundUseMileage').text.strip())
+                                    if order_claim.find('refundDeliveryUseDeposit'):    json_order_claim['refund_delivery_use_deposit'] = float(order_claim.find('refundDeliveryUseDeposit').text.strip())
+                                    if order_claim.find('refundDeliveryUseMileage'):    json_order_claim['refund_delivery_use_mileage'] = float(order_claim.find('refundDeliveryUseMileage').text.strip())
+                                    if order_claim.find('refundDeliveryCharge'):        json_order_claim['refund_delivery_charge'] = float(order_claim.find('refundDeliveryCharge').text.strip())
+                                    if order_claim.find('refundDeliveryInsuranceFee'):  json_order_claim['refund_delivery_insurance_fee'] = float(order_claim.find('refundDeliveryInsuranceFee').text.strip())
+                                    if order_claim.find('refundDeliveryCoupon'):        json_order_claim['refund_delivery_coupon'] = float(order_claim.find('refundDeliveryCoupon').text.strip())
+                                    if order_claim.find('refundCharge'):                json_order_claim['refund_charge'] = float(order_claim.find('refundCharge').text.strip())
+                                    if order_claim.find('refundUseDepositCommission'):  json_order_claim['refund_use_deposit_commission'] = float(order_claim.find('refundUseDepositCommission').text.strip())
+                                    if order_claim.find('refundUseMileageCommission'):  json_order_claim['refund_use_mileage_commission'] = float(order_claim.find('refundUseMileageCommission').text.strip())
+                                    if order_claim.find('handleGroupCd'):               json_order_claim['handle_group_cd'] = order_claim.find('handleGroupCd').text.strip()
+                                    if order_claim.find('regDt'):                       json_order_claim['reg_dt'] = order_claim.find('regDt').text.strip()
+                                    idx = idx +1
+                                    order_doc.append('order_claim_data',
+                                        json_order_claim
+                                    )
 
                     order_doc.save(
                         ignore_permissions=True, # ignore write permissions during insert
@@ -1158,7 +1394,49 @@ def get_godomall_order(**kwargs):
                     order_seq = order.select('orderInfoData')
                     idx = 0
                     # print(order_seq[0]['idx'])
+                    if frappe.db.exists('Customer',order.find('orderEmail').text.strip()):
+                        cust_doc =frappe.get_doc('Customer',order.find('orderEmail').text.strip())
+                        cust_doc.name = order.find('orderEmail').text.strip()
+                        cust_doc.customer_name = order_info_data_list[0].find('orderName').text.strip()
+                        if order.find('memGroupNm') and frappe.db.exists('Customer Group',order.find('memGroupNm').text.strip()):
+                            cust_doc.customer_group = order.find('memGroupNm').text.strip() 
+                        else:
+                            cust_doc.customer_group = '손님'
+                        cust_doc.customer_type = 'Individual'
+                        # print(cust_data.order_zonecode[0:2])
+                        city_name =""
+                        if order_info_data_list[0].find('orderZonecode').text.strip():
+                            cust_doc.territory = get_territory_by_zipcode(zip_code=order_info_data_list[0].find('orderZonecode').text.strip())
+                        cust_doc.so_required = 1
+                        cust_doc.dn_required = 1
+                        cust_doc.is_internal_customer = 0
+                        cust_doc.default_currency = 'KRW'
+                        cust_doc.default_price_list = frappe.db.get_single_value('Godomall API Setting', 'default_price_list')
+                        cust_doc.save()
+                    else:
+                        cust_doc =frappe.new_doc('Customer')
+                        cust_doc.name = order.find('orderEmail').text.strip()
+                        cust_doc.customer_name = order_info_data_list[0].find('orderName').text.strip()
+                        if order.find('memGroupNm') and frappe.db.exists('Customer Group',order.find('memGroupNm').text.strip()):
+                            cust_doc.customer_group = order.find('memGroupNm').text.strip() 
+                        else:
+                            cust_doc.customer_group = '손님'
+                        cust_doc.customer_type = 'Individual'
+                        # print(cust_data.order_zonecode[0:2])
+                        city_name =""
+                        if order_info_data_list[0].find('orderZonecode').text.strip():
+                            cust_doc.territory = get_territory_by_zipcode(zip_code=order_info_data_list[0].find('orderZonecode').text.strip())
+                        cust_doc.so_required = 1
+                        cust_doc.dn_required = 1
+                        cust_doc.is_internal_customer = 0
+                        cust_doc.default_currency = 'KRW'
+                        cust_doc.default_price_list = frappe.db.get_single_value('Godomall API Setting', 'default_price_list')
+                        cust_doc.insert(
+                            ignore_permissions=True, # ignore write permissions during insert
+                            ignore_links=True,
+                            ignore_mandatory=True
 
+                        )
                     for order_info_data in order_info_data_list:
                         
                         # print(order_seq[idx]['idx'])
@@ -1194,6 +1472,93 @@ def get_godomall_order(**kwargs):
                         order_doc.append('order_info_data',
                             json_order_info
                         )
+
+                        # if order_info_data.find('orderZonecode').text.strip() or order_info_data.find('orderZonecode').text.strip()=="":
+                        #     if frappe.db.exists('Address',str(order_info_data.find('orderName').text.strip())+'-Billing'):
+                        #         address_doc = frappe.get_doc('Address',str(order_info_data.find('orderName').text.strip())+'-Billing')
+                        #         address_doc.address_title = order_info_data.find('orderName').text.strip()
+                        #         address_doc.address_type = 'Billing'
+                        #         address_doc.address_line1 = order_info_data.find('orderAddress').text.strip()
+                        #         address_doc.address_line2 = order_info_data.find('orderAddressSub').text.strip()
+                        #         address_doc.city = get_territory_by_zipcode(zip_code=order_info_data.find('orderZonecode').text.strip())
+                        #         address_doc.country = "Korea, Republic of"
+                        #         address_doc.pincode = order_info_data.find('orderZonecode').text.strip()
+                        #         address_doc.email_id = order_info_data.find('orderEmail').text.strip()
+                        #         address_doc.phone = order_info_data.find('orderCellPhone').text.strip()
+                        #         address_doc.is_primary_address = 1
+                        #         address_doc.save()
+                        #     else:
+                        #         address_doc = frappe.new_doc('Address')
+                        #         address_doc.address_title = order_info_data.find('orderName').text.strip()
+                        #         address_doc.address_type = 'Billing'
+                        #         address_doc.address_line1 = order_info_data.find('orderAddress').text.strip()
+                        #         address_doc.address_line2 = order_info_data.find('orderAddressSub').text.strip()
+                        #         print(order_doc.order_no)
+                        #         address_doc.city = get_territory_by_zipcode(zip_code=order_info_data.find('orderZonecode').text.strip())
+                        #         address_doc.country = "Korea, Republic of"
+                        #         address_doc.pincode = order_info_data.find('orderZonecode').text.strip()
+                        #         address_doc.email_id = order_info_data.find('orderEmail').text.strip()
+                        #         address_doc.phone = order_info_data.find('orderCellPhone').text.strip()
+                        #         address_doc.is_primary_address = 1
+                        #         json_address = {}
+                        #         json_address['link_doctype']='Customer'
+                        #         json_address['link_name']= order_info_data.find('orderEmail').text.strip()
+                        #         json_address['link_title']= order_info_data.find('orderName').text.strip()
+                        #         address_doc.append('links',json_address)
+                        #         address_doc.insert(
+                        #             ignore_permissions=True, # ignore write permissions during insert
+                        #             ignore_links=True
+                        #         )
+
+                        if order_info_data.find('receiverZonecode'):
+
+                            address_datas = frappe.db.sql("""
+                                select ta.name from frappedb.tabAddress ta , frappedb.`tabDynamic Link` tdl 
+                                where ta.name = tdl.parent 
+                                and tdl.parenttype ='Address'
+                                and tdl.link_doctype ='Customer'
+                                and tdl.link_name =%s
+                                and ta.pincode =%s
+                                and ta.address_line1 =%s
+                                and ta.address_line2 =%s
+                            """,(order_info_data.find('orderEmail').text.strip() , order_info_data.find('receiverZonecode').text.strip() ,order_info_data.find('receiverAddress').text.strip() ,order_info_data.find('receiverAddressSub').text.strip()),as_dict=0)
+                            if address_datas:
+                                for addres_data in address_datas:
+                                    address_doc = frappe.get_doc('Address',addres_data)
+                                    address_doc.address_title = order_info_data.find('receiverName').text.strip() 
+                                    address_doc.address_type = 'Shipping'
+                                    address_doc.address_line1 = order_info_data.find('receiverAddress').text.strip()
+                                    address_doc.address_line2 = order_info_data.find('receiverAddressSub').text.strip()
+                                    address_doc.city = get_territory_by_zipcode(zip_code=order_info_data.find('receiverZonecode').text.strip())
+                                    address_doc.country = "Korea, Republic of"
+                                    address_doc.pincode = order_info_data.find('receiverZonecode').text.strip()
+                                    address_doc.email_id = order_info_data.find('orderEmail').text.strip()
+                                    address_doc.phone = order_info_data.find('receiverCellPhone').text.strip()
+                                    address_doc.is_shipping_address = 1
+                                    address_doc.save()
+                                    
+                            else:
+                                address_doc = frappe.new_doc('Address')
+                                address_doc.address_title = order_info_data.find('receiverName').text.strip() 
+                                address_doc.address_type = 'Shipping'
+                                address_doc.address_line1 = order_info_data.find('receiverAddress').text.strip()
+                                address_doc.address_line2 = order_info_data.find('receiverAddressSub').text.strip()
+                                address_doc.city = get_territory_by_zipcode(zip_code=order_info_data.find('receiverZonecode').text.strip())
+                                address_doc.country = "Korea, Republic of"
+                                address_doc.pincode = order_info_data.find('receiverZonecode').text.strip()
+                                address_doc.email_id = order_info_data.find('orderEmail').text.strip()
+                                address_doc.phone = order_info_data.find('receiverCellPhone').text.strip()
+                                address_doc.is_shipping_address = 1
+                                json_address = {}
+                                json_address['link_doctype']='Customer'
+                                json_address['link_name']= order_info_data.find('orderEmail').text.strip()
+                                json_address['link_title']= order_info_data.find('orderName').text.strip()
+                                address_doc.append('links',json_address)
+                                address_doc.insert(
+                                    ignore_permissions=True, # ignore write permissions during insert
+                                    ignore_links=True,
+                                    ignore_mandatory=True
+                                )
 
                     
                     order_goods_data_list = order.find_all('orderGoodsData')
@@ -1343,8 +1708,8 @@ def get_godomall_order(**kwargs):
         except IndexError:
             print("Godomall XML Parsing Error")
     print(cur_order_no+":"+str(resp.status_code))
-    print("".join(url))
-    return cur_order_no+":"+str(resp.status_code)+"\n"
+    
+    return cur_order_no
      
 @frappe.whitelist()
 def get_common_scm_code():
@@ -1392,7 +1757,8 @@ def get_common_scm_code():
                             supplier_doc.supplier_type = 'Company'
                             supplier_doc.save(
                                         ignore_permissions=True, # ignore write permissions during insert
-                                        ignore_version=True # do not create a version record
+                                        ignore_version=True, # do not create a version record
+                                        ignore_mandatory=True
                                     )
                         else:
                             supplier_doc = frappe.new_doc('Supplier')
@@ -1402,7 +1768,8 @@ def get_common_scm_code():
                             supplier_doc.supplier_group ='Distributor'
                             supplier_doc.supplier_type = 'Company'
                             supplier_doc.insert(ignore_permissions=True, # ignore write permissions during insert
-                                        ignore_links=True
+                                        ignore_links=True,
+                                        ignore_mandatory=True
                                         )
 
                         supplier_doc.supplier_name = common_code.find('companyNm').text.strip()
@@ -1431,11 +1798,13 @@ def get_common_scm_code():
                         supplier_doc.supplier_type = 'Company'
 
                         supplier_doc.insert(ignore_permissions=True, # ignore write permissions during insert
-                                        ignore_links=True
+                                        ignore_links=True,
+                                        ignore_mandatory=True
                                         )
                         
                         scm_doc.insert(ignore_permissions=True, # ignore write permissions during insert
-                                        ignore_links=True
+                                        ignore_links=True,
+                                        ignore_mandatory=True
                                         )
                         frappe.db.commit()
         
@@ -1562,15 +1931,15 @@ def get_common_member_group_code():
 
 @frappe.whitelist()           
 def create_update_item(**args):
-    print(args)
+    # print(args)
     goods_filter=[]
     goods_list =[]
     if args.get('goods_no'):
         goods_list = frappe.db.get_list('Godomall Goods master'
             ,filters= [
             ['docstatus','=', '1' ]
-			,['parent_goods','=','']
-            ,['bundle_yn','=','N']
+			# ,['parent_goods','=','']
+            # ,['bundle_yn','=','N']
             ,['goods_no','=',args.get('goods_no')]
             ]
             , pluck='name')
@@ -1578,13 +1947,13 @@ def create_update_item(**args):
         goods_list = frappe.db.get_list('Godomall Goods master'
             ,filters= [
                 ['docstatus','=', '1' ]
-                ,['parent_goods','=','']
-                ,['bundle_yn','=','N']
+                # ,['parent_goods','=','']
+                # ,['bundle_yn','=','N']
             ]
             , pluck='name')
 
 
-    print(goods_list)
+    # print(goods_list)
     for goods in goods_list:
         item_name =""
         if frappe.db.exists('Godomall Goods Option',{"parent": goods}):
@@ -1618,20 +1987,32 @@ def create_update_item(**args):
                     item_doc.stock_uom = 'EA'
                     item_doc.disabled = 0
                     item_doc.godo_mall_goods_no =  goods_doc.goods_no
-                    if goods_doc.goods_cd == "맛집":
-                        item_doc.is_stock_item = 1
-                        item_doc.item_group = goods_doc.goods_cd
-                    elif goods_doc.goods_cd == "공동구매":
-                        item_doc.is_stock_item = 1
-                        item_doc.item_group = goods_doc.goods_cd
-                    elif goods_doc.goods_cd == "직매입":
-                        item_doc.is_stock_item = 1
-                        item_doc.item_group = goods_doc.goods_cd
-                    else:
-                        item_doc.is_stock_item = 0
-                        item_doc.item_group = "위탁"
+                    if goods_doc.bundle_yn == 'N' :
+                        if goods_doc.goods_cd == "맛집":
+                            item_doc.is_stock_item = 1
+                            item_doc.item_group = goods_doc.goods_cd
+                        elif goods_doc.goods_cd == "공동구매":
+                            item_doc.is_stock_item = 1
+                            item_doc.item_group = goods_doc.goods_cd
+                        elif goods_doc.goods_cd == "직매입":
+                            item_doc.is_stock_item = 1
+                            item_doc.item_group = goods_doc.goods_cd
+                        else:
+                            item_doc.is_stock_item = 0
+                            item_doc.item_group = "위탁"
                     # item_doc.opening_stock = goods_doc.goods_no
+                    elif goods_doc.bundle_yn == 'Y':  
+                        item_doc.is_stock_item = 0
+                        if goods_doc.goods_cd == "맛집":
+                            item_doc.item_group = goods_doc.goods_cd
+                        elif goods_doc.goods_cd == "공동구매":
+                            item_doc.item_group = goods_doc.goods_cd
+                        elif goods_doc.goods_cd == "직매입":
+                            item_doc.item_group = goods_doc.goods_cd
+                        else:
+                            item_doc.item_group = "위탁"
                     item_doc.is_fixed_asset = 0
+                    item_doc.include_item_in_maufacturing = 0
                     item_doc.description = goods_doc.goods_search_word
                     item_doc.valuation_method = 'Moving Average'
                     
@@ -1654,20 +2035,32 @@ def create_update_item(**args):
                     item_doc.stock_uom = 'EA'
                     item_doc.disabled = 0
                     item_doc.godo_mall_goods_no =  goods_doc.goods_no
-                    if goods_doc.goods_cd == "맛집":
-                        item_doc.is_stock_item = 1
-                        item_doc.item_group = goods_doc.goods_cd
-                    elif goods_doc.goods_cd == "공동구매":
-                        item_doc.is_stock_item = 1
-                        item_doc.item_group = goods_doc.goods_cd
-                    elif goods_doc.goods_cd == "직매입":
-                        item_doc.is_stock_item = 1
-                        item_doc.item_group = goods_doc.goods_cd
-                    else:
+                    if goods_doc.bundle_yn == 'N' :
+                        if goods_doc.goods_cd == "맛집":
+                            item_doc.is_stock_item = 1
+                            item_doc.item_group = goods_doc.goods_cd
+                        elif goods_doc.goods_cd == "공동구매":
+                            item_doc.is_stock_item = 1
+                            item_doc.item_group = goods_doc.goods_cd
+                        elif goods_doc.goods_cd == "직매입":
+                            item_doc.is_stock_item = 1
+                            item_doc.item_group = goods_doc.goods_cd
+                        else:
+                            item_doc.is_stock_item = 0
+                            item_doc.item_group = "위탁"
+                    elif goods_doc.bundle_yn == 'Y':  
                         item_doc.is_stock_item = 0
-                        item_doc.item_group = "위탁"
+                        if goods_doc.goods_cd == "맛집":
+                            item_doc.item_group = goods_doc.goods_cd
+                        elif goods_doc.goods_cd == "공동구매":
+                            item_doc.item_group = goods_doc.goods_cd
+                        elif goods_doc.goods_cd == "직매입":
+                            item_doc.item_group = goods_doc.goods_cd
+                        else:
+                            item_doc.item_group = "위탁"
                     # item_doc.opening_stock = goods_doc.goods_no
                     item_doc.is_fixed_asset = 0
+                    item_doc.include_item_in_maufacturing = 0
                     item_doc.description = goods_doc.goods_search_word
                     item_doc.valuation_method = 'Moving Average'
                     json_item_defaults={}
@@ -1687,6 +2080,13 @@ def create_update_item(**args):
                     item_doc.sales_uom = 'EA'
                     item_doc.is_purchase_item = 1
                     item_doc.is_sales_item = 1
+                    json_tax_template={}
+                    if goods_doc.tax_free_fl=='t':
+                        json_tax_template['item_tax_template'] = '과세 - TG'
+                    else :
+                        json_tax_template['item_tax_template'] = '면세 - TG'
+                    json_tax_template['valid_from'] = '2000-01-01'
+                    item_doc.append('taxes',json_tax_template)
                     item_doc.insert(ignore_permissions=True, # ignore write permissions during insert
                                             ignore_links=True
                                             )
@@ -1704,20 +2104,32 @@ def create_update_item(**args):
                 item_doc.stock_uom = 'EA'
                 item_doc.disabled = 0
                 item_doc.godo_mall_goods_no =  goods_doc.goods_no
-                if goods_doc.goods_cd == "맛집":
-                    item_doc.is_stock_item = 1
-                    item_doc.item_group = goods_doc.goods_cd
-                elif goods_doc.goods_cd == "공동구매":
-                    item_doc.is_stock_item = 1
-                    item_doc.item_group = goods_doc.goods_cd
-                elif goods_doc.goods_cd == "직매입":
-                    item_doc.is_stock_item = 1
-                    item_doc.item_group = goods_doc.goods_cd
-                else:
+                if goods_doc.bundle_yn == 'N' :
+                    if goods_doc.goods_cd == "맛집":
+                        item_doc.is_stock_item = 1
+                        item_doc.item_group = goods_doc.goods_cd
+                    elif goods_doc.goods_cd == "공동구매":
+                        item_doc.is_stock_item = 1
+                        item_doc.item_group = goods_doc.goods_cd
+                    elif goods_doc.goods_cd == "직매입":
+                        item_doc.is_stock_item = 1
+                        item_doc.item_group = goods_doc.goods_cd
+                    else:
+                        item_doc.is_stock_item = 0
+                        item_doc.item_group = "위탁"
+                elif goods_doc.bundle_yn == 'Y':  
                     item_doc.is_stock_item = 0
-                    item_doc.item_group = "위탁"
+                    if goods_doc.goods_cd == "맛집":
+                        item_doc.item_group = goods_doc.goods_cd
+                    elif goods_doc.goods_cd == "공동구매":
+                        item_doc.item_group = goods_doc.goods_cd
+                    elif goods_doc.goods_cd == "직매입":
+                        item_doc.item_group = goods_doc.goods_cd
+                    else:
+                        item_doc.item_group = "위탁"
                 # item_doc.opening_stock = goods_doc.goods_no
                 item_doc.is_fixed_asset = 0
+                item_doc.include_item_in_maufacturing = 0
                 item_doc.description = goods_doc.goods_search_word
                 item_doc.valuation_method = 'Moving Average'
                 item_doc.purchase_uom = 'EA'
@@ -1738,20 +2150,32 @@ def create_update_item(**args):
                 item_doc.stock_uom = 'EA'
                 item_doc.disabled = 0
                 item_doc.godo_mall_goods_no =  goods_doc.goods_no
-                if goods_doc.goods_cd == "맛집":
-                    item_doc.is_stock_item = 1
-                    item_doc.item_group = goods_doc.goods_cd
-                elif goods_doc.goods_cd == "공동구매":
-                    item_doc.is_stock_item = 1
-                    item_doc.item_group = goods_doc.goods_cd
-                elif goods_doc.goods_cd == "직매입":
-                    item_doc.is_stock_item = 1
-                    item_doc.item_group = goods_doc.goods_cd
-                else:
-                    item_doc.is_stock_item = 0
-                    item_doc.item_group = "위탁"
+                if goods_doc.bundle_yn == 'N' :
+                    if goods_doc.goods_cd == "맛집":
+                        item_doc.is_stock_item = 1
+                        item_doc.item_group = goods_doc.goods_cd
+                    elif goods_doc.goods_cd == "공동구매":
+                        item_doc.is_stock_item = 1
+                        item_doc.item_group = goods_doc.goods_cd
+                    elif goods_doc.goods_cd == "직매입":
+                        item_doc.is_stock_item = 1
+                        item_doc.item_group = goods_doc.goods_cd
+                    else:
+                        item_doc.is_stock_item = 0
+                        item_doc.item_group = "위탁"
                 # item_doc.opening_stock = goods_doc.goods_no
+                elif goods_doc.bundle_yn == 'Y':  
+                    item_doc.is_stock_item = 0
+                    if goods_doc.goods_cd == "맛집":
+                        item_doc.item_group = goods_doc.goods_cd
+                    elif goods_doc.goods_cd == "공동구매":
+                        item_doc.item_group = goods_doc.goods_cd
+                    elif goods_doc.goods_cd == "직매입":
+                        item_doc.item_group = goods_doc.goods_cd
+                    else:
+                        item_doc.item_group = "위탁"
                 item_doc.is_fixed_asset = 0
+                item_doc.include_item_in_maufacturing = 0
                 item_doc.description = goods_doc.goods_search_word
                 item_doc.valuation_method =  frappe.db.get_single_value('Godomall API Setting', 'item_valuation_method')
                 json_item_defaults={}
@@ -1771,13 +2195,805 @@ def create_update_item(**args):
                 item_doc.sales_uom = 'EA'
                 item_doc.is_purchase_item = 1
                 item_doc.is_sales_item = 1
-                item_doc.insert(ignore_permissions=True, # ignore write permissions during insert
-                                        ignore_links=True
-                                        )
+
+                json_tax_template={}
+                if goods_doc.tax_free_fl=='t':
+                    json_tax_template['item_tax_template'] = '과세 - TG'
+                    json_tax_template['tax_category']='과세10%'
+                else :
+                    json_tax_template['item_tax_template'] = '면세 - TG'
+                    json_tax_template['tax_category']='과세10%'
+                json_tax_template['valid_from'] = '2000-01-01'
+                item_doc.append('taxes',json_tax_template)
+                # print(item_doc)
+                item_doc.insert(
+                    ignore_permissions=True, # ignore write permissions during insert
+                    ignore_links=True
+                    )
         frappe.db.set_value('Godomall Goods master', goods, 'item_code', item_name)
 
-                
+# bench execute godomall_api_customization.api.create_update_customer --args "{'order_email':'evilwitch37@naver.com'}"                
 @frappe.whitelist()           
-def create_update_supplier():
-    pass
+def create_update_customer(**kwargs):
+    if kwargs.get('order_email'):
+        email_name = kwargs.get('order_email')
+        print(email_name)
+        if frappe.db.exists('Customer',email_name):
+            cust_doc =frappe.get_doc('Customer',email_name)
+            
+            cust_datas = frappe.db.sql("""
+                        select b.order_name 
+                            ,b.order_email 
+                            ,a.mem_no
+                            ,a.mem_id
+							,max(IFNULL(if(a.mem_group_nm='',NULL,a.mem_group_nm),'손님')) as mem_group
+                            ,max(b.order_cell_phone) as order_cell_phone
+                            ,max(b.order_zonecode) as order_zonecode
+                            ,max(b.order_address) as order_address
+                            ,max(b.order_address_sub ) as order_address_sub
+                            ,max(b.receiver_name) as receiver_name
+                            ,max(b.receiver_cell_phone) as  receiver_cell_phone
+                            ,max(b.receiver_zonecode) as receiver_zonecode
+                            ,max(b.receiver_address) as receiver_address
+                            ,max(b.receiver_address_sub) as receiver_address_sub 
+                    from frappedb.`tabGodomall Order` a , frappedb.`tabGodomall Order Info Data` b
+                    where 1=1
+                    and a.name  = b.parent 
+                    and a.order_email = b.order_email 
+                    and b.order_email not in (select name from frappedb.`tabCustomer`)
+                    and b.order_email = %s
+                    group by  b.order_name 
+                            ,b.order_email 
+                            ,a.mem_no
+                            ,a.mem_id
+							
+                            """,email_name, as_dict=1)
+
+            for cust_data in cust_datas:
+                cust_doc =frappe.get_doc('Customer',cust_data.order_email)
+                cust_doc.name = cust_data.order_email
+                cust_doc.customer_name = cust_data.order_name
+                cust_doc.customer_group = cust_data.mem_group
+                cust_doc.customer_type = 'Individual'
+                # print(cust_data.order_zonecode[0:2])
+                city_name =""
+                if cust_data.order_zonecode[0:2]:
+                    cust_doc.territory = get_territory_by_zipcode(zip_code=cust_data.order_zonecode)
+
+
+                cust_doc.so_required = 1
+                cust_doc.dn_required = 1
+                cust_doc.is_internal_customer = 0
+                cust_doc.default_currency = 'KRW'
+                cust_doc.default_price_list = frappe.db.get_single_value('Godomall API Setting', 'default_price_list')
+                cust_doc.save()
+                
+                if cust_data.order_zonecode:
+                    address_datas = frappe.db.sql("""
+                        select ta.name from frappedb.tabAddress ta , frappedb.`tabDynamic Link` tdl 
+                        where ta.name = tdl.parent 
+                        and tdl.parenttype ='Address'
+                        and tdl.link_doctype ='Customer'
+                        and tdl.link_name =%s
+                        and ta.pincode =%s
+                        and ta.address_line1 =%s
+                        and ta.address_line2 =%s
+                    """,(cust_data.order_email,cust_data.order_zonecode,cust_data.order_address,cust_data.order_address_sub),as_dict=0)
+                    if address_datas:
+                        for addres_data in address_datas:
+                            address_doc = frappe.get_doc('Address',addres_data)
+                            address_doc.address_title = cust_data.order_name
+                            address_doc.address_type = 'Billing'
+                            address_doc.address_line1 = cust_data.order_address
+                            address_doc.address_line2 = cust_data.order_address_sub
+                            address_doc.city = get_territory_by_zipcode(zip_code=cust_data.order_zonecode)
+                            address_doc.country = "Korea, Republic of"
+                            address_doc.pincode = cust_data.order_zonecode
+                            address_doc.email_id = cust_data.order_email
+                            address_doc.phone = cust_data.order_cell_phone
+                            address_doc.is_primary_address = 1
+                            address_doc.save()
+                    else:
+                        address_doc = frappe.new_doc('Address')
+                        address_doc.address_title = cust_data.order_name
+                        address_doc.address_type = 'Billing'
+                        address_doc.address_line1 = cust_data.order_address
+                        address_doc.address_line2 = cust_data.order_address_sub
+                        address_doc.city = get_territory_by_zipcode(zip_code=cust_data.order_zonecode)
+                        address_doc.country = "Korea, Republic of"
+                        address_doc.pincode = cust_data.order_zonecode
+                        address_doc.email_id = cust_data.order_email
+                        address_doc.phone = cust_data.order_cell_phone
+                        address_doc.is_primary_address = 1
+                        json_address = {}
+                        json_address['link_doctype']='Customer'
+                        json_address['link_name']=cust_data.order_email
+                        json_address['link_title']=cust_data.order_name
+                        address_doc.append('links',json_address)
+                        address_doc.insert(
+                            ignore_permissions=True, # ignore write permissions during insert
+                            ignore_links=True
+                        )
+
+                if cust_data.receiver_zonecode:
+                    address_datas = frappe.db.sql("""
+                        select ta.name from frappedb.tabAddress ta , frappedb.`tabDynamic Link` tdl 
+                        where ta.name = tdl.parent 
+                        and tdl.parenttype ='Address'
+                        and tdl.link_doctype ='Customer'
+                        and tdl.link_name =%s
+                        and ta.pincode =%s
+                        and ta.address_line1 =%s
+                        and ta.address_line2 =%s
+                    """,(cust_data.order_email,cust_data.receiver_zonecode,cust_data.receiver_address,cust_data.receiver_address_sub),as_dict=0)
+                    if address_datas:
+                        for addres_data in address_datas:
+                            address_doc = frappe.get_doc('Address',addres_data)
+                            address_doc.address_title = cust_data.receiver_name
+                            address_doc.address_type = 'Shipping'
+                            address_doc.address_line1 = cust_data.receiver_address
+                            address_doc.address_line2 = cust_data.receiver_address_sub
+                            address_doc.city = get_territory_by_zipcode(zip_code=cust_data.receiver_zonecode)
+                            address_doc.country = "Korea, Republic of"
+                            address_doc.pincode = cust_data.receiver_zonecode
+                            address_doc.email_id = cust_data.order_email
+                            address_doc.phone = cust_data.receiver_cell_phone
+                            address_doc.is_shipping_address = 1
+                            address_doc.save()
+                    else:
+                        address_doc = frappe.new_doc('Address')
+                        address_doc.address_title = cust_data.receiver_name
+                        address_doc.address_type = 'Shipping'
+                        address_doc.address_line1 = cust_data.receiver_address
+                        address_doc.address_line2 = cust_data.receiver_address_sub
+                        address_doc.city = get_territory_by_zipcode(zip_code=cust_data.receiver_zonecode)
+                        address_doc.country = "Korea, Republic of"
+                        address_doc.pincode = cust_data.receiver_zonecode
+                        address_doc.email_id = cust_data.order_email
+                        address_doc.phone = cust_data.receiver_cell_phone
+                        address_doc.is_shipping_address = 1
+                        json_address = {}
+                        json_address['link_doctype']='Customer'
+                        json_address['link_name']=cust_data.order_email
+                        json_address['link_title']=cust_data.order_name
+                        address_doc.append('links',json_address)
+                        address_doc.insert(
+                            ignore_permissions=True, # ignore write permissions during insert
+                            ignore_links=True
+                        )
+
+        else:
+            cust_doc =frappe.new_doc('Customer')
+            cust_doc.name = email_name
+
+            
+            cust_datas = frappe.db.sql("""
+                        select b.order_name 
+                            ,b.order_email 
+                            ,a.mem_no
+                            ,a.mem_id
+							,max(IFNULL(if(a.mem_group_nm='',NULL,a.mem_group_nm),'손님')) as mem_group
+                            ,max(b.order_cell_phone) as order_cell_phone
+                            ,max(b.order_zonecode) as order_zonecode
+                            ,max(b.order_address) as order_address
+                            ,max(b.order_address_sub ) as order_address_sub
+                            ,max(b.receiver_name) as receiver_name
+                            ,max(b.receiver_cell_phone) as  receiver_cell_phone
+                            ,max(b.receiver_zonecode) as receiver_zonecode
+                            ,max(b.receiver_address) as receiver_address
+                            ,max(b.receiver_address_sub) as receiver_address_sub 
+                    from frappedb.`tabGodomall Order` a , frappedb.`tabGodomall Order Info Data` b
+                    where 1=1
+                    and a.name  = b.parent 
+                    and a.order_email = b.order_email 
+                    and b.order_email not in (select name from frappedb.`tabCustomer`)
+                    and b.order_email = %s
+                    group by  b.order_name 
+                            ,b.order_email 
+                            ,a.mem_no
+                            ,a.mem_id
+							
+                            """, email_name,  as_dict=1)
+            print(cust_datas)
+            for cust_data in cust_datas:
+                cust_doc =frappe.new_doc('Customer')
+                cust_doc.name = cust_data.order_email
+                cust_doc.customer_name = cust_data.order_name
+                cust_doc.customer_group = cust_data.mem_group
+                cust_doc.customer_type = 'Individual'
+                # print(cust_data.order_zonecode[0:2])
+                city_name =""
+                if cust_data.order_zonecode[0:2]:
+                    cust_doc.territory = get_territory_by_zipcode(zip_code=cust_data.order_zonecode)
+
+
+                cust_doc.so_required = 1
+                cust_doc.dn_required = 1
+                cust_doc.is_internal_customer = 0
+                cust_doc.default_currency = 'KRW'
+                cust_doc.default_price_list = frappe.db.get_single_value('Godomall API Setting', 'default_price_list')
+                cust_doc.insert(
+                    ignore_permissions=True, # ignore write permissions during insert
+                    ignore_links=True
+
+                )
+                
+                if cust_data.order_zonecode:
+                    address_doc = frappe.new_doc('Address')
+                    address_doc.address_title = cust_data.order_name
+                    address_doc.address_type = 'Billing'
+                    address_doc.address_line1 = cust_data.order_address
+                    address_doc.address_line2 = cust_data.order_address_sub
+                    address_doc.city = get_territory_by_zipcode(zip_code=cust_data.order_zonecode)
+                    address_doc.country = "Korea, Republic of"
+                    address_doc.pincode = cust_data.order_zonecode
+                    address_doc.email_id = cust_data.order_email
+                    address_doc.phone = cust_data.order_cell_phone
+                    address_doc.is_primary_address = 1
+                    json_address = {}
+                    json_address['link_doctype']='Customer'
+                    json_address['link_name']=cust_data.order_email
+                    json_address['link_title']=cust_data.order_name
+                    address_doc.append('links',json_address)
+                    address_doc.insert(
+                        ignore_permissions=True, # ignore write permissions during insert
+                        ignore_links=True
+                    )
+
+                if cust_data.receiver_zonecode:
+                    address_doc = frappe.new_doc('Address')
+                    address_doc.address_title = cust_data.receiver_name
+                    address_doc.address_type = 'Shipping'
+                    address_doc.address_line1 = cust_data.receiver_address
+                    address_doc.address_line2 = cust_data.receiver_address_sub
+                    address_doc.city = get_territory_by_zipcode(zip_code=cust_data.receiver_zonecode)
+                    address_doc.country = "Korea, Republic of"
+                    address_doc.pincode = cust_data.receiver_zonecode
+                    address_doc.email_id = cust_data.order_email
+                    address_doc.phone = cust_data.receiver_cell_phone
+                    address_doc.is_shipping_address = 1
+                    json_address = {}
+                    json_address['link_doctype']='Customer'
+                    json_address['link_name']=cust_data.order_email
+                    json_address['link_title']=cust_data.order_name
+                    address_doc.append('links',json_address)
+                    address_doc.insert(
+                        ignore_permissions=True, # ignore write permissions during insert
+                        ignore_links=True
+                    )
+            
+
+
+
+        
+    elif kwargs.get('order_no'):
+        email_name =  frappe.db.get_value('Godomall Order', kwargs.get('order_no'), 'order_email')
+
+        if frappe.db.exists('Customer',email_name):
+            cust_doc =frappe.get_doc('Customer',email_name)
+            
+            cust_datas = frappe.db.sql("""
+                        select b.order_name 
+                            ,b.order_email 
+                            ,a.mem_no
+                            ,a.mem_id
+							,max(IFNULL(if(a.mem_group_nm='',NULL,a.mem_group_nm),'손님')) as mem_group
+                            ,max(b.order_cell_phone) as order_cell_phone
+                            ,max(b.order_zonecode) as order_zonecode
+                            ,max(b.order_address) as order_address
+                            ,max(b.order_address_sub ) as order_address_sub
+                            ,max(b.receiver_name) as receiver_name
+                            ,max(b.receiver_cell_phone) as  receiver_cell_phone
+                            ,max(b.receiver_zonecode) as receiver_zonecode
+                            ,max(b.receiver_address) as receiver_address
+                            ,max(b.receiver_address_sub) as receiver_address_sub 
+                    from frappedb.`tabGodomall Order` a , frappedb.`tabGodomall Order Info Data` b
+                    where 1=1
+                    and a.name  = b.parent 
+                    and a.order_email = b.order_email 
+                    and b.order_email = %s
+                    and a.name = %s
+                    group by  b.order_name 
+                            ,b.order_email 
+                            ,a.mem_no
+                            ,a.mem_id
+							
+                            """,email_name,kwargs.get('order_no'), as_dict=1)
+
+            for cust_data in cust_datas:
+                cust_doc =frappe.get_doc('Customer',cust_data.order_email)
+                cust_doc.name = cust_data.order_email
+                cust_doc.customer_name = cust_data.order_name
+                cust_doc.customer_group = cust_data.mem_group
+                cust_doc.customer_type = 'Individual'
+                # print(cust_data.order_zonecode[0:2])
+                city_name =""
+                if cust_data.order_zonecode[0:2]:
+                    cust_doc.territory = get_territory_by_zipcode(zip_code=cust_data.order_zonecode)
+
+
+                cust_doc.so_required = 1
+                cust_doc.dn_required = 1
+                cust_doc.is_internal_customer = 0
+                cust_doc.default_currency = 'KRW'
+                cust_doc.default_price_list = frappe.db.get_single_value('Godomall API Setting', 'default_price_list')
+                cust_doc.save()
+                
+                if cust_data.order_zonecode:
+                    address_datas = frappe.db.sql("""
+                        select ta.name from frappedb.tabAddress ta , frappedb.`tabDynamic Link` tdl 
+                        where ta.name = tdl.parent 
+                        and tdl.parenttype ='Address'
+                        and tdl.link_doctype ='Customer'
+                        and tdl.link_name =%s
+                        and ta.pincode =%s
+                        and ta.address_line1 =%s
+                        and ta.address_line2 =%s
+                    """,(cust_data.order_email,cust_data.order_zonecode,cust_data.order_address,cust_data.order_address_sub),as_dict=0)
+                    if address_datas:
+                        for addres_data in address_datas:
+                            address_doc = frappe.get_doc('Address',addres_data)
+                            address_doc.address_title = cust_data.order_name
+                            address_doc.address_type = 'Billing'
+                            address_doc.address_line1 = cust_data.order_address
+                            address_doc.address_line2 = cust_data.order_address_sub
+                            address_doc.city = get_territory_by_zipcode(zip_code=cust_data.order_zonecode)
+                            address_doc.country = "Korea, Republic of"
+                            address_doc.pincode = cust_data.order_zonecode
+                            address_doc.email_id = cust_data.order_email
+                            address_doc.phone = cust_data.order_cell_phone
+                            address_doc.is_primary_address = 1
+                            address_doc.save()
+                    else:
+                        address_doc = frappe.new_doc('Address')
+                        address_doc.address_title = cust_data.order_name
+                        address_doc.address_type = 'Billing'
+                        address_doc.address_line1 = cust_data.order_address
+                        address_doc.address_line2 = cust_data.order_address_sub
+                        address_doc.city = get_territory_by_zipcode(zip_code=cust_data.order_zonecode)
+                        address_doc.country = "Korea, Republic of"
+                        address_doc.pincode = cust_data.order_zonecode
+                        address_doc.email_id = cust_data.order_email
+                        address_doc.phone = cust_data.order_cell_phone
+                        address_doc.is_primary_address = 1
+                        json_address = {}
+                        json_address['link_doctype']='Customer'
+                        json_address['link_name']=cust_data.order_email
+                        json_address['link_title']=cust_data.order_name
+                        address_doc.append('links',json_address)
+                        address_doc.insert(
+                            ignore_permissions=True, # ignore write permissions during insert
+                            ignore_links=True
+                        )
+
+                if cust_data.receiver_zonecode:
+                    address_datas = frappe.db.sql("""
+                        select ta.name from frappedb.tabAddress ta , frappedb.`tabDynamic Link` tdl 
+                        where ta.name = tdl.parent 
+                        and tdl.parenttype ='Address'
+                        and tdl.link_doctype ='Customer'
+                        and tdl.link_name =%s
+                        and ta.pincode =%s
+                        and ta.address_line1 =%s
+                        and ta.address_line2 =%s
+                    """,(cust_data.order_email,cust_data.receiver_zonecode,cust_data.receiver_address,cust_data.receiver_address_sub),as_dict=0)
+                    if address_datas:
+                        for addres_data in address_datas:
+                            address_doc = frappe.get_doc('Address',addres_data)
+                            address_doc.address_title = cust_data.receiver_name
+                            address_doc.address_type = 'Shipping'
+                            address_doc.address_line1 = cust_data.receiver_address
+                            address_doc.address_line2 = cust_data.receiver_address_sub
+                            address_doc.city = get_territory_by_zipcode(zip_code=cust_data.receiver_zonecode)
+                            address_doc.country = "Korea, Republic of"
+                            address_doc.pincode = cust_data.receiver_zonecode
+                            address_doc.email_id = cust_data.order_email
+                            address_doc.phone = cust_data.receiver_cell_phone
+                            address_doc.is_shipping_address = 1
+                            address_doc.save()
+                    else:
+                        address_doc = frappe.new_doc('Address')
+                        address_doc.address_title = cust_data.receiver_name
+                        address_doc.address_type = 'Shipping'
+                        address_doc.address_line1 = cust_data.receiver_address
+                        address_doc.address_line2 = cust_data.receiver_address_sub
+                        address_doc.city = get_territory_by_zipcode(zip_code=cust_data.receiver_zonecode)
+                        address_doc.country = "Korea, Republic of"
+                        address_doc.pincode = cust_data.receiver_zonecode
+                        address_doc.email_id = cust_data.order_email
+                        address_doc.phone = cust_data.receiver_cell_phone
+                        address_doc.is_shipping_address = 1
+                        json_address = {}
+                        json_address['link_doctype']='Customer'
+                        json_address['link_name']=cust_data.order_email
+                        json_address['link_title']=cust_data.order_name
+                        address_doc.append('links',json_address)
+                        address_doc.insert(
+                            ignore_permissions=True, # ignore write permissions during insert
+                            ignore_links=True
+                        )
+
+        else:
+            cust_doc =frappe.new_doc('Customer')
+            cust_doc.name = email_name
+
+            cust_datas = frappe.db.sql("""
+                        select b.order_name 
+                            ,b.order_email 
+                            ,a.mem_no
+                            ,a.mem_id
+							,max(IFNULL(if(a.mem_group_nm='',NULL,a.mem_group_nm),'손님')) as mem_group
+                            ,max(b.order_cell_phone) as order_cell_phone
+                            ,max(b.order_zonecode) as order_zonecode
+                            ,max(b.order_address) as order_address
+                            ,max(b.order_address_sub ) as order_address_sub
+                            ,max(b.receiver_name) as receiver_name
+                            ,max(b.receiver_cell_phone) as  receiver_cell_phone
+                            ,max(b.receiver_zonecode) as receiver_zonecode
+                            ,max(b.receiver_address) as receiver_address
+                            ,max(b.receiver_address_sub) as receiver_address_sub 
+                    from frappedb.`tabGodomall Order` a , frappedb.`tabGodomall Order Info Data` b
+                    where 1=1
+                    and a.name  = b.parent 
+                    and a.order_email = b.order_email 
+                    and b.order_email = %s
+                    and a.name = %s
+                    group by  b.order_name 
+                            ,b.order_email 
+                            ,a.mem_no
+                            ,a.mem_id
+							
+                            """,email_name,kwargs.get('order_no'), as_dict=1)
+							
+            for cust_data in cust_datas:
+                cust_doc =frappe.new_doc('Customer')
+                cust_doc.name = cust_data.order_email
+                cust_doc.customer_name = cust_data.order_name
+                cust_doc.customer_group = cust_data.mem_group
+                cust_doc.customer_type = 'Individual'
+                # print(cust_data.order_zonecode[0:2])
+                city_name =""
+                if cust_data.order_zonecode[0:2]:
+                    cust_doc.territory = get_territory_by_zipcode(zip_code=cust_data.order_zonecode)
+
+
+                cust_doc.so_required = 1
+                cust_doc.dn_required = 1
+                cust_doc.is_internal_customer = 0
+                cust_doc.default_currency = 'KRW'
+                cust_doc.default_price_list = frappe.db.get_single_value('Godomall API Setting', 'default_price_list')
+                cust_doc.insert(
+                    ignore_permissions=True, # ignore write permissions during insert
+                    ignore_links=True
+
+                )
+                
+                if cust_data.order_zonecode:
+                    address_doc = frappe.new_doc('Address')
+                    address_doc.address_title = cust_data.order_name
+                    address_doc.address_type = 'Billing'
+                    address_doc.address_line1 = cust_data.order_address
+                    address_doc.address_line2 = cust_data.order_address_sub
+                    address_doc.city = get_territory_by_zipcode(zip_code=cust_data.order_zonecode)
+                    address_doc.country = "Korea, Republic of"
+                    address_doc.pincode = cust_data.order_zonecode
+                    address_doc.email_id = cust_data.order_email
+                    address_doc.phone = cust_data.order_cell_phone
+                    address_doc.is_primary_address = 1
+                    json_address = {}
+                    json_address['link_doctype']='Customer'
+                    json_address['link_name']=cust_data.order_email
+                    json_address['link_title']=cust_data.order_name
+                    address_doc.append('links',json_address)
+                    address_doc.insert(
+                        ignore_permissions=True, # ignore write permissions during insert
+                        ignore_links=True
+                    )
+
+                if cust_data.receiver_zonecode:
+                    address_doc = frappe.new_doc('Address')
+                    address_doc.address_title = cust_data.receiver_name
+                    address_doc.address_type = 'Shipping'
+                    address_doc.address_line1 = cust_data.receiver_address
+                    address_doc.address_line2 = cust_data.receiver_address_sub
+                    address_doc.city = get_territory_by_zipcode(zip_code=cust_data.receiver_zonecode)
+                    address_doc.country = "Korea, Republic of"
+                    address_doc.pincode = cust_data.receiver_zonecode
+                    address_doc.email_id = cust_data.order_email
+                    address_doc.phone = cust_data.receiver_cell_phone
+                    address_doc.is_shipping_address = 1
+                    json_address = {}
+                    json_address['link_doctype']='Customer'
+                    json_address['link_name']=cust_data.order_email
+                    json_address['link_title']=cust_data.order_name
+                    address_doc.append('links',json_address)
+                    address_doc.insert(
+                        ignore_permissions=True, # ignore write permissions during insert
+                        ignore_links=True
+                    )
+            
+
+    else:
+        cust_datas = frappe.db.sql("""
+                    select b.order_email 
+                            ,max(b.order_name) as order_name
+                            ,max(a.mem_no) as mem_no
+                            ,max(a.mem_id) as mem_id
+							,max(IFNULL(if(a.mem_group_nm='',NULL,a.mem_group_nm),'손님')) as mem_group
+                            ,max(b.order_cell_phone) as order_cell_phone
+                            ,max(b.order_zonecode) as order_zonecode
+                            ,max(b.order_address) as order_address
+                            ,max(b.order_address_sub ) as order_address_sub
+                            ,max(b.receiver_name) as receiver_name
+                            ,max(b.receiver_cell_phone) as  receiver_cell_phone
+                            ,max(b.receiver_zonecode) as receiver_zonecode
+                            ,max(b.receiver_address) as receiver_address
+                            ,max(b.receiver_address_sub) as receiver_address_sub 
+                    from frappedb.`tabGodomall Order` a , frappedb.`tabGodomall Order Info Data` b
+                    where 1=1
+                    and a.name  = b.parent 
+                    and a.order_email = b.order_email 
+                    and b.order_email not in (select name from frappedb.`tabCustomer`)
+                    and a.order_date between %s and %s
+                    group by  b.order_email 
+							
+                            """,(kwargs.get('from_date'),kwargs.get('to_date')) , as_dict=1)
+        # print(cust_datas)
+        for cust_data in cust_datas:
+            cust_doc =frappe.new_doc('Customer')
+            cust_doc.name = cust_data.order_email
+            cust_doc.customer_name = cust_data.order_name
+            cust_doc.customer_group = cust_data.mem_group
+            cust_doc.customer_type = 'Individual'
+            # print(cust_data.order_zonecode[0:2])
+            city_name =""
+            if cust_data.order_zonecode[0:2]:
+                cust_doc.territory = get_territory_by_zipcode(zip_code=cust_data.order_zonecode)
+
+
+            cust_doc.so_required = 1
+            cust_doc.dn_required = 1
+            cust_doc.is_internal_customer = 0
+            cust_doc.default_currency = 'KRW'
+            cust_doc.default_price_list = frappe.db.get_single_value('Godomall API Setting', 'default_price_list')
+            cust_doc.insert(
+                ignore_permissions=True, # ignore write permissions during insert
+                ignore_links=True
+
+            )
+            print("Address:"+str(cust_data.order_email))
+            if cust_data.order_zonecode:
+                
+                address_doc = frappe.new_doc('Address')
+                address_doc.address_title = cust_data.order_name
+                address_doc.address_type = 'Billing'
+                address_doc.address_line1 = cust_data.order_address
+                address_doc.address_line2 = cust_data.order_address_sub
+                address_doc.city = get_territory_by_zipcode(zip_code=cust_data.order_zonecode)
+                address_doc.country = "Korea, Republic of"
+                address_doc.pincode = cust_data.order_zonecode
+                address_doc.email_id = cust_data.order_email
+                address_doc.phone = cust_data.order_cell_phone
+                address_doc.is_primary_address = 1
+                json_address = {}
+                json_address['link_doctype']='Customer'
+                json_address['link_name']=cust_data.order_email
+                json_address['link_title']=cust_data.order_name
+                address_doc.append('links',json_address)
+                address_doc.insert(
+                    ignore_permissions=True, # ignore write permissions during insert
+                    ignore_links=True
+                )
+
+            if cust_data.receiver_zonecode:
+                address_doc = frappe.new_doc('Address')
+                address_doc.address_title = cust_data.receiver_name
+                address_doc.address_type = 'Shipping'
+                address_doc.address_line1 = cust_data.receiver_address
+                address_doc.address_line2 = cust_data.receiver_address_sub
+                address_doc.city = get_territory_by_zipcode(zip_code=cust_data.receiver_zonecode)
+                address_doc.country = "Korea, Republic of"
+                address_doc.pincode = cust_data.receiver_zonecode
+                address_doc.email_id = cust_data.order_email
+                address_doc.phone = cust_data.receiver_cell_phone
+                address_doc.is_shipping_address = 1
+                json_address = {}
+                json_address['link_doctype']='Customer'
+                json_address['link_name']=cust_data.order_email
+                json_address['link_title']=cust_data.order_name
+                address_doc.append('links',json_address)
+                address_doc.insert(
+                    ignore_permissions=True, # ignore write permissions during insert
+                    ignore_links=True
+                )
+            
+            print(cust_data)
+
+
+
+def get_territory_by_zipcode(**kwargs):
+    # 우편번호가 01-09는 서울    서울 경기 인천 충남만 맛집 배송  --> 서울 경인  참조번호 년월일-지역-세자리 코드
+    # 10 -20 경기
+    # 21-23 인천
+    # 24-26강원
+    # 27-29 충북
+    # 30 세종
+    # 31-33 충남
+    # 34-35 대전
+    # 36-40 경북
+    # 41-43 대구
+    # 44-45 울산
+    # 46-49 부산
+    # 50-53 경남
+    # 54-56 전북
+    # 57-60 전남
+    # 61-62 광주
+    # 63 제주
+    zip_code = kwargs.get('zip_code')
+    territory_name =""
+    if int(zip_code[0:2])>=1 and int(zip_code[0:2])<=9:
+        territory_name = '서울'
+    elif int(zip_code[0:2])>=10 and int(zip_code[0:2])<=20:
+        territory_name = '경기'
+    elif int(zip_code[0:2])>=21 and int(zip_code[0:2])<=23:
+        territory_name = '인천'
+    elif int(zip_code[0:2])>=24 and int(zip_code[0:2])<=26:
+        territory_name = '강원'
+    elif int(zip_code[0:2])>=27 and int(zip_code[0:2])<=29:
+        territory_name = '충북'
+    elif int(zip_code[0:2])==30:
+        territory_name = '세종'
+    elif int(zip_code[0:2])>=31 and int(zip_code[0:2])<=33:
+        territory_name = '충남'
+    elif int(zip_code[0:2])>=34 and int(zip_code[0:2])<=35:
+        territory_name = '대전'
+    elif int(zip_code[0:2])>=36 and int(zip_code[0:2])<=40:
+        territory_name = '경북'
+    elif int(zip_code[0:2])>=41 and int(zip_code[0:2])<=43:
+        territory_name = '대구'
+    elif int(zip_code[0:2])>=44 and int(zip_code[0:2])<=45:
+        territory_name = '울산'
+    elif int(zip_code[0:2])>=46 and int(zip_code[0:2])<=49:
+        territory_name = '부산'
+    elif int(zip_code[0:2])>=50 and int(zip_code[0:2])<=53:
+        territory_name = '경남'
+    elif int(zip_code[0:2])>=54 and int(zip_code[0:2])<=56:
+        territory_name = '전북'
+    elif int(zip_code[0:2])>=57 and int(zip_code[0:2])<=60:
+        territory_name = '전남'
+    elif int(zip_code[0:2])>=61 and int(zip_code[0:2])<=62:
+        territory_name = '광주'
+    elif int(zip_code[0:2])==63 :
+        territory_name = '제주'
+    else:
+        territory_name = 'Korea, Republic of'
+    return territory_name
+
+def create_customer_by_param(**args):
+    order_email = args.get('order_email')
+    cust_doc =frappe.new_doc('Customer')
+    cust_doc.name =  args.get('order_email')
+    cust_doc.customer_name =  args.get('order_name') 
+    cust_doc.customer_group =  args.get('mem_group')
+    cust_doc.customer_type = 'Individual'
+    # print(cust_data.order_zonecode[0:2])
+    city_name =""
+    if  args.get('order_zonecode')[0:2]:
+        cust_doc.territory = get_territory_by_zipcode(zip_code= args.get('order_zonecode'))
+
+    cust_doc.so_required = 1
+    cust_doc.dn_required = 1
+    cust_doc.is_internal_customer = 0
+    cust_doc.default_currency = 'KRW'
+    cust_doc.default_price_list = frappe.db.get_single_value('Godomall API Setting', 'default_price_list')
+    cust_doc.insert(
+        ignore_permissions=True, # ignore write permissions during insert
+        ignore_links=True
+    )
     
+    if args.get('order_zonecode'):
+        address_doc = frappe.new_doc('Address')
+        address_doc.address_title = args.get('order_name')
+        address_doc.address_type = 'Billing'
+        address_doc.address_line1 =  args.get('order_address')
+        address_doc.address_line2 =  args.get('order_address_sub')
+        address_doc.city = get_territory_by_zipcode(zip_code= args.get('order_zonecode'))
+        address_doc.country = "Korea, Republic of"
+        address_doc.pincode = args.get('order_zonecode')
+        address_doc.email_id = args.get('order_email')
+        address_doc.phone = args.get('order_cell_phone')
+        address_doc.is_primary_address = 1
+        json_address = {}
+        json_address['link_doctype']='Customer'
+        json_address['link_name']=args.get('order_email')
+        json_address['link_title']=args.get('order_name')
+        address_doc.append('links',json_address)
+        address_doc.insert(
+            ignore_permissions=True, # ignore write permissions during insert
+            ignore_links=True
+        )
+
+    if args.get('receiver_zonecode'):
+        address_doc = frappe.new_doc('Address')
+        address_doc.address_title = args.get('receiver_name')
+        address_doc.address_type = 'Shipping'
+        address_doc.address_line1 = args.get('receiver_address')
+        address_doc.address_line2 = args.get('receiver_address_sub')
+        address_doc.city = get_territory_by_zipcode(zip_code=args.get('receiver_zonecode'))
+        address_doc.country = "Korea, Republic of"
+        address_doc.pincode = args.get('receiver_zonecode')
+        address_doc.email_id = args.get('order_email')
+        address_doc.phone = args.get('receiver_cell_phone')
+        address_doc.is_shipping_address = 1
+        json_address = {}
+        json_address['link_doctype']='Customer'
+        json_address['link_name']=args.get('order_email')
+        json_address['link_title']=args.get('order_name')
+        address_doc.append('links',json_address)
+        address_doc.insert(
+            ignore_permissions=True, # ignore write permissions during insert
+            ignore_links=True
+        )
+
+
+def create_sales_order(**args):
+    order_list = frappe.db.get_list('Godomall Order'
+			,filters= [
+				['batch_job_no','=', args.get('batch_no') ]
+				]
+				, pluck='name')
+    for order in order_list:
+        s_order = frappe.get_doc('Godomall Order',order) 
+        so_doc = frappe.new_doc('Sales Order')
+        # so_doc.title= 
+        so_doc.nam = order.order_no
+        so_doc.customer = s_order.order_email
+        so_doc.order_type='Sales'
+        so_doc.skip_delivery_note=0
+        so_doc.company =  frappe.db.get_single_value('Godomall API Setting', 'company')
+        so_doc.transaction_date = s_order.order_date
+        address_datas = frappe.db.sql("""
+                        select ta.name from frappedb.tabAddress ta , frappedb.`tabDynamic Link` tdl 
+                        where ta.name = tdl.parent 
+                        and tdl.parenttype ='Address'
+                        and tdl.link_doctype ='Customer'
+                        and tdl.link_name =%s
+                        and ta.pincode =%s
+                        and ta.address_line1 =%s
+                        and ta.address_line2 =%s
+                    """,(s_order.order_email , s_order.receiver_zonecode , s_order.receiver_address , s_order.receiver_address_sub ),as_dict=0)
+
+        
+        
+        # so_doc.delivery_date = 
+        so_doc.cost_center = frappe.db.get_single_value('Godomall API Setting', 'selling_cost_center')
+        so_doc.customer_address = address_datas[0]
+        # so_doc.contact_person =
+        # so_doc.contact_phone =
+        # so_doc.contact_email =
+        # so_doc.company_address =
+        so_doc.shipping_address_name = address_datas[0]
+        # so_doc.dispatch_address_name =
+        # so_doc.customer_group=
+        # so_doc.territory = 
+        so_doc.currency = 'KRW'
+        so_doc.conversion_rate = 1
+        so_doc.selling_price_list = frappe.db.get_single_value('Godomall API Setting', 'default_price_list')
+        # so_doc.price_list_currency=
+        # so_doc.plc_conversion_rate=
+        so_doc.ignore_pricing_rule=1
+        so_doc.set_warehouse = frappe.db.get_single_value('Godomall API Setting', 'default_warehouse')
+        # so_doc.scan_barcode=    
+        
+        so_doc.insert(
+                ignore_permissions=True, # ignore write permissions during insert
+                ignore_links=True
+            )
+        pass
+
+def create_purchase_order(**args):
+    po_doc = frappe.new_doc('Purchase Order')
+    po_doc.insert(
+            ignore_permissions=True, # ignore write permissions during insert
+            ignore_links=True
+        )
