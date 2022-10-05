@@ -200,6 +200,14 @@ fixtures=[
             "Godomall Delivery Code",
             "Godomall Order Status",
 			"Godomall API Setting",
+			"Item Group",
+			"UOM",
+			"Warehouse",
+			"Account",
+			"Customer Group",
+			"Territory",
+			"Warehouse Type",
+			"Item Tax Template",
 	 {"dt": "Client Script", "filters": [
         [
             "name", "in", [

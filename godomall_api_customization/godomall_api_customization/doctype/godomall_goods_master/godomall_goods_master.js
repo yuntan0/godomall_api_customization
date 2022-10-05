@@ -103,7 +103,7 @@ frappe.ui.form.on('Godomall Goods master', {
 							indicator: 'orange'
 						});
 						//frm.selected_doc.exchange_rate = r.message.exchange_rate;
-						// cur_frm.set_value('rate',r.message.rate);
+						cur_frm.set_value('item_code',goods_no);
 						// cur_frm.set_value('date',r.message.date);
 						// cur_frm.set_value('usd_rate',r.message.usd_rate);
 						// cur_frm.set_value('scale',r.message.scale);

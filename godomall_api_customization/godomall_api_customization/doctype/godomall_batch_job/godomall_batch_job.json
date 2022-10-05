@@ -12,9 +12,11 @@
   "order_to_date",
   "condition_section",
   "order_status",
+  "background_yn",
   "column_break_6",
   "status",
   "result_section",
+  "details",
   "result"
  ],
  "fields": [
@@ -29,9 +31,11 @@
    "label": "Order To Date"
   },
   {
+   "default": "p1",
    "fieldname": "order_status",
-   "fieldtype": "Data",
-   "label": "Order Status"
+   "fieldtype": "Link",
+   "label": "Order Status",
+   "options": "Godomall Order Status"
   },
   {
    "fieldname": "status",
@@ -61,11 +65,23 @@
    "fieldname": "result_section",
    "fieldtype": "Section Break",
    "label": "Result"
+  },
+  {
+   "fieldname": "details",
+   "fieldtype": "Table",
+   "label": "Details",
+   "options": "Godomall Batch Job Details"
+  },
+  {
+   "fieldname": "background_yn",
+   "fieldtype": "Select",
+   "label": "Background YN",
+   "options": "N\nY"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-25 00:20:34.928423",
+ "modified": "2022-10-04 13:02:43.828994",
  "modified_by": "Administrator",
  "module": "Godomall Api Customization",
  "name": "GodoMall Batch Job",

@@ -763,8 +763,12 @@
    "allow_on_submit": 1,
    "fieldname": "bundle_yn",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Bundle YN",
-   "options": "\nN\nY"
+   "options": "\nN\nY",
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "allow_on_submit": 1,
@@ -777,7 +781,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-30 15:56:20.415580",
+ "modified": "2022-10-01 16:20:51.716167",
  "modified_by": "Administrator",
  "module": "Godomall Api Customization",
  "name": "Godomall Goods master",

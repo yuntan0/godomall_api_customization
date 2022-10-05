@@ -57,7 +57,8 @@
   "order_info_data_section",
   "order_info_data",
   "order_claim_data_section",
-  "order_claim_data"
+  "order_claim_data",
+  "batch_job_no"
  ],
  "fields": [
   {
@@ -343,11 +344,17 @@
    "in_standard_filter": 1,
    "label": "Order Date",
    "search_index": 1
+  },
+  {
+   "fieldname": "batch_job_no",
+   "fieldtype": "Link",
+   "label": "Batch Job No",
+   "options": "GodoMall Batch Job"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-26 15:08:13.052145",
+ "modified": "2022-10-04 12:24:03.642162",
  "modified_by": "Administrator",
  "module": "Godomall Api Customization",
  "name": "Godomall Order",
